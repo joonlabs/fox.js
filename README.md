@@ -5,6 +5,3 @@ to use the fox engine, just download or clone the repository and place it inside
 then simply import the **fox.js** file from the *fox/* folder as follows:
 
     import * as FOX from 'fox/fox.js'
-
-## demos
-demos are following later on
