@@ -66,17 +66,8 @@ export class Camera{
      * @method render
      * @returns {void}
      */
-    render({app}={}, _this=this){
-        //console.log(_this)
-        //get rendering offset by camera focus position
-        for(let layer of app.scenes.active.layers){
-            layer.ctx.save();
-            layer.ctx.beginPath();
-            layer.ctx.rect(_this.viewport.x, _this.viewport.y, _this.viewport.width, _this.viewport.height);
-            layer.ctx.clip();
-        }
-        
-        
+    render({app, layers}={}, _this=this){
+
         let render_offset = {
             "x" : (_this.settings.mode==Camera.modes.CENTER) ? -_this.viewport.width/2*(1/_this.settings.zoom) : 0,
             "y" : (_this.settings.mode==Camera.modes.CENTER) ? -_this.viewport.height/2*(1/_this.settings.zoom) : 0,
@@ -92,23 +83,15 @@ export class Camera{
         }
             
         //object manager based rendering of sprites
-        if(app.scenes.active!=undefined){
-            for(let obj of app.scenes.active.objectmanager.objects){     
-                obj.render({
-                    x: parseInt((-render_offset.x + _this.coordinates.x + obj.position.x)*_this.settings.zoom),
-                    y: parseInt((-render_offset.y + _this.coordinates.y + obj.position.y)*_this.settings.zoom),
-                    width: parseInt(obj.dimensions.width * _this.settings.zoom),
-                    height: parseInt(obj.dimensions.height * _this.settings.zoom),
-                    zoom: _this.settings.zoom,
-                    camera: _this,
-                    renderer: app.project.rendering.renderer
-                })
-            }
-            
-        }
-        
-        for(let layer of app.scenes.active.layers){
-            layer.ctx.restore();
+        for(let layer of layers){
+            layer.render({
+                offset : {
+                    x : -render_offset.x + this.coordinates.x,
+                    y : -render_offset.y + this.coordinates.y
+                },
+                zoom : this.settings.zoom,
+                camera : this
+            })
         }
     }
 }

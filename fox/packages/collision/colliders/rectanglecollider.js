@@ -8,8 +8,6 @@ export class RectangleCollider extends Collider{
     /**
      * Construct method of the object
      * @method constructor
-     * @param {number} x X-position of the collider
-     * @param {number} y Y-position of the collider
      * @param {object} offset Offset vector of the collider from it's parent Object
      * @param {number} width Width of the collider
      * @param {number} height Height of the collider
@@ -19,8 +17,8 @@ export class RectangleCollider extends Collider{
      * @param {object} debug Debug options (hitbox)
      * @returns RectangleCollider
      */
-    constructor({x, y, offset, width, height, rotation, rotationPosition, parentObject, debug}={}){
-        super({x:x, y:y, offset:offset, width:width, height:height, rotation:rotation, rotationPosition:rotationPosition, parentObject:parentObject, debug:debug})
+    constructor({offset, width, height, rotation, rotationPosition, parentObject, debug}={}){
+        super({offset:offset, width:width, height:height, rotation:rotation, rotationPosition:rotationPosition, parentObject:parentObject, debug:debug})
     }
     
     /**
@@ -39,9 +37,9 @@ export class RectangleCollider extends Collider{
             y += parseInt(_this.offset.y*zoom)
             let width = parseInt(_this.dimensions.width*zoom),
                 height = parseInt(_this.dimensions.height*zoom),
-                rotationPosition = _this.rotationPosition.multS({scalar:zoom})
+                rotationPosition = _this.rotationPosition.multScalar({scalar:zoom})
             
-            renderer.strokeRect({x:x, y:y, width:width, height:height, color:"#de5a1f", rotation:object.rotation, rotationPosition:rotationPosition, lineWidth: parseInt(4*zoom), ctx:object.layer.ctx})
+            renderer.strokeRect({x:x, y:y, width:width, height:height, color:"#de5a1f", rotation:_this.rotation, rotationPosition:rotationPosition, lineWidth: parseInt(2*zoom), ctx:object.layer.ctx})
         }
     }
     

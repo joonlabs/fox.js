@@ -1,33 +1,45 @@
 import {Renderer} from './renderer.js'
+
+
 /**
-* The Canvas2D is the basic renderer using the html5 canvas2d api
-*
-* @class Canvas2D
-*/
-export class Canvas2D extends Renderer{
+ * The Canvas2D is the basic renderer using the html5 canvas2d api
+ *
+ * @class Canvas2D
+ */
+export class Canvas2D extends Renderer {
     /**
      * Construct method of the object
      * @method constructor
      * @returns Canvas2D
      */
-    constructor({}={}){
+    constructor({} = {}) {
         super({})
     }
-    
-    /**
-     * Clears the canvases buffer
-     * @method clearRect
-     * @param {number} x Starting x position to be cleared
-     * @param {number} y Starting y position to be cleared
-     * @param {number} width Width of therect to be cleared
-     * @param {number} height Height of therect to be cleared
-     * @param {object} layer Layer to be cleared
-     * @return {void}
-     */
-    clearRect({x, y, width, height, ctx}, _this=this){
-        ctx.clearRect(x, y, width, height)
+
+    init({width, height}) {
+        //physical objects for rendering purposes
+        this.canvas = document.createElement("canvas")
+        this.canvas.width = width
+        this.canvas.height = height
+        this.ctx = this.canvas.getContext("2d")
+        this.ctx.imageSmoothingEnabled = false
+
+        // pixelating settings
+        this.ctx.imageSmoothingEnabled = false
+        this.canvas.setAttribute("style", "image-rendering: optimizeSpeed; image-rendering: -moz-crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: -o-crisp-edges; image-rendering: pixelated;")
     }
-    
+
+    getCanvas(){
+        return this.canvas
+    }
+
+    /**
+     * Clears the canvas buffer
+     */
+    clear() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    }
+
     /**
      * Fills a rect on the canvas
      * @method fillRect
@@ -41,23 +53,23 @@ export class Canvas2D extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    fillRect({x, y, width, height, rotation, rotationPosition, color, ctx}, _this=this){
-        if(_this.rotation%(Math.PI*2)!=0){
-            ctx.save()
-            ctx.translate(x+rotationPosition.x, y+rotationPosition.y)
+    fillRect({x, y, width, height, rotation, rotationPosition, color}) {
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.save()
+            this.ctx.translate(x + rotationPosition.x, y + rotationPosition.y)
             x = -rotationPosition.x
             y = -rotationPosition.y
-            ctx.rotate(rotation)
+            this.ctx.rotate(rotation)
         }
-        
-        ctx.fillStyle = color.toString()
-        ctx.fillRect(x, y, width, height)
-        
-        if(_this.rotation%(Math.PI*2)!=0){
-            ctx.restore() 
+
+        this.ctx.fillStyle = color.toString()
+        this.ctx.fillRect(x, y, width, height)
+
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.restore()
         }
     }
-    
+
     /**
      * Strokes a rect on the canvas
      * @method strokeRect
@@ -68,30 +80,30 @@ export class Canvas2D extends Renderer{
      * @param {number} rotation Rotation of therect
      * @param {object} rotationPosition rotationPosition of therect
      * @param {number} lineWidth Line width of the rect's stroke
-     * @param {object} color Color of therect
+     * @param {object} color Color of the rect
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color, ctx}, _this=this){
-        if(rotation%(Math.PI*2)!=0){
-            ctx.save()
-            ctx.translate(x+rotationPosition.x, y+rotationPosition.y)
+    strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color}) {
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.save()
+            this.ctx.translate(x + rotationPosition.x, y + rotationPosition.y)
             x = -rotationPosition.x
             y = -rotationPosition.y
-            ctx.rotate(rotation)
+            this.ctx.rotate(rotation)
         }
-        
-        ctx.beginPath()
-        ctx.strokeStyle = color.toString()
-        ctx.lineWidth = lineWidth
-        ctx.rect(parseInt(x+lineWidth/2), parseInt(y+lineWidth/2), parseInt(width-lineWidth), parseInt(height-lineWidth))
-        ctx.stroke()
-        
-        if(rotation%(Math.PI*2)!=0){
-            ctx.restore() 
+
+        this.ctx.beginPath()
+        this.ctx.strokeStyle = color.toString()
+        this.ctx.lineWidth = lineWidth
+        this.ctx.rect(parseInt(x + lineWidth / 2), parseInt(y + lineWidth / 2), parseInt(width - lineWidth), parseInt(height - lineWidth))
+        this.ctx.stroke()
+
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.restore()
         }
     }
-    
+
     /**
      * Fills a cirlce on the canvas
      * @method fillCircle
@@ -106,30 +118,29 @@ export class Canvas2D extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color, ctx}, _this=this){
-        if(rotation%(Math.PI*2)!=0){
-            ctx.save()
-            ctx.translate(x, y)
-            x = +rotationPosition.x-radius
-            y = +rotationPosition.y-radius
-            ctx.rotate(rotation)
+    fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color}) {
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.save()
+            this.ctx.translate(x, y)
+            x = +rotationPosition.x - radius
+            y = +rotationPosition.y - radius
+            this.ctx.rotate(rotation)
         }
-        
-        ctx.fillStyle = color.toString()
-        ctx.beginPath()
-        ctx.moveTo(x, y)
-        ctx.arc(x, y, radius, angleStart, angleEnd)
-        ctx.closePath()
-        ctx.fill()
-        
-        
-        
-        if(rotation%(Math.PI*2)!=0){
-            ctx.restore() 
+
+        this.ctx.fillStyle = color.toString()
+        this.ctx.beginPath()
+        this.ctx.moveTo(x, y)
+        this.ctx.arc(x, y, radius, angleStart, angleEnd)
+        this.ctx.closePath()
+        this.ctx.fill()
+
+
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.restore()
         }
     }
-    
-    
+
+
     /**
      * Strokes a cirlce on the canvas
      * @method strokeCircle
@@ -145,29 +156,29 @@ export class Canvas2D extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color, ctx}, _this=this){
-        if(rotation%(Math.PI*2)!=0){
-            ctx.save()
-            ctx.translate(x, y)
-            x = +rotationPosition.x-radius
-            y = +rotationPosition.y-radius
-            ctx.rotate(rotation)
+    strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color}) {
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.save()
+            this.ctx.translate(x, y)
+            x = +rotationPosition.x - radius
+            y = +rotationPosition.y - radius
+            this.ctx.rotate(rotation)
         }
-        
-        ctx.beginPath()
-        ctx.strokeStyle = color.toString()
-        ctx.lineWidth = lineWidth
-        ctx.moveTo(x, y)
-        ctx.arc(x, y, parseInt(radius - lineWidth/2), angleStart, angleEnd)
-        ctx.closePath()
-        ctx.stroke()
 
-        if(rotation%(Math.PI*2)!=0){
-            ctx.restore() 
+        this.ctx.beginPath()
+        this.ctx.strokeStyle = color.toString()
+        this.ctx.lineWidth = lineWidth
+        this.ctx.moveTo(x, y)
+        this.ctx.arc(x, y, parseInt(radius - lineWidth / 2), angleStart, angleEnd)
+        this.ctx.closePath()
+        this.ctx.stroke()
+
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.restore()
         }
     }
-    
-    
+
+
     /**
      * Renders a texture to the layer
      * @method renderTexture
@@ -181,23 +192,31 @@ export class Canvas2D extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition, ctx}, _this=this){
-        if(rotation%(Math.PI*2)!=0){
-            ctx.save()
-            ctx.translate(x+rotationPosition.x, y+rotationPosition.y)
+    renderTexture({texture, x, y, width, height, rotation, rotationPosition}) {
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.save()
+            this.ctx.translate(x + rotationPosition.x, y + rotationPosition.y)
             x = -rotationPosition.x
             y = -rotationPosition.y
-            ctx.rotate(rotation)
-        }
-        
-        if(width && height){
-            ctx.drawImage(texture, x, y, width, height)
-        }else{
-            ctx.drawImage(texture, x, y)
+            this.ctx.rotate(rotation)
         }
 
-        if(rotation%(Math.PI*2)!=0){
-            ctx.restore() 
+        //console.log({texture, x, y, width, height, rotation, rotationPosition})
+
+        if(texture instanceof Uint8ClampedArray){
+            var iData = new ImageData(texture, width, height);
+            this.ctx.putImageData(iData, x, y);
+        }else{
+            if (width && height) {
+                this.ctx.drawImage(texture, x, y, width, height)
+            } else {
+                this.ctx.drawImage(texture, x, y)
+            }
+        }
+
+
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.restore()
         }
     }
 }

@@ -9,8 +9,13 @@ export class Renderer{
      * @method constructor
      * @returns Renderer
      */
-    constructor({}={}){
-        
+    constructor(){
+        this.canvas = undefined
+        this.ctx = undefined
+    }
+
+    getCanvas(){
+        return this.canvas
     }
     
     

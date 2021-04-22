@@ -1,4 +1,8 @@
 import {Layer} from './layer.js'
+import {WebGL} from "../../renderers/renderers/webgl.js";
+import {Color} from "../../color/color.js";
+import {Utils} from "../../utils/utils.js";
+
 /**
  * The LayerLightning represents the lightning layer, that only renders light objects 
  *
@@ -8,35 +12,50 @@ export class Lightning extends Layer{
     /**
      * Construct method of the object
      * @method constructor
-     * @param {string} id ID of the canvas that is added to the dom
-     * @param {number} width Width of the canvas, if not specified the project's width is taken automatically 
+     * @param {number} width Width of the canvas, if not specified the project's width is taken automatically
      * @param {number} height Width of the canvas, if not specified the project's height is taken automatically
      * @returns LayerCanvas
      */
-    constructor({id, width, height}={}){
-        super({id:id, width:width, height:height})
-        //this.ctx.globalCompositeOperation = "lighter"
+    constructor({width, height}={}){
+        super({
+            width:width,
+            height:height,
+            renderer: new WebGL()
+        })
+
+        if(!Utils.isWebGLAvailable()){
+            Utils.warn("fox: Layer.Lightning: To support light, make sure WebGL is supported by your browser")
+        }
+
+        // re-init the renderer with lightning shaders
+        this.renderer.init({
+            width : this.dimensions.width,
+            height : this.dimensions.height,
+            useLightningShaders : true
+        })
+        
+        this.backgroundColor = new Color({a:0})
     }
-    
+
+    render({offset, zoom, camera}) {
+        /*this.renderer.fillRect({
+            x: 0,
+            y: 0,
+            width: this.dimensions.width,
+            height: this.dimensions.height,
+            rotation : 0,
+            color: new Color({a:-0.5})
+        })*/
+        super.render({offset, zoom, camera})
+    }
+
     /**
      * Is called in every loop after the render method. In the LightningLayer it converts the lights that are internally rendered as black points into transparent wholes with black surroundings. 
      * @method postprocess
      * @return {void}
      */
     postProcess({app}={}, _this=this){
-        let imgd = this.ctx.getImageData(0, 0, _this.dimensions.width, _this.dimensions.height);
-        let pix = imgd.data;
 
-        for (let i = 0, n = pix.length; i < n; i += 4) {    
-            let brightness = parseInt(0.299*pix[i+0] + 0.587*pix[i+1] + 0.114*pix[i+2])
-            pix[i+0] = 0
-            pix[i+1] = 0
-            pix[i+2] = 0
-            
-            pix[i+3] = 255-pix[i+3]//*.75            
-        }
-        
-        this.ctx.putImageData(imgd, 0, 0);
     }
     
     /**
@@ -45,6 +64,6 @@ export class Lightning extends Layer{
      * @return {void}
      */
     clear(_this=this){
-        this.ctx.clearRect(0,0,this.dimensions.width, this.dimensions.height)
+        this.renderer.clear({color: this.backgroundColor})
     }
 }

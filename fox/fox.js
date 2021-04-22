@@ -1,3 +1,4 @@
+import {Animator, Animation} from './packages/animator/index.js'
 import {Assets} from './packages/assets/index.js'
 import {AssetManager} from './packages/assetmanager/index.js'
 import {AudioController} from './packages/audiocontroller/index.js'
@@ -16,5 +17,29 @@ import {Shaders} from './packages/shaders/index.js'
 import {Vectors} from './packages/vectors/index.js'
 import {Application} from './packages/application/index.js'
 import {Component} from './packages/components/index.js'
+import {Utils} from './packages/utils/index.js'
 
-export {Application, Component, Assets, AssetManager, AudioController, Camera, Colliders, CollisionManager, Color, GameObjects, Input, Layers, ObjectManager, ParticleSystem, Random, Renderers, Scene, Shaders, Vectors}
+export {
+    Application,
+    Component,
+    Animator,
+    Animation,
+    Assets,
+    AssetManager,
+    AudioController,
+    Camera,
+    Colliders,
+    CollisionManager,
+    Color,
+    GameObjects,
+    Input,
+    Layers,
+    ObjectManager,
+    ParticleSystem,
+    Random,
+    Renderers,
+    Scene,
+    Shaders,
+    Vectors,
+    Utils
+}

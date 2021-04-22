@@ -17,21 +17,14 @@ export class Application{
             all: [],
             active: undefined,
         }
-        this.cameras = {
-            all: [],
-        }
         
         //settings
         this.project = {
-            "width": undefined,
-            "height": undefined,
-            "logFPS": false,
-            "pixelated": true,
-            "rendering" : {
-                renderer : undefined,
-                canvas : undefined,
-                ctx : undefined
-            }
+            "width": width,
+            "height": height,
+            "logFPS": logFPS || false,
+            "pixelated": pixelated || true,
+            "renderer" : renderer || new Renderers.WebGL(),
         }
         
         this.frames = {
@@ -46,31 +39,17 @@ export class Application{
             "maxskippingframes" : 5
         }
         
-        this.project.width = width
-        this.project.height = height
-        this.project.logFPS = logFPS || false 
-        this.project.rendering.renderer = renderer || new Renderers.Canvas2D()
-        this.project.rendering.pixelated = pixelated || true
-        
         if(logFPS){
-            //init stats
-            window.stats = new Stats();
-            stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-            document.body.appendChild( stats.dom );
+            //TODO -> log FPS
         }
         
-        //rendering canvas
-        if(this.project.rendering.canvas) this.rendering.canvas.parentNode.removeChild(this.rendering.canvas)
-        this.project.rendering.canvas = document.createElement("canvas")
-        this.project.rendering.canvas.width = width
-        this.project.rendering.canvas.height = height
-        this.project.rendering.ctx = this.project.rendering.canvas.getContext("2d")
-        this.project.rendering.ctx.imageSmoothingEnabled = !this.project.pixelated
-        if(this.project.rendering.pixelated){
-            this.project.rendering.canvas.setAttribute("style", "image-rendering: optimizeSpeed; image-rendering: -moz-crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: -o-crisp-edges; image-rendering: pixelated;")
-        }
-        this.view = this.project.rendering.canvas
-        
+        // create rendering canvas
+        this.project.renderer.init({
+            width: width,
+            height: height
+        })
+        this.view = this.project.renderer.getCanvas()
+
         //start rendering
         window.requestAnimationFrame(function(timestamp){_this.render(timestamp, _this)})
     }
@@ -87,58 +66,49 @@ export class Application{
      */
     
     /**
-     * Is called up to 60 times per second and calls the current scene's calc 
-     * @param {number} timestep Normalized DeltaTime to catch up with frame skips
-     * @returns {void}
-     */
-    calc({timestep}={}, _this=this){
-        //_this.frames.frame += 1
-        _this.scenes.active.calc({timestep: timestep})
-    }
-    
-    /**
      * Is called up to 60 times per second and calls the current scene's render 
      * @returns {void}
      */
     render(timestamp, _this=this){
-        if(window.stats) stats.begin();
-        
         //calc fps rate
-        if(_this.fps.starttime==undefined){
+        if(_this.fps.starttime===undefined){
             _this.fps.starttime = timestamp
             _this.fps.lastFrame = Math.round((timestamp - _this.fps.starttime) / _this.fps.rate)
         }else{
             let currentFrame = Math.round((timestamp - _this.fps.starttime) / _this.fps.rate);
-            console.log((currentFrame - _this.fps.lastFrame) * (1000/60))
+            //console.log((currentFrame - _this.fps.lastFrame) * (1000/60))
             _this.fps.deltatime = (currentFrame - _this.fps.lastFrame) * (1000/60);
+            //console.log(_this.fps.deltatime)
             _this.fps.timestep = Math.min(_this.fps.deltatime / _this.fps.rate, _this.fps.maxskippingframes)
             _this.fps.lastFrame = currentFrame
         }
-        
+
+        // TODO: check every timestep needed?
         Input.updateGamePads()
         
-        
-        if(_this.scenes.active!=undefined){
-            //clear all layers
-            _this.scenes.active.clear({app:_this})
-            
-            //shader calculation
-            _this.scenes.active.calcShaders({app:_this})
-        
-            //render content to offscreen canvases
-            for(let camera of _this.cameras.all){ camera.render({app:_this}) }
-            
-            //post processing       
+        let run = false
+        if(_this.scenes.active!==undefined){
+            //run = true
+
+            // clear the last frame
+            _this.scenes.active.clear()
+
+            // calc the next frame
+            _this.scenes.active.calc({timestep: _this.fps.timestep})
+
+            // render the camera-views to the offscreen canvases
+            _this.scenes.active.render({app: _this})
+
+            // post processing
             _this.scenes.active.postProcess({app:_this})
             
-            //render offscreen canvases to globaö canvas
-            _this.scenes.active.render({app:_this})
-            
-            //calc the next frame
-            _this.calc({timestep: _this.fps.timestep})
+            // render offscreen canvases to global canvas
+            _this.scenes.active.renderToScreen({app:_this})
         }
         if(window.stats) stats.end()
-        window.requestAnimationFrame(function(t){_this.render(t, _this)})
+        if(!run) {
+            setTimeout(function(){window.requestAnimationFrame(function(t){_this.render(t, _this)})}, 0)
+        }
     }
     
     /**
@@ -158,16 +128,5 @@ export class Application{
      */
     setActiveScene({scene}={}, _this=this){
         _this.scenes.active = scene
-    }
-    
-    
-    
-    /**
-     * Adds a camera to the engines cameras
-     * @param {object} camera Camera to be added 
-     * @returns {void}
-     */
-    addCamera({camera}={}, _this=this){
-        _this.cameras.all.push(camera)
     }
 }

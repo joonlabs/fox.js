@@ -5,11 +5,12 @@ export class Audio extends Asset{
         super()
         
         let _this = this 
-        
+        this.loaded = false
+
         this.src = src
         
         _this.data = new window.Audio(src);
-        _this.data.onload = function(){ 
+        _this.data.onloadeddata = function(){
             _this.loaded = true
         }
         _this.data.volume = volume==undefined ? 1 : volume/100

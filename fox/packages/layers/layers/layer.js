@@ -1,3 +1,6 @@
+import {WebGL} from "../../renderers/renderers/webgl.js";
+import {ObjectManager} from '../../objectmanager/index.js'
+
 /**
  * The Layer represents the canvas that is added to the document's dom 
  *
@@ -7,45 +10,56 @@ export class Layer{
     /**
      * Construct method of the object
      * @method constructor
-     * @param {number} width Width of the canvas, if not specified the project's width is taken automatically 
+     * @param {number} width Width of the canvas, if not specified the project's width is taken automatically
      * @param {number} height Width of the canvas, if not specified the project's height is taken automatically
+     * @param {Renderer} renderer Renderer to use when rendering this layer (either new WebGL() or new Canvas2D())
      * @returns Layer
      */
-    constructor({width, height}={}){
+    constructor({width, height, renderer}={}){
         //dimensions
         this.dimensions = {
             "width" : width,
             "height" : height,
         }
-        
-        //physical objects for rendering purposes
-        this.canvas = document.createElement("canvas")
-        this.canvas.width = this.dimensions.width
-        this.canvas.height = this.dimensions.height
-        this.ctx = this.canvas.getContext("2d")
-        this.ctx.imageSmoothingEnabled = false
-        
+
+        // set the renderer and initiate
+        this.renderer = renderer || new WebGL()
+        this.renderer.init({
+            width : width,
+            height : height
+        })
+
         //game stuff
-        this.objects = []
-        this.shaders = []
+        this.objectmanager = new ObjectManager()
     }
-    
+
+    getCanvas(){
+        return this.renderer.getCanvas()
+    }
+
     /**
-     * Is called in every loop right before the render method
-     * @method calc
-     * @return {void}
+     * Is called in every loop, up to 60 times a second
      */
-    calcShaders(_this=this){
-        for(let shader of _this.shaders){ 
-            let data = _this.ctx.getImageData(0,0,_this.dimensions.width,_this.dimensions.height)
-            shader.onCalc({
-                data: data.data,
-                width: _this.dimensions.width,
-                height: _this.dimensions.height,
+    calc({timestep}){
+        this.objectmanager.calc({timestep: timestep})
+    }
+
+    /**
+     * Is called in every loop after the calc method
+     */
+    render({offset, zoom, camera}){
+        for(let obj of this.objectmanager.objects){
+            obj.render({
+                x: parseInt((offset.x + obj.position.x)*zoom),
+                y: parseInt((offset.y + obj.position.y)*zoom),
+                width: parseInt(obj.dimensions.width * zoom),
+                height: parseInt(obj.dimensions.height * zoom),
+                zoom: zoom,
+                camera: camera,
+                renderer: this.renderer
             })
-            _this.ctx.putImageData(data, 0, 0)
         }
-    }   
+    }
     
     /**
      * Is called in every loop after the render method
@@ -61,43 +75,11 @@ export class Layer{
      * @method clear
      * @return {void}
      */
-    clear(_this=this){
-        this.ctx.clearRect(0,0,this.dimensions.width, this.dimensions.height)
+    clear(){
+        // to be implemented by child
     }
-    
-    /**
-     * Adds a shader to the layer
-     * @method addShader
-     * @param {object} shader Shader that should be added
-     * @return {void}
-     */
-    addShader({shader}={}, _this=this){
-        _this.shaders.push(shader)
-        if(typeof shader.onInit==="function"){
-            let data = shader.onInit({
-                data: _this.ctx.getImageData(0,0,_this.dimensions.width,_this.dimensions.height).data,
-                width: _this.dimensions.width,
-                height: _this.dimensions.height,
-            })
-            
-        }
-    }
-    
-    /**
-     * Removes a shader to the layer
-     * @method removeShader
-     * @param {object} shader Shader that should be removed
-     * @return {void}
-     */
-    removeShader({shader}={}, _this=this){
-        let idx = _this.components.indexOf(shader)
-        if(idx!=-1){
-            _this.shaders.splice(idx, 1)
-            if(typeof shader.onDestroy==="function") shader.onDestroy({
-            data: _this.ctx.getImageData(0,0,_this.dimensions.width,_this.dimensions.height).data,
-            width: _this.dimensions.width,
-            height: _this.dimensions.height,
-        })
-        } 
+
+    addObject({object}){
+        this.objectmanager.addObject({object:object})
     }
 }

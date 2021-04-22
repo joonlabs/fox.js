@@ -76,7 +76,7 @@ export class Circle extends GameObject{
         let x_ = parseInt(x+_this.dimensions.width*zoom/2),
             y_ = parseInt(y+_this.dimensions.height*zoom/2),
             radius = parseInt(_this.dimensions.width/2*zoom),
-            rotationPosition = _this.rotationPosition.multS({scalar:zoom})
+            rotationPosition = _this.rotationPosition.multScalar({scalar:zoom})
         
         renderer.fillCircle({x:x_, y:y_, radius: radius, rotation:_this.rotation, rotationPosition:rotationPosition, angleStart:_this.angleStart, angleEnd:_this.angleEnd, color:_this.color, ctx:_this.layer.ctx})
         

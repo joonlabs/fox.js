@@ -11,16 +11,15 @@ export class CircleCollider extends Collider{
      * @param {number} x X-position of the collider
      * @param {number} y Y-position of the collider
      * @param {object} offset Offset vector of the collider from it's parent Object
-     * @param {number} width Width of the collider
-     * @param {number} height Height of the collider
+     * @param {number} radius Radius of the collider
      * @param {number} rotation Rotation of the collider
      * @param {object} rotationPosition Rotation position vector of the Collider relative to it self
      * @param {object} parentObject Reference to the parent object
      * @param {object} debug Debug options (hitbox)
      * @returns CircleCollider
      */
-    constructor({x, y, offset, width, height, rotation, rotationPosition, parentObject, debug}={}){
-        super({x:x, y:y, offset:offset, width:width, height:height, rotation:rotation, rotationPosition:rotationPosition, parentObject:parentObject, debug:debug})
+    constructor({x, y, offset, radius, rotation, rotationPosition, parentObject, debug}={}){
+        super({x:x, y:y, offset:offset, width:radius*2, height:radius*2, rotation:rotation, rotationPosition:rotationPosition, parentObject:parentObject, debug:debug})
     }
     
     /**
@@ -40,7 +39,7 @@ export class CircleCollider extends Collider{
             let x_ = parseInt(x+_this.dimensions.width*zoom/2),
                 y_ = parseInt(y+_this.dimensions.height*zoom/2),
                 radius = parseInt(_this.dimensions.width/2*zoom),
-                rotationPosition = _this.rotationPosition.multS({scalar:zoom})
+                rotationPosition = _this.rotationPosition.multScalar({scalar:zoom})
             
             renderer.strokeCircle({x:x_, y:y_, radius: radius, rotation:_this.rotation, rotationPosition:rotationPosition, angleStart:0, angleEnd:Math.PI*2, color:"#de5a1f", lineWidth: parseInt(4*zoom), ctx:object.layer.ctx})
         }
