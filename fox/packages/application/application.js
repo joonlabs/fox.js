@@ -10,7 +10,7 @@ export class Application{
      * Construct method of the object
      * @returns Application
      */
-    constructor({width, height, renderer, logFPS, pixelated}={}){
+    constructor({width, height, renderer, scaleToNativeFactor, logFPS}={}){
         let _this = this
         
         this.scenes = {
@@ -22,8 +22,9 @@ export class Application{
         this.project = {
             "width": width,
             "height": height,
+            "scaleToNativeFactor": scaleToNativeFactor || 1,
             "logFPS": logFPS || false,
-            "pixelated": pixelated || true,
+            "pixelated": true,
             "renderer" : renderer || new Renderers.WebGL(),
         }
         
@@ -45,8 +46,8 @@ export class Application{
         
         // create rendering canvas
         this.project.renderer.init({
-            width: width,
-            height: height
+            width: width * this.project.scaleToNativeFactor,
+            height: height * this.project.scaleToNativeFactor
         })
         this.view = this.project.renderer.getCanvas()
 

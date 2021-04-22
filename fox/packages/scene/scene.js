@@ -75,8 +75,8 @@ export class Scene {
                 x: 0,
                 y: 0,
                 rotation: 0,
-                width: layer.dimensions.width,
-                height: layer.dimensions.height
+                width: layer.dimensions.width* app.project.scaleToNativeFactor,
+                height: layer.dimensions.height* app.project.scaleToNativeFactor
             })
         }
     }
