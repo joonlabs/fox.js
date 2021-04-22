@@ -1,5 +1,6 @@
 import {Renderers} from '../../packages/renderers/index.js'
 import {Input} from '../../packages/input/index.js'
+import {Stats} from '../../packages/stats/index.js'
 
 /**
  * Represents the main game engine class. An application instance is responsible for creatig and holding the game, loop, etc.
@@ -41,7 +42,9 @@ export class Application{
         }
         
         if(logFPS){
-            //TODO -> log FPS
+            this.stats = new Stats();
+            this.stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+            document.body.appendChild( this.stats.dom );
         }
         
         // create rendering canvas
@@ -89,6 +92,7 @@ export class Application{
         
         let run = false
         if(_this.scenes.active!==undefined){
+            if(_this.project.logFPS) this.stats.begin()
 
             // calc the next frame
             _this.scenes.active.calc({timestep: _this.fps.timestep})
@@ -96,6 +100,7 @@ export class Application{
             // render the camera-views to the offscreen canvases
             _this.scenes.active.render({app: _this})
 
+            if(_this.project.logFPS) this.stats.end()
             //exit()
         }
         if(!run) {
