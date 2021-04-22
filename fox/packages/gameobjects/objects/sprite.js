@@ -37,8 +37,6 @@ export class Sprite extends GameObject {
             debug: debug
         })
 
-        this.shaders = []
-
         this.texture = texture
 
         this.rendering = {
@@ -69,8 +67,6 @@ export class Sprite extends GameObject {
      * @return {void}
      */
     render({x, y, width, height, zoom, camera, renderer} = {}, _this = this) {
-        _this.calcShaders()
-
         for (let component of _this.components) {
             if (typeof component.onBeforeRender === "function") component.onBeforeRender({
                 x: x,
@@ -140,67 +136,6 @@ export class Sprite extends GameObject {
             _this.rendering.canvas.height = _this.texture.getTexture().height
             _this.rendering.ctx.drawImage(_this.texture.getTexture(), 0, 0)
             _this.rendering.data = _this.rendering.ctx.getImageData(0, 0, _this.rendering.canvas.width, _this.rendering.canvas.height)
-        }
-    }
-
-    /**
-     * Is called in every loop right before the render method
-     * @method calc
-     * @return {void}
-     */
-    calcShaders(_this = this) {
-        let data = undefined
-        let needrepaint = false
-        for (let shader of _this.shaders) {
-            if (shader.shouldRepaint()) {
-                if (!data) data = new ImageData(
-                    new Uint8ClampedArray(_this.rendering.data.data),
-                    _this.rendering.data.width,
-                    _this.rendering.data.height
-                )
-                needrepaint = true
-                shader.onCalc({
-                    data: data.data,
-                    width: _this.rendering.canvas.width,
-                    height: _this.rendering.canvas.height,
-                })
-            }
-        }
-        if (needrepaint) _this.rendering.ctx.putImageData(data, 0, 0)
-    }
-
-    /**
-     * Adds a shader to the game object
-     * @method addShader
-     * @param {object} shader Shader that should be added
-     * @return {void}
-     */
-    addShader({shader} = {}, _this = this) {
-        _this.shaders.push(shader)
-        if (typeof shader.onInit === "function") {
-            shader.onInit({
-                width: _this.rendering.canvas.width,
-                height: _this.rendering.canvas.height,
-            })
-        }
-    }
-
-    /**
-     * Removes a shader to the game object
-     * @method removeShader
-     * @param {object} shader Shader that should be removed
-     * @return {void}
-     */
-    removeShader({shader} = {}, _this = this) {
-        let idx = _this.components.indexOf(shader)
-        if (idx != -1) {
-            _this.shaders.splice(idx, 1)
-            if (typeof shader.onDestroy === "function") {
-                shader.onDestroy({
-                    width: _this.rendering.canvas.width,
-                    height: __this.rendering.canvas.height,
-                })
-            }
         }
     }
 }

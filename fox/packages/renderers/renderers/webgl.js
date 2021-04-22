@@ -15,7 +15,6 @@ export class WebGL extends Renderer{
      */
     constructor(){
         super()
-        console.info("WEBGL is used")
     }
 
     init({width, height, useLightningShaders}) {
@@ -242,11 +241,11 @@ export class WebGL extends Renderer{
         if (rotation % (Math.PI * 2) !== 0) {
             // rotate, scale and position matrix
             matrix = M4.translate(matrix, x, y, 0);
-            matrix = M4.translate(matrix, width / 2, height / 2, 0);
-            matrix = M4.translate(matrix, .5, .5, 0);
+            matrix = M4.translate(matrix, rotationPosition.x, rotationPosition.y, 0);
+            matrix = M4.translate(matrix, rotationPosition.x/width, rotationPosition.y/height, 0);
             matrix = M4.axisRotate(matrix, [0, 0, 1], rotation)
             matrix = M4.scale(matrix, width, height, 1);
-            matrix = M4.translate(matrix, -.5, -.5, 0);
+            matrix = M4.translate(matrix, -rotationPosition.x/width, -rotationPosition.y/height, 0);
         } else {
             // scale and position matrix
             matrix = M4.translate(matrix, x, y, 0);

@@ -1,5 +1,5 @@
 import {Vectors} from '../vectors/index.js'
-import {Color} from '../color/index.js'
+import {Utils} from '../utils/index.js'
 
 /**
 * The GameObject represents the basic object of the engine. All kind of sprites, etc. extend it
@@ -24,6 +24,10 @@ export class GameObject{
      */
     constructor({x, y, width, height, rotation, rotationPosition, layer, tag, z, debug}={}){
         this.position = new Vectors.Vec2D({x:x, y:y})
+
+        if(width===undefined || height===undefined){
+            Utils.warn("fox: gameobject: either a width or a height is missing, while creating this gameobject. keep in mind that this also sets the rotation position to (0,0).", this)
+        }
         
         this.dimensions = {
             "width" : width,
@@ -32,9 +36,8 @@ export class GameObject{
         
         this.z = z || 0
         
-        this.rotation = (rotation==undefined)?0:rotation,
-        this.rotationPosition = (rotationPosition==undefined)?new Vectors.Vec2D({x:parseInt(width/2), y:parseInt(height/2)}):new Vectors.Vec2D({x:rotationPosition.x, y:rotationPosition.y}),
-        
+        this.rotation = rotation || 0
+        this.rotationPosition = rotationPosition || new Vectors.Vec2D({x:parseInt(width/2), y:parseInt(height/2)})
         this.tag = tag
         
         this.settings = {
