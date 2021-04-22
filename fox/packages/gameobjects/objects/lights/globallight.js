@@ -29,7 +29,7 @@ export class GlobalLight extends GameObject{
         
     }
     
-    render({x, y, zoom, camera, renderer}={}, _this=this){
+    render({x, y, camera, renderer}={}, _this=this){
         renderer.renderTexture({
             texture : this.lightMap,
             x : this.position.x,

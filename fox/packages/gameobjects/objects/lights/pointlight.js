@@ -48,16 +48,15 @@ export class PointLight extends GameObject {
 
     }
 
-    render({x, y, width, height, zoom, camera, renderer} = {}, _this = this) {
-        //get rendering offset by camera focus position
+    render({x, y, width, height, camera, renderer} = {}, _this = this) {
         let render_offset = {
-            "x" : 0,
-            "y" : 0,
+            "x" : x,
+            "y" : y,
         }
 
         if(this.followingObject!==undefined){
-            render_offset.x += (this.followingObject.position.x  + this.followingObject.dimensions.width/2 - this.position.x)*zoom
-            render_offset.y += (this.followingObject.position.y + this.followingObject.dimensions.height/2 - this.position.y)*zoom
+            render_offset.x += (this.followingObject.position.x  + this.followingObject.dimensions.width/2 - this.position.x)
+            render_offset.y += (this.followingObject.position.y + this.followingObject.dimensions.height/2 - this.position.y)
         }
 
         renderer.renderTexture({

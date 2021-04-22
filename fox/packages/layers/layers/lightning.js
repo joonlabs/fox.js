@@ -37,18 +37,6 @@ export class Lightning extends Layer{
         this.backgroundColor = new Color({a:0})
     }
 
-    render({offset, zoom, camera}) {
-        /*this.renderer.fillRect({
-            x: 0,
-            y: 0,
-            width: this.dimensions.width,
-            height: this.dimensions.height,
-            rotation : 0,
-            color: new Color({a:-0.5})
-        })*/
-        super.render({offset, zoom, camera})
-    }
-
     /**
      * Is called in every loop after the render method. In the LightningLayer it converts the lights that are internally rendered as black points into transparent wholes with black surroundings. 
      * @method postprocess

@@ -63,26 +63,24 @@ export class Rectangle extends GameObject {
      * @method render
      * @param {number} x X-position to be drawn (by camera)
      * @param {number} y Y-position to be drawn (by camera)
-     * @param {number} zoom zoom of the camera
      * @param {object} camera Camera object that caused the method
      * @param {object} renderer Renderer that will render the object
      * @returns {void}
      */
-    render({x, y, width, height, zoom, camera, renderer} = {}, _this = this) {
+    render({x, y, width, height, camera, renderer} = {}, _this = this) {
         for (let component of _this.components) {
             if (typeof component.onBeforeRender === "function") component.onBeforeRender({
                 x: x,
                 y: y,
                 width: width,
                 height: height,
-                zoom: zoom,
                 camera: camera,
                 renderer: renderer,
                 object: _this
             })
         }
 
-        let rotationPosition = _this.rotationPosition.multScalar({scalar: zoom})
+        let rotationPosition = _this.rotationPosition
 
         renderer.fillRect({
             x: x,
@@ -95,7 +93,7 @@ export class Rectangle extends GameObject {
             ctx: _this.layer.ctx
         })
 
-        if (_this.collider != undefined) _this.collider.render({x, y, zoom, camera})
+        if (_this.collider != undefined) _this.collider.render({x, y, camera})
 
         for (let component of _this.components) {
             if (typeof component.onAfterRender === "function") component.onAfterRender({
@@ -103,7 +101,6 @@ export class Rectangle extends GameObject {
                 y: y,
                 width: width,
                 height: height,
-                zoom: zoom,
                 camera: camera,
                 renderer: renderer,
                 object: _this

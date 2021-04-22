@@ -66,21 +66,18 @@ export class Sprite extends GameObject {
      * @param {object} object
      * @return {void}
      */
-    render({x, y, width, height, zoom, camera, renderer} = {}, _this = this) {
+    render({x, y, width, height, camera, renderer} = {}, _this = this) {
         for (let component of _this.components) {
             if (typeof component.onBeforeRender === "function") component.onBeforeRender({
                 x: x,
                 y: y,
                 width: width,
                 height: height,
-                zoom: zoom,
                 camera: camera,
                 renderer: renderer,
                 object: _this
             })
         }
-
-        let rotationPosition_ = _this.rotationPosition.multScalar({scalar: zoom})
 
         if (_this.texture && _this.texture.loaded) {
             renderer.renderTexture({
@@ -90,7 +87,7 @@ export class Sprite extends GameObject {
                 width: _this.texture.getWidth(),
                 height: _this.texture.getHeight(),
                 rotation: _this.rotation,
-                rotationPosition: rotationPosition_,
+                rotationPosition: this.rotationPosition,
                 ctx: _this.layer.ctx
             })
         }
@@ -102,8 +99,8 @@ export class Sprite extends GameObject {
                 height: height,
                 color: "#de5a1f",
                 rotation: _this.rotation,
-                rotationPosition: rotationPosition_,
-                lineWidth: parseInt(4 * zoom),
+                rotationPosition: this.rotationPosition,
+                lineWidth: 4,
                 ctx: _this.layer.ctx
             })
         }
@@ -114,7 +111,6 @@ export class Sprite extends GameObject {
                 y: y,
                 width: width,
                 height: height,
-                zoom: zoom,
                 camera: camera,
                 renderer: renderer,
                 object: _this

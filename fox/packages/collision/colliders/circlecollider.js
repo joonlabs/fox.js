@@ -27,21 +27,20 @@ export class CircleCollider extends Collider{
      * @method onAfterRender
      * @param {number} x X-position to be drawn (by camera)
      * @param {number} y Y-position to be drawn (by camera)
-     * @param {number} zoom zoom of the camera
      * @param {object} camera Camera object that caused the method
      * @param {object} object Parent object for rendering purposes (e.g. layer)
      * @returns {void}
      */
-    onAfterRender({x, y, width, height, zoom, camera, renderer, object}={}, _this=this){        
+    onAfterRender({x, y, width, height, camera, renderer, object}={}, _this=this){
         if(_this.debug.hitbox){
-            x += parseInt(_this.offset.x*zoom)
-            y += parseInt(_this.offset.y*zoom)
-            let x_ = parseInt(x+_this.dimensions.width*zoom/2),
-                y_ = parseInt(y+_this.dimensions.height*zoom/2),
-                radius = parseInt(_this.dimensions.width/2*zoom),
-                rotationPosition = _this.rotationPosition.multScalar({scalar:zoom})
+            x += _this.offset.x
+            y += _this.offset.y
+            let x_ = x+_this.dimensions.width,
+                y_ = y+_this.dimensions.height,
+                radius = _this.dimensions.width,
+                rotationPosition = _this.rotationPosition
             
-            renderer.strokeCircle({x:x_, y:y_, radius: radius, rotation:_this.rotation, rotationPosition:rotationPosition, angleStart:0, angleEnd:Math.PI*2, color:"#de5a1f", lineWidth: parseInt(4*zoom), ctx:object.layer.ctx})
+            renderer.strokeCircle({x:x_, y:y_, radius: radius, rotation:_this.rotation, rotationPosition:rotationPosition, angleStart:0, angleEnd:Math.PI*2, color:"#de5a1f", lineWidth:4, ctx:object.layer.ctx})
         }
     }
 }

@@ -47,36 +47,26 @@ export class Layer{
     /**
      * Is called in every loop after the calc method
      */
-    render({offset, zoom, camera}){
+    render({offset, camera}){
         for(let obj of this.objectmanager.objects){
             obj.render({
-                x: parseInt((offset.x + obj.position.x)*zoom),
-                y: parseInt((offset.y + obj.position.y)*zoom),
-                width: parseInt(obj.dimensions.width * zoom),
-                height: parseInt(obj.dimensions.height * zoom),
-                zoom: zoom,
+                x: offset.x + obj.position.x,
+                y: offset.y + obj.position.y,
+                width: obj.dimensions.width,
+                height: obj.dimensions.height,
                 camera: camera,
                 renderer: this.renderer
             })
         }
     }
-    
+
     /**
-     * Is called in every loop after the render method
-     * @method postprocess
-     * @return {void}
-     */
-    postProcess(_this=this){
-        
-    }
-    
-    /**
-     * Is called every time before the render method is called and clears the whole canvas 
+     * Is called every time before the render method is called and clears the whole canvas
      * @method clear
      * @return {void}
      */
-    clear(){
-        // to be implemented by child
+    clear(_this=this){
+        this.renderer.clear()
     }
 
     addObject({object}){

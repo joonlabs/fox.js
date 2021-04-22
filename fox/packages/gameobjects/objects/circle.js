@@ -65,21 +65,20 @@ export class Circle extends GameObject{
      * @method render
      * @param {number} x X-position to be drawn (by camera)
      * @param {number} y Y-position to be drawn (by camera)
-     * @param {number} zoom zoom of the camera
      * @param {object} camera Camera object that caused the method
      * @param {object} renderer Renderer that will render the object
      * @returns {void}
      */
-    render({x, y, width, height, zoom, camera, renderer}={}, _this=this){
-        for(let component of _this.components){ if(typeof component.onAfterRender==="function") component.onBeforeRender({x:x, y:y, width:width, height:height, zoom:zoom, camera:camera,  renderer:renderer, object:_this}) }
-        
-        let x_ = parseInt(x+_this.dimensions.width*zoom/2),
-            y_ = parseInt(y+_this.dimensions.height*zoom/2),
-            radius = parseInt(_this.dimensions.width/2*zoom),
-            rotationPosition = _this.rotationPosition.multScalar({scalar:zoom})
+    render({x, y, width, height, camera, renderer}={}, _this=this){
+        for(let component of _this.components){ if(typeof component.onAfterRender==="function") component.onBeforeRender({x:x, y:y, width:width, height:height, camera:camera,  renderer:renderer, object:_this}) }
+
+        let x_ = x+_this.dimensions.width/2,
+            y_ = y+_this.dimensions.height/2,
+            radius = _this.dimensions.width/2,
+            rotationPosition = _this.rotationPosition
         
         renderer.fillCircle({x:x_, y:y_, radius: radius, rotation:_this.rotation, rotationPosition:rotationPosition, angleStart:_this.angleStart, angleEnd:_this.angleEnd, color:_this.color, ctx:_this.layer.ctx})
         
-        for(let component of _this.components){ if(typeof component.onAfterRender==="function") component.onAfterRender({x:x, y:y, width:width, height:height, zoom:zoom, camera:camera,  renderer:renderer, object:_this}) }
+        for(let component of _this.components){ if(typeof component.onAfterRender==="function") component.onAfterRender({x:x, y:y, width:width, height:height, camera:camera,  renderer:renderer, object:_this}) }
     }
 }

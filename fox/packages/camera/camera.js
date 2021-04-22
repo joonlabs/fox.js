@@ -22,11 +22,11 @@ export class Camera{
             height : viewport.height,
         }
         this.settings = {
-            "mode" : Camera.modes.ORIGIN,
+            "mode" : Camera.modes.CENTER,
             "zoom" : zoom || 1
         }
         
-        this.followingGameObject = undefined
+        this.followingObject = undefined
     }
     
     /**
@@ -58,9 +58,32 @@ export class Camera{
      * @returns {void}
      */
     followObject({object}={}, _this=this){
-        _this.followingGameObject = object
+        _this.followingObject = object
     }
     
+    /**
+     * Renders all layers to the onscreen canvas
+     * @method renderToScreen
+     * @returns {void}
+     */
+    renderToScreen({app, layers}={}, _this=this){
+        //console.log((this.viewport.width * this.settings.zoom - this.viewport.width)/2)
+        for (let layer of layers) {
+            app.project.renderer.renderTexture({
+                texture: layer.getCanvas(),
+                x: this.coordinates.x,
+                y: this.coordinates.y,
+                rotation: 0,
+                width: this.viewport.width * this.settings.zoom,
+                height: this.viewport.height * this.settings.zoom,
+                srcX: this.viewport.x + (this.viewport.width * this.settings.zoom - this.viewport.width)/2,
+                srcY: this.viewport.y + (this.viewport.height * this.settings.zoom - this.viewport.height)/2,
+                srcWidth: layer.dimensions.width * this.settings.zoom,
+                srcHeight: layer.dimensions.height* this.settings.zoom
+            })
+        }
+    }
+
     /**
      * Renders all objects tho the layer(s)
      * @method render
@@ -69,33 +92,34 @@ export class Camera{
     render({app, layers}={}, _this=this){
 
         let render_offset = {
-            "x" : (_this.settings.mode==Camera.modes.CENTER) ? -_this.viewport.width/2*(1/_this.settings.zoom) : 0,
-            "y" : (_this.settings.mode==Camera.modes.CENTER) ? -_this.viewport.height/2*(1/_this.settings.zoom) : 0,
+            "x" : 0,
+            "y" : 0,
         }
-        
-        //add offset by viewport
-        render_offset.x -= _this.viewport.x*(1/_this.settings.zoom)
-        render_offset.y -= _this.viewport.y*(1/_this.settings.zoom)
-        
-        if(_this.followingGameObject!=undefined){
-            render_offset.x += _this.followingGameObject.position.x + _this.followingGameObject.dimensions.width/2
-            render_offset.y += _this.followingGameObject.position.y + _this.followingGameObject.dimensions.height/2
+
+        if(this.followingObject!==undefined){
+            render_offset.x += this.followingObject.position.x - this.viewport.x
+            render_offset.y += this.followingObject.position.y - this.viewport.y
+
+            if(this.settings.mode === Camera.modes.CENTER){
+                render_offset.x -= this.viewport.width / 2 + this.followingObject.dimensions.width / 2
+                render_offset.y -= this.viewport.height / 2 + this.followingObject.dimensions.width / 2
+            }
         }
-            
+
+
         //object manager based rendering of sprites
         for(let layer of layers){
             layer.render({
                 offset : {
-                    x : -render_offset.x + this.coordinates.x,
-                    y : -render_offset.y + this.coordinates.y
+                    x : -render_offset.x,
+                    y : -render_offset.y
                 },
-                zoom : this.settings.zoom,
                 camera : this
             })
         }
     }
 }
 Camera.modes = {
-    "CENTER" : "center",
-    "ORIGIN" : "origin"
+    "CENTER" : 0,
+    "ORIGIN" : 1
 }

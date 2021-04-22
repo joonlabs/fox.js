@@ -56,29 +56,17 @@ export class Scene {
      * @return void
      */
     render({app} = {}) {
-        //render content to offscreen canvases
         for(let camera of this.cameras.all){
+            // clear all layers
+            for(let layer of this.layers){
+                layer.clear()
+            }
+            // render to all offscreen canvases
             camera.render({app:app, layers: this.layers})
+            // render to the screen canvas
+            camera.renderToScreen({app:app, layers: this.layers})
         }
-    }
-
-    /**
-     * Renders the intern offscreen-canvases to the global game canvas
-     * @param {object} app Application element passed to the function for reading project data
-     * @method renderToScreen
-     * @return void
-     */
-    renderToScreen({app} = {}) {
-        for (let layer of this.layers) {
-            app.project.renderer.renderTexture({
-                texture: layer.getCanvas(),
-                x: 0,
-                y: 0,
-                rotation: 0,
-                width: layer.dimensions.width* app.project.scaleToNativeFactor,
-                height: layer.dimensions.height* app.project.scaleToNativeFactor
-            })
-        }
+        //exit()
     }
 
     /**

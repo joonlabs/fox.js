@@ -74,20 +74,19 @@ export class Particle extends GameObject{
      * @method render
      * @param {number} x X-position to be drawn (by camera)
      * @param {number} y Y-position to be drawn (by camera)
-     * @param {number} zoom zoom of the camera
      * @param {object} camera Camera object that caused the method
      * @returns {void}
      */
-    render({x, y, width, height, zoom, camera, renderer}={},_this=this){
-        for(let component of _this.components){ if(typeof component.onBeforeRender==="function") component.onBeforeRender({x:x, y:y, width:width, height:height, zoom:zoom, camera:camera,  renderer:renderer, object:_this}) }
+    render({x, y, width, height, camera, renderer}={},_this=this){
+        for(let component of _this.components){ if(typeof component.onBeforeRender==="function") component.onBeforeRender({x:x, y:y, width:width, height:height, camera:camera,  renderer:renderer, object:_this}) }
         
         if(!_this.renderObject){ console.warn("fox: particle: You're trying to render a particle, that has no render object. please specify any kind of gameobject e.g. a rectangle")}
-        x = x+parseInt(_this.position.x*zoom)
-        y = y+parseInt(_this.position.y*zoom) 
-        _this.renderObject.render({x:x, y:y, width:parseInt(_this.renderObject.dimensions.width*zoom), height:parseInt(_this.renderObject.dimensions.height*zoom), zoom:zoom, camera:camera, renderer:renderer})
+        x = x+_this.position.x
+        y = y+_this.position.y
+        _this.renderObject.render({x:x, y:y, width:_this.renderObject.dimensions.width, height:_this.renderObject.dimensions.height, camera:camera, renderer:renderer})
         
-        if(_this.collider!=undefined) _this.collider.render({x:x, y:y, zoom:zoom, camera:camera, renderer:renderer})
+        if(_this.collider!=undefined) _this.collider.render({x:x, y:y, camera:camera, renderer:renderer})
         
-        for(let component of _this.components){ if(typeof component.onAfterRender==="function") component.onAfterRender({x:x, y:y, width:width, height:height, zoom:zoom, camera:camera,  renderer:renderer, object:_this}) }
+        for(let component of _this.components){ if(typeof component.onAfterRender==="function") component.onAfterRender({x:x, y:y, width:width, height:height, camera:camera,  renderer:renderer, object:_this}) }
     }
 }

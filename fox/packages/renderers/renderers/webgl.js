@@ -40,6 +40,7 @@ export class WebGL extends Renderer{
 
         // lookup uniforms
         this.matrixLocation = this.ctx.getUniformLocation(this.program, "u_matrix");
+        this.textureMatrixLocation = this.ctx.getUniformLocation(this.program, "u_textureMatrix");
         this.textureLocation = this.ctx.getUniformLocation(this.program, "u_texture");
 
         // Create a buffer.
@@ -144,6 +145,7 @@ export class WebGL extends Renderer{
 
         // set matrix and render
         this.ctx.uniformMatrix4fv(this.matrixLocation, false, matrix);
+
         this.ctx.uniform1i(this.textureLocation, 0);
         this.ctx.drawArrays(this.ctx.TRIANGLES, 0, 6);
 
@@ -221,7 +223,12 @@ export class WebGL extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition}) {
+    renderTexture({texture, x, y, width, height, rotation, rotationPosition, srcX, srcY, srcWidth, srcHeight}) {
+        srcX = srcX || 0
+        srcY = srcY || 0
+        srcWidth = srcWidth || width
+        srcHeight = srcHeight || height
+
         // create texture
         let tex = this.ctx.createTexture()
         this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex);
@@ -254,6 +261,17 @@ export class WebGL extends Renderer{
 
         // set matrix and render
         this.ctx.uniformMatrix4fv(this.matrixLocation, false, matrix);
+
+        // Because texture coordinates go from 0 to 1
+        // and because our texture coordinates are already a unit quad
+        // we can select an area of the texture by scaling the unit quad
+        // down
+        let texMatrix = M4.translation(srcX/srcWidth, srcY/srcHeight, 0);
+        texMatrix = M4.scale(texMatrix, width/srcWidth, height/srcHeight, 1);
+
+        // Set the texture matrix.
+        this.ctx.uniformMatrix4fv(this.textureMatrixLocation, false, texMatrix);
+
         this.ctx.uniform1i(this.textureLocation, 0);
         this.ctx.drawArrays(this.ctx.TRIANGLES, 0, 6);
 
@@ -268,12 +286,13 @@ class WebGLUtils{
             attribute vec2 a_texcoord;
             
             uniform mat4 u_matrix;
+            uniform mat4 u_textureMatrix;
             
             varying vec2 v_texcoord;
             
             void main() {
                gl_Position = u_matrix * a_position;
-               v_texcoord = a_texcoord;
+               v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;//a_texcoord;
             }
         `
     }
@@ -287,6 +306,13 @@ class WebGLUtils{
             uniform sampler2D u_texture;
             
             void main() {
+                // ignore edges when image is pulled out of space 
+                if (v_texcoord.x < 0.0 ||
+                   v_texcoord.y < 0.0 ||
+                   v_texcoord.x > 1.0 ||
+                   v_texcoord.y > 1.0) {
+                    discard;
+                }
                gl_FragColor = texture2D(u_texture, v_texcoord);
             }
         `

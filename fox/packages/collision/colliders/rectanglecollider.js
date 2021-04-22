@@ -26,20 +26,19 @@ export class RectangleCollider extends Collider{
      * @method onAfterRender
      * @param {number} x X-position to be drawn (by camera)
      * @param {number} y Y-position to be drawn (by camera)
-     * @param {number} zoom zoom of the camera
      * @param {object} camera Camera object that caused the method
      * @param {object} object Parent object for rendering purposes (e.g. layer)
      * @returns {void}
      */
-    onAfterRender({x, y, width, height, zoom, camera, object, renderer}={}, _this=this){
+    onAfterRender({x, y, width, height, camera, object, renderer}={}, _this=this){
         if(_this.debug.hitbox){
-            x += parseInt(_this.offset.x*zoom)
-            y += parseInt(_this.offset.y*zoom)
-            let width = parseInt(_this.dimensions.width*zoom),
-                height = parseInt(_this.dimensions.height*zoom),
-                rotationPosition = _this.rotationPosition.multScalar({scalar:zoom})
+            x += p_this.offset.x
+            y += _this.offset.y
+            let width = _this.dimensions.width,
+                height = _this.dimensions.height,
+                rotationPosition = _this.rotationPosition
             
-            renderer.strokeRect({x:x, y:y, width:width, height:height, color:"#de5a1f", rotation:_this.rotation, rotationPosition:rotationPosition, lineWidth: parseInt(2*zoom), ctx:object.layer.ctx})
+            renderer.strokeRect({x:x, y:y, width:width, height:height, color:"#de5a1f", rotation:_this.rotation, rotationPosition:rotationPosition, lineWidth: 2, ctx:object.layer.ctx})
         }
     }
     

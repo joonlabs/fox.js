@@ -42,13 +42,4 @@ export class Canvas extends Layer{
     postprocess(_this=this){
         
     }
-    
-    /**
-     * Is called every time before the render method is called and clears the whole canvas 
-     * @method clear
-     * @return {void}
-     */
-    clear(_this=this){
-        this.renderer.clear()
-    }
 }

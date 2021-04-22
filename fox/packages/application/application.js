@@ -46,8 +46,8 @@ export class Application{
         
         // create rendering canvas
         this.project.renderer.init({
-            width: width * this.project.scaleToNativeFactor,
-            height: height * this.project.scaleToNativeFactor
+            width: width,// * this.project.scaleToNativeFactor,
+            height: height// * this.project.scaleToNativeFactor
         })
         this.view = this.project.renderer.getCanvas()
 
@@ -89,10 +89,6 @@ export class Application{
         
         let run = false
         if(_this.scenes.active!==undefined){
-            //run = true
-
-            // clear the last frame
-            _this.scenes.active.clear()
 
             // calc the next frame
             _this.scenes.active.calc({timestep: _this.fps.timestep})
@@ -100,13 +96,8 @@ export class Application{
             // render the camera-views to the offscreen canvases
             _this.scenes.active.render({app: _this})
 
-            // post processing
-            _this.scenes.active.postProcess({app:_this})
-            
-            // render offscreen canvases to global canvas
-            _this.scenes.active.renderToScreen({app:_this})
+            //exit()
         }
-        if(window.stats) stats.end()
         if(!run) {
             setTimeout(function(){window.requestAnimationFrame(function(t){_this.render(t, _this)})}, 0)
         }
