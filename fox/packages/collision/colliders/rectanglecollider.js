@@ -32,7 +32,7 @@ export class RectangleCollider extends Collider{
      */
     onAfterRender({x, y, width, height, camera, object, renderer}={}, _this=this){
         if(_this.debug.hitbox){
-            x += p_this.offset.x
+            x += _this.offset.x
             y += _this.offset.y
             let width = _this.dimensions.width,
                 height = _this.dimensions.height,
