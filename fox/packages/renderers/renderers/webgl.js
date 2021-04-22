@@ -126,12 +126,6 @@ export class WebGL extends Renderer{
         this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex)
         this.ctx.texImage2D(this.ctx.TEXTURE_2D, 0, this.ctx.RGBA, 1, 1, 0, this.ctx.RGBA, this.ctx.UNSIGNED_BYTE, new Uint8ClampedArray([color.r, color.g, color.b, color.a]))
 
-        //this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex);
-
-        //this.ctx.viewport(0, 0, this.canvas.width, this.canvas.height);
-        // draw texture
-        //this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex);
-
         // this matrix will convert from pixels to clip space
         let matrix = M4.orthographic(0, this.canvas.width, this.canvas.height, 0, -1, 1);
 
@@ -241,10 +235,7 @@ export class WebGL extends Renderer{
         this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_MAG_FILTER, this.ctx.NEAREST);
         this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_WRAP_S, this.ctx.CLAMP_TO_EDGE);
         this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_WRAP_T, this.ctx.CLAMP_TO_EDGE);
-
-        // draw texture
-        //this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex);
-        //Utils.warn("2")
+        
         // this matrix will convert from pixels to clip space
         let matrix = M4.orthographic(0, this.canvas.width, this.canvas.height, 0, -1, 1);
 
