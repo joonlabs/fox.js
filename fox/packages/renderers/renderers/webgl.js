@@ -228,11 +228,11 @@ export class WebGL extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition, srcX, srcY, srcWidth, srcHeight}) {
+    renderTexture({texture, x, y, width, height, rotation, rotationPosition, srcX, srcY, texWidth, texHeight}) {
         srcX = srcX || 0
         srcY = srcY || 0
-        srcWidth = srcWidth || width
-        srcHeight = srcHeight || height
+        texWidth = texWidth || width
+        texHeight = texHeight || height
 
         // create texture
         let tex = this.ctx.createTexture()
@@ -271,8 +271,8 @@ export class WebGL extends Renderer{
         // and because our texture coordinates are already a unit quad
         // we can select an area of the texture by scaling the unit quad
         // down
-        let texMatrix = M4.translation(srcX/srcWidth, srcY/srcHeight, 0);
-        texMatrix = M4.scale(texMatrix, width/srcWidth, height/srcHeight, 1);
+        let texMatrix = M4.translation(srcX/texWidth, srcY/texHeight, 0);
+        texMatrix = M4.scale(texMatrix, width/texWidth, height/texHeight, 1);
 
         // Set the texture matrix.
         this.ctx.uniformMatrix4fv(this.textureMatrixLocation, false, texMatrix);
@@ -311,7 +311,7 @@ class WebGLUtils{
             uniform sampler2D u_texture;
             
             void main() {
-                // ignore edges when image is pulled out of space 
+                // ignore edges when image is positioned out of space 
                 if (v_texcoord.x < 0.0 ||
                    v_texcoord.y < 0.0 ||
                    v_texcoord.x > 1.0 ||
@@ -334,6 +334,13 @@ class WebGLUtils{
             uniform sampler2D u_texture;
             
             void main() {
+                // ignore edges when image is positioned out of space 
+                if (v_texcoord.x < 0.0 ||
+                   v_texcoord.y < 0.0 ||
+                   v_texcoord.x > 1.0 ||
+                   v_texcoord.y > 1.0) {
+                    discard;
+                }
                c = texture2D(u_texture, v_texcoord);
                gl_FragColor = vec4(0, 0, 0, (0.299*(c.r) + 0.587*(c.g) + 0.114*(c.b)));
             }

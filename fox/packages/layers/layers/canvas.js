@@ -19,27 +19,5 @@ export class Canvas extends Layer{
             height : height,
             renderer : renderer
         })
-        
-        //postprocessing stuff
-        this.postprocessing = {
-            "contrast": undefined,
-            "grayscale": undefined,
-            "brightness": undefined,
-            "blur": undefined,
-            "invert": undefined,
-            "saturate": undefined,
-            "sepia": undefined,
-        }
-        
-        this.filter = ""
-    }
-    
-    /**
-     * Is called in every loop after the render method
-     * @method postprocess
-     * @return {void}
-     */
-    postprocess(_this=this){
-        
     }
 }

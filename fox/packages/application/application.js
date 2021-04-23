@@ -11,7 +11,7 @@ export class Application{
      * Construct method of the object
      * @returns Application
      */
-    constructor({width, height, renderer, viewScaleFactor, logFPS}={}){
+    constructor({width, height, renderer, logFPS}={}){
         let _this = this
         
         this.scenes = {
@@ -23,10 +23,13 @@ export class Application{
         this.project = {
             "width": width,
             "height": height,
-            "viewScaleFactor": viewScaleFactor || 1,
             "logFPS": logFPS || false,
             "pixelated": true,
-            "renderer" : renderer || new Renderers.WebGL(),
+            "renderer" : renderer || new Renderers.Canvas2D(),
+            // for rendering offscreen canvases to the view, the Canvas2D renderer is recommended,
+            // as webgl in safari and firefox can not mirror the canvas element directly into the buffer
+            // and for this reason drawing canvases takes way more time than in the canvas2d api. this may
+            // change when OffscreenCanvas() becomes supported in those browsers or this problem is adressed directly.
         }
         
         this.frames = {
@@ -49,8 +52,8 @@ export class Application{
         
         // create rendering canvas
         this.project.renderer.init({
-            width: width * this.project.viewScaleFactor,
-            height: height * this.project.viewScaleFactor
+            width: width,
+            height: height
         })
         this.view = this.project.renderer.getCanvas()
 

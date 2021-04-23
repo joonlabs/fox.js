@@ -1,4 +1,6 @@
 import {Vectors} from '../vectors/index.js'
+import {Utils} from '../utils/index.js'
+
 /**
  * Represents a Camera for rendering the scene.
  * @class
@@ -68,19 +70,25 @@ export class Camera{
      */
     renderToScreen({app, layers}={}, _this=this){
         //console.log((this.viewport.width * this.settings.zoom - this.viewport.width)/2)
-        let f = app.project.viewScaleFactor
         for (let layer of layers) {
+            if(this.viewport.width > layer.dimensions.width
+                || this.viewport.height > layer.dimensions.height){
+                Utils.warn("fox: camera: this camera's viewport is bigger than at least one layer. this can cause the renderer to not render the layer.", this, layer)
+            }
+
+            let viewPortWidth = Math.min(this.viewport.width, layer.dimensions.width),
+                viewPortHeight = Math.min(this.viewport.height, layer.dimensions.height)
             app.project.renderer.renderTexture({
                 texture: layer.getCanvas(),
-                x: this.coordinates.x * f,
-                y: this.coordinates.y * f,
+                x: this.coordinates.x,
+                y: this.coordinates.y,
                 rotation: 0,
-                width: this.viewport.width * this.settings.zoom * f,
-                height: this.viewport.height * this.settings.zoom * f,
-                srcX: (this.viewport.x + (this.viewport.width * this.settings.zoom - this.viewport.width)/2 ) * f,
-                srcY: (this.viewport.y + (this.viewport.height * this.settings.zoom - this.viewport.height)/2 ) * f,
-                srcWidth: layer.dimensions.width * this.settings.zoom * f,
-                srcHeight: layer.dimensions.height* this.settings.zoom * f
+                width: viewPortWidth * this.settings.zoom,
+                height: viewPortHeight * this.settings.zoom,
+                srcX: (this.viewport.x + (viewPortWidth * this.settings.zoom - viewPortWidth)/2 ),
+                srcY: (this.viewport.y + (viewPortHeight * this.settings.zoom - viewPortHeight)/2 ),
+                texWidth: layer.dimensions.width * this.settings.zoom,
+                texHeight: layer.dimensions.height * this.settings.zoom
             })
         }
     }

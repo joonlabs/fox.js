@@ -4,4 +4,4 @@ the aim of the fox engine project is to provide a lightweight, good structured a
 to use the fox engine, just download or clone the repository and place it inside your project folder.
 then simply import the **fox.js** file from the *fox/* folder as follows:
 
-    import * as FOX from 'fox/fox.js'
+    import * as fox from 'fox/fox.js'

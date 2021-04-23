@@ -35,7 +35,7 @@ export class Lightning extends Layer{
             useOffscreenCanvas : true
         })
         
-        this.backgroundColor = new Color({a:0})
+        this.backgroundColor = new Color({a: 255})
     }
 
     /**

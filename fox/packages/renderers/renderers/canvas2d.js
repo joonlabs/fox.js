@@ -192,7 +192,7 @@ export class Canvas2D extends Renderer {
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition}) {
+    renderTexture({texture, x, y, width, height, rotation, rotationPosition, srcX, srcY}) {
         if (rotation % (Math.PI * 2) !== 0) {
             this.ctx.save()
             this.ctx.translate(x + rotationPosition.x, y + rotationPosition.y)
@@ -203,17 +203,13 @@ export class Canvas2D extends Renderer {
 
         //console.log({texture, x, y, width, height, rotation, rotationPosition})
 
-        if(texture instanceof Uint8ClampedArray){
-            var iData = new ImageData(texture, width, height);
-            this.ctx.putImageData(iData, x, y);
-        }else{
-            if (width && height) {
-                this.ctx.drawImage(texture, x, y, width, height)
-            } else {
-                this.ctx.drawImage(texture, x, y)
-            }
+        if(srcX!=undefined && srcY!=undefined && width!=undefined && height!=undefined){
+            this.ctx.drawImage(texture, srcX, srcY, width, height, x, y, width, height)
+        }else if (width && height) {
+            this.ctx.drawImage(texture, x, y, width, height)
+        } else {
+            this.ctx.drawImage(texture, x, y)
         }
-
 
         if (rotation % (Math.PI * 2) !== 0) {
             this.ctx.restore()

@@ -49,7 +49,7 @@ export class GameObject{
         this.components = []
         
         this.layer = layer
-        if(!this.layer) console.warn("FOX: GameObject: you did not provide a layer for this game object:", this)
+        if(!this.layer) console.warn("fox: GameObject: you did not provide a layer for this game object:", this)
         
         this.debug = {
             enabled : debug!=undefined,
