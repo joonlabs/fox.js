@@ -68,18 +68,19 @@ export class Camera{
      */
     renderToScreen({app, layers}={}, _this=this){
         //console.log((this.viewport.width * this.settings.zoom - this.viewport.width)/2)
+        let f = app.project.viewScaleFactor
         for (let layer of layers) {
             app.project.renderer.renderTexture({
                 texture: layer.getCanvas(),
-                x: this.coordinates.x,
-                y: this.coordinates.y,
+                x: this.coordinates.x * f,
+                y: this.coordinates.y * f,
                 rotation: 0,
-                width: this.viewport.width * this.settings.zoom,
-                height: this.viewport.height * this.settings.zoom,
-                srcX: this.viewport.x + (this.viewport.width * this.settings.zoom - this.viewport.width)/2,
-                srcY: this.viewport.y + (this.viewport.height * this.settings.zoom - this.viewport.height)/2,
-                srcWidth: layer.dimensions.width * this.settings.zoom,
-                srcHeight: layer.dimensions.height* this.settings.zoom
+                width: this.viewport.width * this.settings.zoom * f,
+                height: this.viewport.height * this.settings.zoom * f,
+                srcX: (this.viewport.x + (this.viewport.width * this.settings.zoom - this.viewport.width)/2 ) * f,
+                srcY: (this.viewport.y + (this.viewport.height * this.settings.zoom - this.viewport.height)/2 ) * f,
+                srcWidth: layer.dimensions.width * this.settings.zoom * f,
+                srcHeight: layer.dimensions.height* this.settings.zoom * f
             })
         }
     }
