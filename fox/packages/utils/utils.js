@@ -1,6 +1,16 @@
 export class Utils{
 
     /**
+     * Prints an info to the console, but only once
+     */
+    static info(){
+        if(Utils.infoMessages.indexOf(arguments[0])===-1){
+            Utils.infoMessages.push(arguments[0])
+            console.info(...arguments)
+        }
+    }
+
+    /**
      * Prints a warning to the console, but only once
      */
     static warn(){
@@ -38,6 +48,7 @@ export class Utils{
     }
 }
 
+Utils.infoMessages = []
 Utils.warnedMessages = []
 Utils.errorMessages = []
 Utils.storage = {

@@ -31,7 +31,8 @@ export class Lightning extends Layer{
         this.renderer.init({
             width : this.dimensions.width,
             height : this.dimensions.height,
-            useLightningShaders : true
+            useLightningShaders : true,
+            useOffscreenCanvas : true
         })
         
         this.backgroundColor = new Color({a:0})

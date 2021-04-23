@@ -17,18 +17,23 @@ export class WebGL extends Renderer{
         super()
     }
 
-    init({width, height, useLightningShaders}) {
+    init({width, height, useLightningShaders, useOffscreenCanvas}) {
         //physical objects for rendering purposes
-        this.canvas = document.createElement("canvas")
-        this.canvas.width = width
-        this.canvas.height = height
-        this.ctx = this.canvas.getContext("webgl")
-        this.ctx.imageSmoothingEnabled = false
+        useOffscreenCanvas = useOffscreenCanvas || false
+        if(useOffscreenCanvas && window.OffscreenCanvas !== undefined){
+            this.canvas = new OffscreenCanvas(width, height)
+            this.ctx = this.canvas.getContext("webgl2")
+            Utils.info("fox: webgl: support for OffscreenCanvas detected and used")
+        }else{
+            this.canvas = document.createElement("canvas")
+            this.canvas.width = width
+            this.canvas.height = height
+            this.ctx = this.canvas.getContext("webgl")
+            this.ctx.imageSmoothingEnabled = false
+            this.canvas.setAttribute("style", "image-rendering: optimizeSpeed; image-rendering: -moz-crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: -o-crisp-edges; image-rendering: pixelated;")
 
-        // pixelating settings
-        this.ctx.imageSmoothingEnabled = false
-        this.canvas.setAttribute("style", "image-rendering: optimizeSpeed; image-rendering: -moz-crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: -o-crisp-edges; image-rendering: pixelated;")
-    
+        }
+
         // compile shaders as program
         this.program = useLightningShaders
             ? WebGLUtils.createProgramLightning({ctx: this.ctx})

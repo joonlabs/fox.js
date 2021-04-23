@@ -26,7 +26,8 @@ export class Layer{
         this.renderer = renderer || new WebGL()
         this.renderer.init({
             width : width,
-            height : height
+            height : height,
+            useOffscreenCanvas : true
         })
 
         //game stuff
