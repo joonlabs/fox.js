@@ -319,6 +319,7 @@ class WebGLUtils{
                     discard;
                 }
                gl_FragColor = texture2D(u_texture, v_texcoord);
+               gl_FragColor.rgb = ((gl_FragColor.rgb - 0.5) * max(1.0, 0.0)) + 0.5;
             }
         `
     }
