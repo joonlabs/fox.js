@@ -124,6 +124,15 @@ export class Layer {
     }
 
     /**
+     * Returns an object by it's name
+     * @param {string} name Name of the objects
+     * @returns {any}
+     */
+    getObject({name}){
+        return this.objectmanager.getObject({name: name})
+    }
+
+    /**
      * Removes a given object from layer
      * @param {string} name Name of the object to be removed
      * @return {void}

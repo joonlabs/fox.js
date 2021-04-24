@@ -21,6 +21,15 @@ export class ObjectManager{
     addObject({name, object}={}){
         this.objects[name] = object
     }
+
+    /**
+     * Returns an object by it's name
+     * @param {string} name Name of the objects
+     * @returns {any}
+     */
+    getObject({name}){
+        return this.objects[name]
+    }
     
     /**
      * Removes a given object from the objectmanager's object list

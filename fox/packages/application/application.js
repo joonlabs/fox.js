@@ -127,8 +127,9 @@ export class Application {
      * @returns {void}
      */
     loadScene({name} = {}) {
+        this.destroyCurrentScene()
+
         // init scene
-        this.scenes.all[name].destroy()
         this.scenes.all[name].init()
 
         // set active scene
@@ -136,6 +137,9 @@ export class Application {
         this.scenes.activeName = name
     }
 
+    /**
+     * Destructs the current scene
+     */
     destroyCurrentScene(){
         if(this.scenes.activeName){
             this.scenes.all[this.scenes.activeName].destroy()
@@ -149,5 +153,13 @@ export class Application {
         // init scene
         this.scenes.active.destroy()
         this.scenes.active.init()
+    }
+
+    /**
+     * Re-inits the current scene
+     */
+    getCurrentSceneName(){
+        // init scene
+        return this.scenes.activeName
     }
 }
