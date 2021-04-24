@@ -7,7 +7,6 @@ import {Layer} from './layer.js'
 export class Canvas extends Layer{
     /**
      * Construct method of the object
-     * @method constructor
      * @param {number} width Width of the canvas, if not specified the project's width is taken automatically
      * @param {number} height Width of the canvas, if not specified the project's height is taken automatically
      * @param {Renderer} renderer Renderer to use when rendering this layer (either new WebGL() or new Canvas2D())

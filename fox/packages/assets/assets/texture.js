@@ -8,8 +8,6 @@ import {Vectors} from '../../vectors/index.js'
 export class Texture extends Asset {
     /**
      * Constructs the AssetTexture Object
-     *
-     * @method constructor
      * @param {string} src URL of the src to be loaded
      * @param {Vec2D} offset
      * @param {int} width
@@ -59,7 +57,6 @@ export class Texture extends Asset {
 
     /**
      * Returns the raw texture (e.g. for rendering purposes)
-     * @method getTexture
      * @return {object}
      */
     getTexture(_this = this) {
@@ -68,7 +65,6 @@ export class Texture extends Asset {
 
     /**
      * Returns the raw texture pixel data
-     * @method getData
      * @return {object}
      */
     getData(_this = this) {
@@ -77,7 +73,6 @@ export class Texture extends Asset {
 
     /**
      * Returns the width of the texture
-     * @method getWidth
      * @return {object}
      */
     getWidth(_this = this) {
@@ -86,7 +81,6 @@ export class Texture extends Asset {
 
     /**
      * Returns the height of the texture
-     * @method getHeight
      * @return {object}
      */
     getHeight(_this = this) {
@@ -95,7 +89,6 @@ export class Texture extends Asset {
 
     /**
      * Returns the height of the texture
-     * @method getHeight
      * @return {object}
      */
     getOffset(_this = this) {

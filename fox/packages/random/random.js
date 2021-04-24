@@ -7,7 +7,6 @@ import {Color} from '../color/index.js'
 export class Random{
     /**
      * Returns a random float between min (incl.) and max (excl.)
-     * @method range
      * @param {number} min Minimum in range (incl.)
      * @param {number} max Maximum in range (excl.)
      * @returns {number}
@@ -18,7 +17,6 @@ export class Random{
     
     /**
      * Returns a random integer between min (incl.) and max (incl.)
-     * @method rangeInt
      * @param {number} min Minimum in range (incl.)
      * @param {number} max Maximum in range (incl.)
      * @returns {number}
@@ -30,15 +28,14 @@ export class Random{
     
     /**
      * Returns a random color width / or without alpha channel
-     * @method color
      * @param {boolean} useAlpha Alpha channel used in color or not
-     * @returns Color
+     * @returns {Color}
      */
     static color({useAlpha}={useAlpha:false}){
         return new Color({
-            r:Random.rangeInt({min:0, max:255}),
-            g:Random.rangeInt({min:0, max:255}),
-            b:Random.rangeInt({min:0, max:255}),
+            r:Random.range({min:0, max:1}),
+            g:Random.range({min:0, max:1}),
+            b:Random.range({min:0, max:1}),
             a: useAlpha ? Random.range({min:0, max:1}) : 1
         })
     }

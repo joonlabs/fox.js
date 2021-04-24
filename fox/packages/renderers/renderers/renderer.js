@@ -12,10 +12,25 @@ export class Renderer{
     constructor(){
         this.canvas = undefined
         this.ctx = undefined
+        this.initialized = false
     }
 
     getCanvas(){
         return this.canvas
+    }
+
+    init(){
+        this.initialized = true
+    }
+
+    destroy(){
+        this.ctx = null
+        this.canvas = null
+        this.initialized = false
+    }
+
+    isInitialized(){
+        return this.initialized
     }
     
     
@@ -29,7 +44,7 @@ export class Renderer{
      * @param {object} layer Layer to be cleared
      * @return {void}
      */
-    clearRect({x, y, width, height, layer}, _this=this){
+    clearRect({x, y, width, height, layer}){
         // to be implemented by child class
     }
     
@@ -46,7 +61,7 @@ export class Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    fillRect({x, y, width, height, rotation, rotationPosition, color, layer}, _this=this){
+    fillRect({x, y, width, height, rotation, rotationPosition, color, layer}){
         // to be implemented by child class
     }
     
@@ -64,7 +79,7 @@ export class Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color, layer}, _this=this){
+    strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color, layer}){
         // to be implemented by child class
     }
     
@@ -83,7 +98,7 @@ export class Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color, layer}, _this=this){
+    fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color, layer}){
         // to be implemented by child class
     }
     
@@ -103,7 +118,7 @@ export class Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color, layer}, _this=this){
+    strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color, layer}){
         // to be implemented by child class
     }
 }

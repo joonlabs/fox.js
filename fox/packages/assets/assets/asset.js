@@ -5,8 +5,7 @@
 export class Asset{
     /**
     * Constructs the Asset Object 
-    * 
-    * @method constructor
+
     * @return Asset
     */
     constructor(){
@@ -16,7 +15,6 @@ export class Asset{
     
     /**
     * Returns the raw data of the object
-    * @method getData
     * @return {object}
     */
     getData(_this=this){

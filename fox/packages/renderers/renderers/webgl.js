@@ -18,6 +18,8 @@ export class WebGL extends Renderer{
     }
 
     init({width, height, useLightningShaders, useOffscreenCanvas}) {
+        super.init()
+
         //physical objects for rendering purposes
         useOffscreenCanvas = useOffscreenCanvas || false
         if(useOffscreenCanvas && window.OffscreenCanvas !== undefined){
@@ -101,13 +103,18 @@ export class WebGL extends Renderer{
 
         this.ctx.viewport(0, 0, this.canvas.width, this.canvas.height);
     }
+    
+    destroy() {
+        this.ctx.getExtension('WEBGL_lose_context').loseContext();
+        super.destroy();
+    }
 
     /**
      * Clears the canvas buffer
      */
     clear({color}={}){
         if(color){
-            this.ctx.clearColor(color.r/255, color.g/255, color.b/255, color.a/255)
+            this.ctx.clearColor(color.r/255, color.g/255, color.b/255, color.a)
         }
         this.ctx.clear(this.ctx.COLOR_BUFFER_BIT)
     }
@@ -125,11 +132,11 @@ export class WebGL extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    fillRect({x, y, width, height, rotation, rotationPosition, color, ctx}, _this=this){
+    fillRect({x, y, width, height, rotation, rotationPosition, color, ctx}){
         // create texture
         let tex = this.ctx.createTexture()
         this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex)
-        this.ctx.texImage2D(this.ctx.TEXTURE_2D, 0, this.ctx.RGBA, 1, 1, 0, this.ctx.RGBA, this.ctx.UNSIGNED_BYTE, new Uint8ClampedArray([color.r, color.g, color.b, color.a]))
+        this.ctx.texImage2D(this.ctx.TEXTURE_2D, 0, this.ctx.RGBA, 1, 1, 0, this.ctx.RGBA, this.ctx.UNSIGNED_BYTE, new Uint8Array([color.r, color.g, color.b, color.a*255]))
 
         // this matrix will convert from pixels to clip space
         let matrix = M4.orthographic(0, this.canvas.width, this.canvas.height, 0, -1, 1);
@@ -172,7 +179,7 @@ export class WebGL extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color, ctx}, _this=this){
+    strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color, ctx}){
         Utils.warn("fox: webgl: strokeRect is not available in the WebGL-Renderer.")
     }
 
@@ -190,7 +197,7 @@ export class WebGL extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color, ctx}, _this=this){
+    fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color, ctx}){
         Utils.warn("fox: webgl: fillCircle is not available in the WebGL-Renderer.")
     }
 
@@ -210,7 +217,7 @@ export class WebGL extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color, ctx}, _this=this){
+    strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color, ctx}){
         Utils.warn("fox: webgl: strokeCircle is not available in the WebGL-Renderer.")
     }
 

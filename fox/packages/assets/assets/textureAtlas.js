@@ -3,14 +3,12 @@ import {Texture} from './texture.js'
 import {Vectors} from '../../vectors/index.js'
 
 /**
- * Represents a texture incl. loading
+ * Represents an texture atlas incl. loading
  * @class Texture
  */
 export class TextureAtlas extends Asset{
     /**
      * Constructs the TextureAtlas Object
-     *
-     * @method constructor
      * @param {string} src URL of the src to be loaded
      * @param {[object]} mappings List of sub-textures in atlas (e.g. {name, x, y, width, height, offset})
      * @return Texture
@@ -48,10 +46,15 @@ export class TextureAtlas extends Asset{
         img.onerror = function(){console.error("fox: asset: texture: failed to load resource '"+src+"'")}
     }
 
-    onTextureLoaded({callback}, _this=this){
-        _this.onTextureLoadedFn = callback
-        if(_this.textureLoaded){
-            _this.onTextureLoadedFn()
+    /**
+     * Registers a callback that gets fired after all textures have been loaded
+     * @param callback
+     * @param _this
+     */
+    onTextureLoaded({callback}){
+        this.onTextureLoadedFn = callback
+        if(this.textureLoaded){
+            this.onTextureLoadedFn()
         }
     }
 
@@ -60,12 +63,12 @@ export class TextureAtlas extends Asset{
      * @method getAllTextures
      * @return {[object]}
      */
-    getAllTextures(_this=this){
+    getAllTextures(){
         let textures = []
-        for(let mapping of _this.mappings){
+        for(let mapping of this.mappings){
             let tmpCanvas = document.createElement("canvas")
             let tmpCtx = tmpCanvas.getContext("2d")
-            let tmpImageData = _this.rendering.ctx.getImageData(mapping.x, mapping.y, mapping.width, mapping.height)
+            let tmpImageData = this.rendering.ctx.getImageData(mapping.x, mapping.y, mapping.width, mapping.height)
             tmpCanvas.width = mapping.width
             tmpCanvas.height = mapping.height
             tmpCtx.putImageData(tmpImageData, 0, 0)

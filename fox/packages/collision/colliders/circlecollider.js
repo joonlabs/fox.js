@@ -7,7 +7,6 @@ import {Collider} from './collider.js'
 export class CircleCollider extends Collider{
     /**
      * Construct method of the object
-     * @method constructor
      * @param {number} x X-position of the collider
      * @param {number} y Y-position of the collider
      * @param {object} offset Offset vector of the collider from it's parent Object
@@ -24,23 +23,26 @@ export class CircleCollider extends Collider{
     
     /**
      * Render method of the CircleCollider
-     * @method onAfterRender
-     * @param {number} x X-position to be drawn (by camera)
-     * @param {number} y Y-position to be drawn (by camera)
-     * @param {object} camera Camera object that caused the method
-     * @param {object} object Parent object for rendering purposes (e.g. layer)
+     * @param {object} object Parent object for rendering purposes (e.g. Sprite)
+     * @param {Renderer} renderer Renderer to be used
      * @returns {void}
      */
-    onAfterRender({x, y, width, height, camera, renderer, object}={}, _this=this){
-        if(_this.debug.hitbox){
-            x += _this.offset.x
-            y += _this.offset.y
-            let x_ = x+_this.dimensions.width,
-                y_ = y+_this.dimensions.height,
-                radius = _this.dimensions.width,
-                rotationPosition = _this.rotationPosition
-            
-            renderer.strokeCircle({x:x_, y:y_, radius: radius, rotation:_this.rotation, rotationPosition:rotationPosition, angleStart:0, angleEnd:Math.PI*2, color:"#de5a1f", lineWidth:4, ctx:object.layer.ctx})
+    onAfterRender({object, renderer}){
+        if (this.debug.hitbox) {
+            let x = this.position.x + this.offset.x
+            let y = this.position.y + this.offset.y
+
+            renderer.strokeCircle({
+                x: x,
+                y: y,
+                radius: this.dimensions.width / 2,
+                angleStart:0,
+                angleEnd:Math.PI*2,
+                color: "#de5a1f",
+                rotation: this.rotation,
+                rotationPosition: this.rotationPosition,
+                lineWidth: 2
+            })
         }
     }
 }

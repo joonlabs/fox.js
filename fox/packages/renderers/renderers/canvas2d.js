@@ -17,6 +17,8 @@ export class Canvas2D extends Renderer {
     }
 
     init({width, height}) {
+        super.init()
+
         //physical objects for rendering purposes
         this.canvas = document.createElement("canvas")
         this.canvas.width = width

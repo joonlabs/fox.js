@@ -1,11 +1,11 @@
 /**
- * Represents the AssetManager of the game engine. It is responsible for holding all necessary assets
+ * Represents the AssetManager of the game engine. It is responsible 
+ * for holding all necessary assets in a global and static scope.
  * @class AssetManager
  */
 export class AssetManager {
     /**
      * Adds an audio element to it's objects
-     * @method constructor
      * @param {string} name Name of the object for later acces
      * @param {object} asset Asset object
      * @returns AssetManager
@@ -16,7 +16,6 @@ export class AssetManager {
 
     /**
      * Adds a texture element to it's objects
-     * @method addTexture
      * @param {string} name Name of the object for later acces
      * @param {object} asset Asset object
      * @returns {void}
@@ -27,7 +26,6 @@ export class AssetManager {
 
     /**
      * Adds a multiple texture elements to it's objects
-     * @method addTextureAtlas
      * @param {object} atlas TextureAtlas object
      * @returns {void}
      */
@@ -45,7 +43,6 @@ export class AssetManager {
 
     /**
      * Returns an texture by it's name
-     * @method getTexture
      * @param {string} name Name of the object to be returned
      * @returns {object}
      */
@@ -58,7 +55,6 @@ export class AssetManager {
 
     /**
      * Returns an audio by it's name
-     * @method getAudio
      * @param {string} name Name of the object to be returned
      * @returns {object}
      */
@@ -68,7 +64,6 @@ export class AssetManager {
 
     /**
      * Executes the callback function, as soon the given texture (if it exists) is loaded
-     * @method onTextureLoaded
      * @param {string} name Name of the object that is going to be checked
      * @param {function} callback Function that is executed as soon as the object is loaded
      */
@@ -88,7 +83,6 @@ export class AssetManager {
 
     /**
      * Executes the callback function, as soon the given texture (if it exists) is loaded
-     * @method onTextureLoaded
      * @param {string} name Name of the object that is going to be checked
      * @param {function} callback Function that is executed as soon as the object is loaded
      */
@@ -108,7 +102,6 @@ export class AssetManager {
 
     /**
      * Executes the callback function, as soon the given texture (if it exists) is loaded
-     * @method onTextureLoaded
      * @param {string} name Name of the object that is going to be checked
      * @param {function} callback Function that is executed as soon as the object is loaded
      */
@@ -134,7 +127,6 @@ export class AssetManager {
 
     /**
      * Async method that only returns true when all resources are loaded
-     * @method allResourcesLoaded
      * @returns {object}
      */
     static async allResourcesLoaded() {

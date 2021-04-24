@@ -32,14 +32,16 @@ export class Camera{
     }
     
     /**
-     * TODO: make shake frame based
+     * Shakes the camera.
      * @method shake
      * @returns {void}
      */
-    shake({min, max, duration, smoothout}={}, _this=this){
+    shake({min, max, duration, smoothout}={}){
+        // TODO: make shake frame based -> component system?
         let x_ = _this.coordinates.x
         let y_ = _this.coordinates.y
         let counter = 0
+        let _this = this
         let shake = setInterval(function(){
             counter += 16
             _this.coordinates = {
@@ -55,21 +57,18 @@ export class Camera{
     
     /**
      * Initiates the project with given preferences
-     * @method followObject
      * @param {object} object Object that is followed by the camera. The object needs a position vector.
      * @returns {void}
      */
-    followObject({object}={}, _this=this){
-        _this.followingObject = object
+    followObject({object}={}){
+        this.followingObject = object
     }
     
     /**
      * Renders all layers to the onscreen canvas
-     * @method renderToScreen
      * @returns {void}
      */
-    renderToScreen({app, layers}={}, _this=this){
-        //console.log((this.viewport.width * this.settings.zoom - this.viewport.width)/2)
+    renderToScreen({app, layers}={}){
         for (let layer of layers) {
             if(this.viewport.width > layer.dimensions.width
                 || this.viewport.height > layer.dimensions.height){
@@ -95,10 +94,9 @@ export class Camera{
 
     /**
      * Renders all objects tho the layer(s)
-     * @method render
      * @returns {void}
      */
-    render({app, layers}={}, _this=this){
+    render({app, layers}={}){
 
         let render_offset = {
             "x" : 0,

@@ -13,7 +13,6 @@ import {ParticleSystem} from './packages/particlesystem/index.js'
 import {Random} from './packages/random/index.js'
 import {Renderers} from './packages/renderers/index.js'
 import {Scene} from './packages/scene/index.js'
-import {Shaders} from './packages/shaders/index.js'
 import {Vectors} from './packages/vectors/index.js'
 import {Application} from './packages/application/index.js'
 import {Component} from './packages/components/index.js'
@@ -39,7 +38,6 @@ export {
     Random,
     Renderers,
     Scene,
-    Shaders,
     Vectors,
     Utils
 }

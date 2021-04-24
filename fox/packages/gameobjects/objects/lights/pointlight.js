@@ -1,24 +1,41 @@
 import {GameObject} from '../../gameobject.js'
+import {Color} from "../../../color/index.js";
 
 export class PointLight extends GameObject {
-    constructor({x, y, layer, tag, radius, innerRadius, intensity, hue} = {}) {
-        super({x: x, y: y, width: radius * 2, height: radius * 2, layer: layer, tag: tag})
+    /**
+     * Creates a PointLight object
+     * @param x X Position
+     * @param y Y Position
+     * @param tag Tag of the PointLight
+     * @param radius Radius of the PointLight
+     * @param innerRadius Inner radius of the PointLight
+     * @param intensity Intensity of the PointLight
+     * @param hue Hue of the PointLight
+     */
+    constructor({x, y, tag, radius, innerRadius, intensity, hue} = {}) {
+        super({
+            x: x,
+            y: y,
+            width: radius * 2,
+            height: radius * 2,
+            tag: tag
+        })
 
         this.radius = radius
         this.innerRadius = innerRadius || 0
-        this.intensity = intensity == undefined ? 1 : intensity
-        this.hue = hue == undefined ? {r: 255, g: 255, b: 255} : hue
+        this.intensity = intensity || 1
+        this.hue =  hue || new Color()
 
         this.followingGameObject = undefined
 
         this.computeLightMap()
     }
 
-    followObject({object} = {}, _this = this) {
+    followObject({object} = {}) {
         this.followingObject = object
     }
 
-    unfollowObject(_this = this) {
+    unfollowObject() {
         this.followingObject = undefined
     }
 
@@ -44,11 +61,13 @@ export class PointLight extends GameObject {
         this.lightMap = canvas
     }
 
-    calc(_this = this) {
-
-    }
-
-    render({x, y, width, height, camera, renderer} = {}, _this = this) {
+    /**
+     * Renders the PointLight with the renderer
+     * @param x X Position of the PointLight
+     * @param y Y Position of the PointLight
+     * @param renderer
+     */
+    render({x, y, renderer} = {}) {
         let render_offset = {
             "x" : x,
             "y" : y,

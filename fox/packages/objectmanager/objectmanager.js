@@ -6,57 +6,57 @@
 export class ObjectManager{
     /**
      * Construct method of the object
-     * @method constructor
      * @returns ObjectManager
      */
     constructor(){
-        this.objects = []
+        this.objects = {}
     }
     
     /**
      * Adds an object to the objectmanager's object list
-     * @method addObject
+     * @param {string} name Name of the object
      * @param {object} object Object to be added
      * @return {void}
      */
-    addObject({object}={}, _this=this){
-        _this.objects.push(object)
+    addObject({name, object}={}){
+        this.objects[name] = object
     }
     
     /**
      * Removes a given object from the objectmanager's object list
-     * @method removeObject
-     * @param {object} object Object to be removed
+     * @param {string} name Name of the object to be removed
      * @return {void}
      */
-    removeObject({object}, _this=this){
-        let idx = _this.objects.indexOf(object)
-        if(idx!=-1)  _this.objects.splice(idx, 1)
+    removeObject({name}){
+        delete this.objects[name]
     }
     
     /**
      * Reorders the objects based on their z index 
-     * @method reorderObjects
      * @return {void}
      */
-    reorderObjects(_this=this){
-        _this.objects.sort((function(a, b) {
+    reorderObjects(){
+        let orderedObjects = Object.values(this.objects)
+        orderedObjects.sort((function(a, b) {
           if (a.z < b.z) return -1;
           if (a.z > b.z) return 1;
           return this.indexOf(a) - this.indexOf(b);
-        }).bind(_this.objects)) 
+        }).bind(orderedObjects))
+        return orderedObjects
     }
     
     /**
      * Calls the calc method of all of it's objects
-     * @method calc
      * @param {number} timestep Normalized DeltaTime to catch up with frame skips
      * @return {void}
      */
-    calc({timestep}={}, _this=this){        
-        _this.reorderObjects()
-        for(let obj of _this.objects){
+    calc({timestep}={}){
+        for(let obj of this.getObjects()){
             obj.calc({timestep: timestep})
         }
+    }
+
+    getObjects(){
+        return this.reorderObjects()
     }
 }

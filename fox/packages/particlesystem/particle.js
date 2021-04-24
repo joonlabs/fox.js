@@ -1,15 +1,16 @@
 import {GameObjects} from '../gameobjects/index.js'
 import {Color} from '../color/index.js'
 import {GameObject} from '../gameobjects/gameobject.js'
+import {Utils} from "../utils/index.js";
+
 /**
-* The Particle Class controlls a particle over time, it's position, velocity and acceleration   
-*
-* @class Particle
-*/
-export class Particle extends GameObject{
+ * The Particle Class controlls a particle over time, it's position, velocity and acceleration
+ *
+ * @class Particle
+ */
+export class Particle extends GameObject {
     /**
      * Construct method of the object
-     * @method constructor
      * @param {number} x X-position of the particle
      * @param {number} y Y-position of the particle
      * @param {object} velocity Vector for start velocity
@@ -20,23 +21,22 @@ export class Particle extends GameObject{
      * @param {object} rotationPosition Rotation position vector of the Collider relative to it self
      * @param {object} renderObject Object to be renderd (eg. sprite, rectangle, circle, ...)
      * @param {object} layer Reference to the object's rendering layer
-     * @param {string} tag Tag of the object fro grouping multiple objects logically together 
+     * @param {string} tag Tag of the object fro grouping multiple objects logically together
      * @param {number} z Depth information for sorting in layer
      * @returns Particle
      */
-    constructor({x, y, width, height, velocity, acceleration, rotation, rotationPosition, renderObject, layer, tag, z}={}){
+    constructor({x, y, width, height, velocity, acceleration, rotation, rotationPosition, renderObject, tag, z} = {}) {
         super({
-            x:x, 
-            y:y, 
-            width:width || 5, 
-            height:height || 5, 
+            x: x,
+            y: y,
+            width: width || 5,
+            height: height || 5,
             rotation: rotation,
             rotationPosition: rotationPosition,
-            layer:layer, 
             z: z,
-            tag:tag
+            tag: tag
         })
-        
+
         this.velocity = {
             x: velocity && velocity.x ? velocity.x : 0,
             y: velocity && velocity.y ? velocity.y : 0,
@@ -45,48 +45,66 @@ export class Particle extends GameObject{
             x: acceleration && acceleration.x ? acceleration.x : 0,
             y: acceleration && acceleration.y ? acceleration.y : 0,
         }
-        
+
         this.dead = true
-        this.renderObject = renderObject || new GameObjects.Rectangle({x:this.position.x, y:this.position.y, width:5, height:5, color: new Color(), layer:this.layer})
+        this.renderObject = renderObject || new GameObjects.Rectangle({
+            x: this.position.x,
+            y: this.position.y,
+            width: 5,
+            height: 5,
+            color: new Color(),
+            layer: this.layer
+        })
     }
-    
+
     /**
-     * Is called every time the game updates. Calls it's components calc methods and updates it' position based on velocity and acceleration. 
+     * Is called every time the game updates. Calls it's components calc methods and updates it' position based on velocity and acceleration.
      * @param {number} timestep Normalized DeltaTime to catch up with frame skips
      * @method calc
      * @return {void}
-     */    
-    calc({timestep}={}, _this=this){
-        for(let component of _this.components){ if(typeof component.onCalc==="function") component.onCalc({timestep: timestep, object:_this}) }
-        
-        _this.position = {
-            x: (_this.position.x + _this.velocity.x*timestep),
-            y: (_this.position.y + _this.velocity.y*timestep),
+     */
+    calc({timestep} = {}) {
+        for (let component of Object.values(this.components)) {
+            if (typeof component.onCalc === "function") {
+                component.onCalc({
+                    timestep: timestep,
+                    object: this
+                })
+            }
         }
-        _this.velocity = {
-            x: _this.velocity.x + _this.acceleration.x*timestep,
-            y: _this.velocity.y + _this.acceleration.y*timestep,
+
+        this.position = {
+            x: (this.position.x + this.velocity.x * timestep),
+            y: (this.position.y + this.velocity.y * timestep),
+        }
+        this.velocity = {
+            x: this.velocity.x + this.acceleration.x * timestep,
+            y: this.velocity.y + this.acceleration.y * timestep,
         }
     }
-    
+
     /**
-     * Is called every time the game updates, after the calc. Calls it's components render methods. 
-     * @method render
-     * @param {number} x X-position to be drawn (by camera)
-     * @param {number} y Y-position to be drawn (by camera)
-     * @param {object} camera Camera object that caused the method
+     * Is called every time the game updates, after the calc. Calls it's components render methods.
+     * @param {number} x X Position
+     * @param {number} y Y Position
+     * @param {Renderer} renderer Renderer to be used
      * @returns {void}
      */
-    render({x, y, width, height, camera, renderer}={},_this=this){
-        for(let component of _this.components){ if(typeof component.onBeforeRender==="function") component.onBeforeRender({x:x, y:y, width:width, height:height, camera:camera,  renderer:renderer, object:_this}) }
-        
-        if(!_this.renderObject){ console.warn("fox: particle: You're trying to render a particle, that has no render object. please specify any kind of gameobject e.g. a rectangle")}
-        x = x+_this.position.x
-        y = y+_this.position.y
-        _this.renderObject.render({x:x, y:y, width:_this.renderObject.dimensions.width, height:_this.renderObject.dimensions.height, camera:camera, renderer:renderer})
-        
-        if(_this.collider!=undefined) _this.collider.render({x:x, y:y, camera:camera, renderer:renderer})
-        
-        for(let component of _this.components){ if(typeof component.onAfterRender==="function") component.onAfterRender({x:x, y:y, width:width, height:height, camera:camera,  renderer:renderer, object:_this}) }
+    render({x, y, renderer} = {}) {
+        this.onBeforeRender({renderer: renderer})
+
+        if (!this.renderObject) {
+            Utils.warn("fox: particle: You're trying to render a particle, that has no render object. " +
+                "please specify any kind of gameobject e.g. a rectangle")
+        }
+        x = x + this.position.x
+        y = y + this.position.y
+        this.renderObject.render({
+            x: x,
+            y: y,
+            renderer: renderer
+        })
+
+        this.onAfterRender({renderer: renderer})
     }
 }

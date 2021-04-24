@@ -6,7 +6,6 @@
 export class Touch{
     /**
      * Construct method of the object
-     * @method constructor
      * @param {number} x X-position of the collider
      * @param {number} y Y-position of the collider
      * @param {string} identifier Identifier of the touch

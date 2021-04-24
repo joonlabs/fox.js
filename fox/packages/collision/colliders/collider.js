@@ -3,7 +3,7 @@ import {Vectors} from '../../vectors/index.js'
 
 /**
  * The Collider represents a hitbox for any gameobject that supports a collider. A Collider cannot be rendered,
- * shown, or added to a scene by its own but needs a parent object in order to exist.
+ * shown, or added to a scene by itself, but needs a parent object in order to exist.
  * However, keep in mind that the x and y coordinates for a collider are passed by it's parentObject and cannot be set by yourself.
  *
  * @class Collider
@@ -12,7 +12,6 @@ export class Collider extends Component {
     /**
      * Constructs the Collider Object
      *
-     * @method constructor
      * @param {object} offset
      * @param {number} width
      * @param {number} height
@@ -51,7 +50,6 @@ export class Collider extends Component {
 
     /**
      * Is called when the component is intatiated
-     * @method onInit
      * @param {object} object
      * @return {void}
      */
@@ -63,7 +61,6 @@ export class Collider extends Component {
 
     /**
      * Is called whenever the next frame is calculated. The collider's position is updated by the position of the parent object.
-     * @method onCalc
      * @param {object} object
      * @return {void}
      */

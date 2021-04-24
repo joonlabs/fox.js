@@ -10,20 +10,18 @@ import {Color} from '../../color/index.js'
 export class Sprite extends GameObject {
     /**
      * Construct method of the object
-     * @method constructor
      * @param {number} x X-position of the game object
      * @param {number} y Y-position of the game object
      * @param {number} width Width of the game object
      * @param {number} height Height of the game object
      * @param {number} rotation Rotation of the game object
      * @param {object} rotationPosition Rotation position vector of the Colligame objectder relative to it self
-     * @param {object} layer Reference to the object's rendering layer
-     * @param {string} tag Tag of the object fro grouping multiple objects logically together
+     * @param {string} tag Tag of the object for grouping multiple objects logically together
+     * @param {Texture} texture Texture of the object
      * @param {number} z Depth information for sorting in layer
-     * @param {object} debug Debug options (hitbox)
      * @returns CircleCollider
      */
-    constructor({x, y, width, height, rotation, rotationPosition, layer, tag, texture, z, debug} = {}) {
+    constructor({x, y, width, height, rotation, rotationPosition, tag, texture, z} = {}) {
         super({
             x: x,
             y: y,
@@ -31,10 +29,8 @@ export class Sprite extends GameObject {
             height: height,
             rotation: rotation,
             rotationPosition: rotationPosition,
-            layer: layer,
             tag: tag,
             z: z,
-            debug: debug
         })
 
         this.texture = texture
@@ -49,89 +45,51 @@ export class Sprite extends GameObject {
     }
 
     /**
-     * Is called every time the game updates. #TO_BE_OVERRIDEN
-     * @method calc
-     * @param {number} timestep Normalized DeltaTime to catch up with frame skips
-     * @return {void}
-     */
-    calc({timestep} = {}, _this = this) {
-        for (let component of _this.components) {
-            if (typeof component.onCalc === "function") component.onCalc({timestep: timestep, object: _this})
-        }
-    }
-
-    /**
      * Is called after every time the game updated.
-     * @method render
-     * @param {object} object
-     * @return {void}
+     * @param {number} x X Coordinate
+     * @param {number} y Y Coordinate
+     * @param {number} renderer Renderer to be used
      */
-    render({x, y, width, height, camera, renderer} = {}, _this = this) {
-        for (let component of _this.components) {
-            if (typeof component.onBeforeRender === "function") component.onBeforeRender({
-                x: x,
-                y: y,
-                width: width,
-                height: height,
-                camera: camera,
-                renderer: renderer,
-                object: _this
-            })
-        }
+    render({x, y, renderer} = {}) {
+        this.onBeforeRender({renderer: renderer})
 
-        if (_this.texture && _this.texture.loaded) {
+        // render texture
+        if (this.texture && this.texture.loaded) {
             renderer.renderTexture({
-                texture: _this.rendering.canvas,
-                x: x + _this.texture.getOffset().x,
-                y: y + _this.texture.getOffset().y,
-                width: _this.texture.getWidth(),
-                height: _this.texture.getHeight(),
-                rotation: _this.rotation,
+                texture: this.rendering.canvas,
+                x: x + this.texture.getOffset().x,
+                y: y + this.texture.getOffset().y,
+                width: this.texture.getWidth(),
+                height: this.texture.getHeight(),
+                rotation: this.rotation,
                 rotationPosition: this.rotationPosition,
-                ctx: _this.layer.ctx
-            })
-        }
-        if (_this.debug.enabled && _this.debug.hitbox) {
-            renderer.strokeRect({
-                x: x,
-                y: y,
-                width: width,
-                height: height,
-                color: "#de5a1f",
-                rotation: _this.rotation,
-                rotationPosition: this.rotationPosition,
-                lineWidth: 4,
-                ctx: _this.layer.ctx
+                ctx: this.layer.ctx
             })
         }
 
-        for (let component of _this.components) {
-            if (typeof component.onAfterRender === "function") component.onAfterRender({
-                x: x,
-                y: y,
-                width: width,
-                height: height,
-                camera: camera,
-                renderer: renderer,
-                object: _this
-            })
-        }
+        this.onAfterRender({renderer: renderer})
     }
 
     /**
      * Applies the texture from the texture canvas to the game object's canvas
-     * @method applyTexture
-     * @param {object} shader Shader that should be added
-     * @return {void}
      */
-    applyTexture(_this = this) {
-        if (_this.dimensions.width == undefined) _this.dimensions.width = _this.texture.getTexture().width
-        if (_this.dimensions.height == undefined) _this.dimensions.height = _this.texture.getTexture().height
-        if (_this.texture) {
-            _this.rendering.canvas.width = _this.texture.getTexture().width
-            _this.rendering.canvas.height = _this.texture.getTexture().height
-            _this.rendering.ctx.drawImage(_this.texture.getTexture(), 0, 0)
-            _this.rendering.data = _this.rendering.ctx.getImageData(0, 0, _this.rendering.canvas.width, _this.rendering.canvas.height)
+    applyTexture() {
+        if (this.dimensions.width === undefined) this.dimensions.width = this.texture.getTexture().width
+        if (this.dimensions.height === undefined) this.dimensions.height = this.texture.getTexture().height
+        if (this.texture) {
+            this.rendering.canvas.width = this.texture.getTexture().width
+            this.rendering.canvas.height = this.texture.getTexture().height
+            this.rendering.ctx.drawImage(this.texture.getTexture(), 0, 0)
+            this.rendering.data = this.rendering.ctx.getImageData(0, 0, this.rendering.canvas.width, this.rendering.canvas.height)
         }
+    }
+
+    /**
+     * Changes the current textures and applies the change
+     * @param texture Texture to be displayed
+     */
+    setTexture({texture}){
+        this.texture = texture
+        this.applyTexture()
     }
 }

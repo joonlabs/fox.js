@@ -1,6 +1,14 @@
 import {Asset} from './asset.js'
 
+/**
+ * An Audio-Asset holds an audio file for playback.
+ */
 export class Audio extends Asset{
+    /**
+     * Creates an Audio object.
+     * @param src
+     * @param volume
+     */
     constructor({src, volume}={}){
         super()
         
@@ -15,7 +23,13 @@ export class Audio extends Asset{
         }
         _this.data.volume = volume==undefined ? 1 : volume/100
     }
-    
+
+    /**
+     * Plays back an audio asset.
+     * @param {boolean} loop
+     * @param {number} jumpToSecsAfterLoop
+     * @param _this
+     */
     play({loop,jumpToSecsAfterLoop}={}, _this=this){
         _this.data.currentTime = 0
         _this.data.play()
@@ -29,12 +43,19 @@ export class Audio extends Asset{
             })
         }
     }
-    
-    pause(_this=this){
-        _this.data.pause()
+
+    /**
+     * Pauses audio playback.
+     */
+    pause(){
+        this.data.pause()
     }
-    
-    setVolume({volume}={}, _this=this){
-        _this.data.volume = volume/100
+
+    /**
+     * Sets the volume of the audio
+     * @param volume
+     */
+    setVolume({volume}={}){
+        this.data.volume = volume/100
     }
 }
