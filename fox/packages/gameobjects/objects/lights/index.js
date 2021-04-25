@@ -1,1 +1,0 @@
-export {PointLight} from './pointlight.js'
