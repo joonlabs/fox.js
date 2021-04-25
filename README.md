@@ -121,7 +121,6 @@ holder for the complete gameplay. It takes care of screen updates and many other
 let app = new fox.Application({
     width: 360,
     height: 260,
-    logFPS: true
 })
 // add the game's view to the DOM
 document.body.appendChild(app.view)
@@ -227,7 +226,7 @@ light.followObject({
 })
 
 // add the light to the lighting layer
-lightingLayer.addObject({name: "light"+texture, object: this.light})
+lightingLayer.addObject({name: "light"+texture, object: light})
 ````
 
 ### create components
@@ -248,7 +247,7 @@ class PlayerMovement extends fox.Component {
 }
 
 // add the component to the player
-this.player.addComponent({
+player.addComponent({
     name: "movement",
     component: new PlayerMovement()
 })
