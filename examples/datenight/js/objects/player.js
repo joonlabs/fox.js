@@ -11,7 +11,6 @@ export class Player {
             y:y,
             width: 16,
             height: 16,
-            layer: layer,
             z: 2,
             texture : fox.AssetManager.getTexture({name: "Player_"+texture+"_Idle1"})
         })
@@ -74,7 +73,6 @@ export class Player {
         this.light = new fox.GameObjects.Lights.PointLight({
             radius: 85,
             intensity: 1,
-            layer: lightingLayer
         })
         this.light.followObject({
             object : this.player
