@@ -252,3 +252,10 @@ player.addComponent({
     component: new PlayerMovement()
 })
 ````
+
+### result
+The result (without the lights) should look like this. The source code of the example (without the lights) can be found in the `exmaples/` directory.
+
+https://user-images.githubusercontent.com/52662462/116005901-51124380-a609-11eb-9fbe-f6bce21d6253.mov
+
+Now try it yourself!
