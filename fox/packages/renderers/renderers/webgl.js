@@ -239,14 +239,19 @@ export class WebGL extends Renderer{
      * @param {number} height Height of the texture
      * @param {number} rotation Rotation of the texture
      * @param {object} rotationPosition rotationPosition of the texture
-     * @param {object} layer Layer to be rendered to
+     * @param {number} srcx X offset in the texture
+     * @param {number} srcY Y offset in the texture
+     * @param {number} texWidth Actual width of the texture (only needed for cropping parts of the texture)
+     * @param {number} texHeight Actual height of the texture (only needed for cropping parts of the texture)
+     * @param {boolean} forceTextureUpload If true, it forces a re-upload of the txeture's content onto the webgl texture via webgl.texImage2D(...)
      * @return {void}
      */
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition, srcX, srcY, texWidth, texHeight}) {
+    renderTexture({texture, x, y, width, height, rotation, rotationPosition, srcX, srcY, texWidth, texHeight, forceTextureUpload}) {
         srcX = srcX || 0
         srcY = srcY || 0
         texWidth = texWidth || width
         texHeight = texHeight || height
+        forceTextureUpload = forceTextureUpload || false
 
         // ensure texture is a fox.Assets.Texture object
         if(!texture instanceof Texture){
@@ -256,7 +261,7 @@ export class WebGL extends Renderer{
         // check if texture does not have already a webgl-texture-binding
         let tex,
             textureId = texture.getId()
-        if(!(textureId in this.webGLTextureStore)){
+        if(forceTextureUpload || !(textureId in this.webGLTextureStore)){
             // create the webgl texture
             tex = this.ctx.createTexture()
             this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex);
@@ -368,7 +373,11 @@ class WebGLUtils{
                     discard;
                 }
                c = texture2D(u_texture, v_texcoord);
-               gl_FragColor = vec4(0, 0, 0, (0.299*(c.r) + 0.587*(c.g) + 0.114*(c.b)));
+               float r = 1.0;
+               float g = 1.0;
+               float b = 0.0;
+               float a = (0.299*(c.r) + 0.587*(c.g) + 0.114*(c.b));
+               gl_FragColor = vec4(1.0-(1.0-r)*a, 1.0-(1.0-g)*a, 1.0-(1.0-b)*a, a);
             }
         `
     }

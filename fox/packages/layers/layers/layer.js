@@ -1,5 +1,6 @@
 import {WebGL} from "../../renderers/renderers/webgl.js";
 import {ObjectManager} from '../../objectmanager/index.js'
+import {Random} from "../../random/index.js";
 
 /**
  * The Layer represents the canvas that is added to the document's dom
@@ -22,6 +23,8 @@ export class Layer {
             "height": height,
         }
 
+        this.id = Random.ID()
+
         this.scene = undefined
 
         // set the renderer and initiate
@@ -29,6 +32,10 @@ export class Layer {
 
         //game stuff
         this.objectmanager = new ObjectManager()
+    }
+
+    getId(){
+        return this.id
     }
 
     /**
