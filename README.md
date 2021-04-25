@@ -1,4 +1,6 @@
-<img src="https://joonlabs.com/fox/logo.png" alt="index.js logo" width="300" align="center" style="width: 300px; display: block; margin-left: auto; margin-right: auto;"/>
+<p align="center">
+    <img src="https://joonlabs.com/fox/logo.png" alt="index.js logo" width="300" align="center" style="width: 300px; display: block; margin-left: auto; margin-right: auto;"/>
+</p>
 
 # fox.js
 fox.js is a lightweight and easy-to-use game engine for the development of pixel-art games. It is implemented in javascript and supports the Canvas2D-API and WebGL-API for rendering the game onto HTML5-canvases. 
