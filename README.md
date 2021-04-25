@@ -16,10 +16,10 @@ or you can use the packed and minified version of fox.js found in the `dist/` fo
 
 ````html
 <!-- fox.js by local resource -->
-<srcipt src="fox/dist/fox-v1.js"></srcipt>
+<script src="fox/dist/fox-v1.js"></script>
 
 <!-- fox.js by jsdelivr -->
-<srcipt src="https://cdn.jsdelivr.net/gh/joonlabs/fox.js/dist/fox-v1.js"></srcipt>
+<script src="https://cdn.jsdelivr.net/gh/joonlabs/fox.js/dist/fox-v1.js"></script>
 ````
 
 ## packages
