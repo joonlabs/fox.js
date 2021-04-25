@@ -18,7 +18,7 @@ export class WebGL extends Renderer{
         super()
     }
 
-    init({width, height, useLightningShaders, useOffscreenCanvas}) {
+    init({width, height, useLightingShaders, useOffscreenCanvas}) {
         super.init()
 
         // init internal webgl-texture store
@@ -41,8 +41,8 @@ export class WebGL extends Renderer{
         }
 
         // compile shaders as program
-        this.program = useLightningShaders
-            ? WebGLUtils.createProgramLightning({ctx: this.ctx})
+        this.program = useLightingShaders
+            ? WebGLUtils.createProgramLighting({ctx: this.ctx})
             : WebGLUtils.createProgram({ctx: this.ctx})
 
         // look up where the vertex data needs to go.
@@ -59,7 +59,7 @@ export class WebGL extends Renderer{
         this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.positionBuffer);
 
         // enable alpha blending for overlapping textures
-        if(!useLightningShaders){
+        if(!useLightingShaders){
             this.ctx.enable(this.ctx.BLEND);
             this.ctx.blendFunc(this.ctx.SRC_ALPHA, this.ctx.ONE_MINUS_SRC_ALPHA);
         }else{
@@ -398,7 +398,7 @@ class WebGLUtils{
      * Creates the shader programs by compiling the vertex and the fragment shader
      * @param ctx
      */
-    static createProgramLightning({ctx}){
+    static createProgramLighting({ctx}){
         let shaders = [
             WebGLUtils._compileShader({ctx:ctx, type:"VERTEX_SHADER", source:WebGLUtils._vertexShader}),
             WebGLUtils._compileShader({ctx:ctx, type:"FRAGMENT_SHADER", source:WebGLUtils._fragmentShaderLighning})

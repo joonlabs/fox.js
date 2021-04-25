@@ -2,7 +2,7 @@ import fox from "../../../../src/index.js";
 import {TimingPlatform} from "../components/timingPlatform.js";
 
 export class Platform {
-    constructor({x, y, layer, lightningLayer, type}) {
+    constructor({x, y, layer, lightingLayer, type}) {
         this.x = x
         this.y = y
 
@@ -89,9 +89,9 @@ export class Platform {
                 y: y-15,
                 radius: 120,
                 intensity: 1,
-                layer: lightningLayer
+                layer: lightingLayer
             })
-            lightningLayer.addObject({object: this.light})
+            lightingLayer.addObject({object: this.light})
         }
     }
 

@@ -2,7 +2,7 @@ import fox from "../../../../src/index.js";
 import {PlayerMovement} from "../components/playerMovement.js";
 
 export class Player {
-    constructor({x, y, texture, layer, lightningLayer, scene, movement}) {
+    constructor({x, y, texture, layer, lightingLayer, scene, movement}) {
         this.x = x
         this.y = y
 
@@ -74,12 +74,12 @@ export class Player {
         this.light = new fox.GameObjects.Lights.PointLight({
             radius: 85,
             intensity: 1,
-            layer: lightningLayer
+            layer: lightingLayer
         })
         this.light.followObject({
             object : this.player
         })
 
-        lightningLayer.addObject({name: "light"+texture, object: this.light})
+        lightingLayer.addObject({name: "light"+texture, object: this.light})
     }
 }

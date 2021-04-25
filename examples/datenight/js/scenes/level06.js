@@ -18,14 +18,14 @@ scene.onInit({
             height: 260,
             renderer: new fox.Renderers.WebGL(),
         })
-        let lightning = new fox.Layers.Lightning({
+        let lighting = new fox.Layers.Lighting({
             width: 360,
             height: 360,
             globalLight: 0.5
         })
 
         scene.addLayer({layer: layer})
-        scene.addLayer({layer: lightning})
+        scene.addLayer({layer: lighting})
         scene.addCamera({camera: camera})
 
         // create background
@@ -45,7 +45,7 @@ scene.onInit({
             y: 150-16,
             texture: "Blue",
             layer: layer,
-            lightningLayer: lightning,
+            lightingLayer: lighting,
             scene: scene,
             movement: {
                 keyLeft: "ArrowLeft",
@@ -59,7 +59,7 @@ scene.onInit({
             y: 150-16,
             texture: "Pink",
             layer: layer,
-            lightningLayer: lightning,
+            lightingLayer: lighting,
             scene: scene,
             movement: {
                 keyLeft: "a",
@@ -81,7 +81,7 @@ scene.onInit({
                 y: platform.coordinates[1],
                 type: platform.type,
                 layer: layer,
-                lightningLayer: lightning,
+                lightingLayer: lighting,
             })
             scene.storeItem({
                 name: "platform" + counter.toString(),

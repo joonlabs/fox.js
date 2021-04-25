@@ -19,10 +19,9 @@ import {Component} from './packages/components/index.js'
 import {Utils} from './packages/utils/index.js'
 
 let fox = {
-    Application,
-    Component,
-    Animator,
     Animation,
+    Animator,
+    Application,
     Assets,
     AssetManager,
     AudioController,
@@ -30,6 +29,7 @@ let fox = {
     Colliders,
     CollisionManager,
     Color,
+    Component,
     GameObjects,
     Input,
     Layers,
@@ -38,8 +38,8 @@ let fox = {
     Random,
     Renderers,
     Scene,
-    Vectors,
-    Utils
+    Utils,
+    Vectors
 }
 
 window.fox = fox
