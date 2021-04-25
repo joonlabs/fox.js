@@ -1,5 +1,5 @@
 // load all textures
-import * as fox from "../../../fox/fox.js";
+import fox from "../../../src/index.js";
 
 //background
 fox.AssetManager.addTexture({

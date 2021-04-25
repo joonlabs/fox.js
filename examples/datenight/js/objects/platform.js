@@ -1,4 +1,4 @@
-import * as fox from "../../../../fox/fox.js";
+import fox from "../../../../src/index.js";
 import {TimingPlatform} from "../components/timingPlatform.js";
 
 export class Platform {

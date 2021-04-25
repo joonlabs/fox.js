@@ -1,4 +1,4 @@
-import * as fox from "../../../../fox/fox.js";
+import fox from "../../../../src/index.js";
 
 const TIMING_FRAMES = 100
 export class TimingPlatform extends fox.Component {

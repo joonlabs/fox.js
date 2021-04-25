@@ -1,4 +1,4 @@
-import * as fox from '../../../fox/fox.js'
+import fox from '../../../src/index.js'
 import {level01} from "./scenes/level01.js";
 import {level02 } from "./scenes/level02.js";
 import {level03} from "./scenes/level03.js";

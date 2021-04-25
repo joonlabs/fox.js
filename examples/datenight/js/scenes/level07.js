@@ -1,4 +1,4 @@
-import * as fox from "../../../../fox/fox.js";
+import fox from "../../../../src/index.js";
 import {Player} from "../objects/player.js";
 import {Platform} from "../objects/platform.js";
 

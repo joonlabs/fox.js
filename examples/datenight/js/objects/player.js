@@ -1,4 +1,4 @@
-import * as fox from "../../../../fox/fox.js";
+import fox from "../../../../src/index.js";
 import {PlayerMovement} from "../components/playerMovement.js";
 
 export class Player {
