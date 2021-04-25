@@ -19,7 +19,7 @@ or you can use the packed and minified version of fox.js found in the `dist/` fo
 <script src="fox/dist/fox-v1.js"></script>
 
 <!-- fox.js by jsdelivr -->
-<script src="https://cdn.jsdelivr.net/gh/joonlabs/fox.js/dist/fox-v1.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/joonlabs/fox.js@latest/dist/fox-v1.js"></script>
 ````
 
 ## packages
@@ -226,7 +226,7 @@ light.followObject({
 })
 
 // add the light to the lighting layer
-lightingLayer.addObject({name: "light"+texture, object: light})
+lighting.addObject({name: "light", object: light})
 ````
 
 ### create components

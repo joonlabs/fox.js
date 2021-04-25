@@ -122,8 +122,11 @@ export class WebGL extends Renderer{
     clear({color}={}){
         if(color){
             this.ctx.clearColor(color.r/255, color.g/255, color.b/255, color.a)
+            this.ctx.clear(this.ctx.COLOR_BUFFER_BIT)
+        }else{
+            this.ctx.clearColor(1, 1, 1, 1)
+            this.ctx.clear(this.ctx.COLOR_BUFFER_BIT)
         }
-        this.ctx.clear(this.ctx.COLOR_BUFFER_BIT)
     }
 
     /**
