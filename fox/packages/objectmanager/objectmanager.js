@@ -11,6 +11,10 @@ export class ObjectManager{
     constructor(){
         this.objects = {}
     }
+
+    destroy(){
+        this.objects = {}
+    }
     
     /**
      * Adds an object to the objectmanager's object list

@@ -1,6 +1,7 @@
 import {Renderer} from './renderer.js'
 import {Utils} from "../../utils/index.js";
 import * as M4 from './m4.js'
+import {Texture} from "../../assets/assets/index.js";
 
 /**
  * The Canvas2D is the basic renderer using the html5 canvas2d api
@@ -19,6 +20,9 @@ export class WebGL extends Renderer{
 
     init({width, height, useLightningShaders, useOffscreenCanvas}) {
         super.init()
+
+        // init internal webgl-texture store
+        this.webGLTextureStore = {}
 
         //physical objects for rendering purposes
         useOffscreenCanvas = useOffscreenCanvas || false
@@ -105,6 +109,9 @@ export class WebGL extends Renderer{
     }
     
     destroy() {
+        for(let texture of Object.values(this.webGLTextureStore)){
+            this.ctx.deleteTexture(texture)
+        }
         this.ctx.getExtension('WEBGL_lose_context').loseContext();
         super.destroy();
     }
@@ -225,7 +232,7 @@ export class WebGL extends Renderer{
     /**
      * Renders a texture to the layer
      * @method renderTexture
-     * @param {object} texture Texture to be rendered
+     * @param {Texture} texture Texture to be rendered
      * @param {number} x X position of the texture
      * @param {number} y Y position of the texture
      * @param {number} width Width of the texture
@@ -241,18 +248,31 @@ export class WebGL extends Renderer{
         texWidth = texWidth || width
         texHeight = texHeight || height
 
-        // create texture
-        let tex = this.ctx.createTexture()
-        this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex);
-        this.ctx.texImage2D(this.ctx.TEXTURE_2D, 0, this.ctx.RGBA, this.ctx.RGBA, this.ctx.UNSIGNED_BYTE, texture);
+        // ensure texture is a fox.Assets.Texture object
+        if(!texture instanceof Texture){
+            console.error("fox: webgl: renderTexture(...) expects argument texture to be element of Texture.", texture)
+        }
 
-        //this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex)
-        //this.ctx.texImage2D(this.ctx.TEXTURE_2D, 0, this.ctx.RGBA, 1, 1, 0, this.ctx.RGBA, this.ctx.UNSIGNED_BYTE, null)
+        // check if texture does not have already a webgl-texture-binding
+        let tex,
+            textureId = texture.getId()
+        if(!(textureId in this.webGLTextureStore)){
+            // create the webgl texture
+            tex = this.ctx.createTexture()
+            this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex);
+            this.ctx.texImage2D(this.ctx.TEXTURE_2D, 0, this.ctx.RGBA, this.ctx.RGBA, this.ctx.UNSIGNED_BYTE, texture.getTexture());
 
-        this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_MIN_FILTER, this.ctx.NEAREST);
-        this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_MAG_FILTER, this.ctx.NEAREST);
-        this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_WRAP_S, this.ctx.CLAMP_TO_EDGE);
-        this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_WRAP_T, this.ctx.CLAMP_TO_EDGE);
+            this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_MIN_FILTER, this.ctx.NEAREST);
+            this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_MAG_FILTER, this.ctx.NEAREST);
+            this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_WRAP_S, this.ctx.CLAMP_TO_EDGE);
+            this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_WRAP_T, this.ctx.CLAMP_TO_EDGE);
+
+            this.webGLTextureStore[textureId] = tex
+        }else{
+            // load the existing webgl texture
+            tex = this.webGLTextureStore[textureId]
+            this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex);
+        }
         
         // this matrix will convert from pixels to clip space
         let matrix = M4.orthographic(0, this.canvas.width, this.canvas.height, 0, -1, 1);
@@ -286,8 +306,6 @@ export class WebGL extends Renderer{
 
         this.ctx.uniform1i(this.textureLocation, 0);
         this.ctx.drawArrays(this.ctx.TRIANGLES, 0, 6);
-
-        this.ctx.deleteTexture(tex)
     }
 }
 

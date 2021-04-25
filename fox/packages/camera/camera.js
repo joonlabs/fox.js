@@ -78,7 +78,7 @@ export class Camera{
             let viewPortWidth = Math.min(this.viewport.width, layer.dimensions.width),
                 viewPortHeight = Math.min(this.viewport.height, layer.dimensions.height)
             app.project.renderer.renderTexture({
-                texture: layer.getCanvas(),
+                texture: layer,
                 x: this.coordinates.x,
                 y: this.coordinates.y,
                 rotation: 0,

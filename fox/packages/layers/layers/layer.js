@@ -45,6 +45,7 @@ export class Layer {
 
     destroy(){
         this.renderer.destroy()
+        this.objectmanager.destroy()
     }
 
     /**
@@ -67,7 +68,7 @@ export class Layer {
      * Returns the layer's internal (offscreen-)canvas.
      * @returns {*}
      */
-    getCanvas() {
+    getTexture() {
         return this.renderer.getCanvas()
     }
 

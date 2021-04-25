@@ -150,8 +150,10 @@ export class Application {
      * Re-inits the current scene
      */
     reloadCurrentScene(){
-        // init scene
-        this.scenes.active.destroy()
+        // destroy current scene
+        this.destroyCurrentScene()
+
+        // init current scene again
         this.scenes.active.init()
     }
 

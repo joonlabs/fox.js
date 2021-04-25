@@ -1,5 +1,6 @@
 import {GameObject} from '../../gameobject.js'
 import {Color} from "../../../color/index.js";
+import {Texture} from "../../../assets/assets/index.js";
 
 export class PointLight extends GameObject {
     /**
@@ -58,7 +59,7 @@ export class PointLight extends GameObject {
         ctx.arc(this.radius, this.radius, this.radius, 0, Math.PI*2)
         ctx.fill();
 
-        this.lightMap = canvas
+        this.lightMapTexture = Texture.fromCanvas({canvas: canvas, ctx: ctx})
     }
 
     /**
@@ -79,7 +80,7 @@ export class PointLight extends GameObject {
         }
 
         renderer.renderTexture({
-            texture : this.lightMap,
+            texture : this.lightMapTexture,
             x : render_offset.x - this.radius,
             y: render_offset.y - this.radius,
             width: this.dimensions.width,

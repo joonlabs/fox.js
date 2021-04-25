@@ -56,7 +56,7 @@ export class Sprite extends GameObject {
         // render texture
         if (this.texture && this.texture.loaded) {
             renderer.renderTexture({
-                texture: this.rendering.canvas,
+                texture: this.texture,
                 x: x + this.texture.getOffset().x,
                 y: y + this.texture.getOffset().y,
                 width: this.texture.getWidth(),
@@ -80,7 +80,7 @@ export class Sprite extends GameObject {
             this.rendering.canvas.width = this.texture.getTexture().width
             this.rendering.canvas.height = this.texture.getTexture().height
             this.rendering.ctx.drawImage(this.texture.getTexture(), 0, 0)
-            this.rendering.data = this.rendering.ctx.getImageData(0, 0, this.rendering.canvas.width, this.rendering.canvas.height)
+            //this.rendering.data = this.rendering.ctx.getImageData(0, 0, this.rendering.canvas.width, this.rendering.canvas.height)
         }
     }
 

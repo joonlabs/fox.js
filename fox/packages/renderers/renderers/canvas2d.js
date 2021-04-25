@@ -205,12 +205,12 @@ export class Canvas2D extends Renderer {
 
         //console.log({texture, x, y, width, height, rotation, rotationPosition})
 
-        if(srcX!=undefined && srcY!=undefined && width!=undefined && height!=undefined){
-            this.ctx.drawImage(texture, srcX, srcY, width, height, x, y, width, height)
+        if(srcX!==undefined && srcY!==undefined && width!==undefined && height!==undefined){
+            this.ctx.drawImage(texture.getTexture(), srcX, srcY, width, height, x, y, width, height)
         }else if (width && height) {
-            this.ctx.drawImage(texture, x, y, width, height)
+            this.ctx.drawImage(texture.getTexture(), x, y, width, height)
         } else {
-            this.ctx.drawImage(texture, x, y)
+            this.ctx.drawImage(texture.getTexture(), x, y)
         }
 
         if (rotation % (Math.PI * 2) !== 0) {

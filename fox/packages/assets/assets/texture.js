@@ -1,5 +1,6 @@
 import {Asset} from './asset.js'
 import {Vectors} from '../../vectors/index.js'
+import {Random} from "../../random/index.js";
 
 /**
  * Represents a texture incl. loading
@@ -19,19 +20,23 @@ export class Texture extends Asset {
 
         let _this = this
         this.data = undefined
+        this.id = Random.ID()
 
         this.width = width
         this.height = height
         this.offset = offset || new Vectors.Vec2D()
+        this.dimensions = new Vectors.Vec2D()
 
         this.loaded = false
-
-        this.dimensions = undefined
 
         this.rendering = {
             canvas: document.createElement("canvas"),
             ctx: undefined,
             data: undefined
+        }
+
+        this.rendererData = {
+            texture : undefined
         }
 
         if (src !== undefined) {
@@ -53,6 +58,24 @@ export class Texture extends Asset {
                 console.error("fox: asset: texture: failed to load resource '" + src + "'")
             }
         }
+    }
+
+    static fromCanvas({canvas, ctx}){
+        let instance = new Texture({src: undefined, width: canvas.width, height: canvas.height})
+        instance.rendering.canvas = canvas
+        instance.rendering.ctx = ctx || canvas.getContext("2d")
+        instance.rendering.data = instance.rendering.ctx.getImageData(0, 0, instance.width, instance.height)
+        instance.loaded = true
+        instance.dimensions = new Vectors.Vec2D({x: instance.width, y: instance.height})
+        return instance
+    }
+
+    /**
+     * Returns the id of the texture
+     * @returns {string}
+     */
+    getId(){
+        return this.id
     }
 
     /**
