@@ -180,7 +180,7 @@ scene.onInit({
             height: 260,
         })
 
-        // creates a lightning layer for the lights
+        // creates a lighting layer for the lights
         let lighting = new fox.Layers.Lighting({
             width: 360,
             height: 360,
