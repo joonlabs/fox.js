@@ -19,7 +19,7 @@ or you can use the packed and minified version of fox.js found in the `dist/` fo
 <script src="fox/dist/fox-v1.js"></script>
 
 <!-- fox.js by jsdelivr -->
-<script src="https://cdn.jsdelivr.net/gh/joonlabs/fox.js@1.0/dist/fox-v1.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/joonlabs/fox.js@1.1/dist/fox-v1.js"></script>
 ````
 
 ## packages
