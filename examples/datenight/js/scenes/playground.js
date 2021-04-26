@@ -107,6 +107,11 @@ scene.onInit({
             {type: Platform.types.WOODEN_BIG, coordinates: [160, 220]},
             {type: Platform.types.WOODEN_BIG, coordinates: [240, 220]},
             {type: Platform.types.WOODEN_BIG, coordinates: [320, 220]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [400+0, 220]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [400+80, 220]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [400+160, 220]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [400+240, 220]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [400+320, 220]},
         ]
         let counter = 0
         for (let platform of platforms) {

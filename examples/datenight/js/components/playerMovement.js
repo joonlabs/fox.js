@@ -1,5 +1,6 @@
 import fox from "../../../../src/index.js";
 import {Platform} from "../objects/platform.js";
+import {Vec2D} from "../../../../src/packages/vectors/vectors/index.js";
 
 const SPEED_MAXIMUM = 4
 const ACCELERATION = new fox.Vectors.Vec2D({x: 2, y: 0})
@@ -52,16 +53,17 @@ export class PlayerMovement extends fox.Component {
     }
 
     applyGravity({timestep}) {
-        this.velocity = this.velocity.add({vector: GRAVITY})
+        this.velocity = this.velocity.add({vector: GRAVITY.multScalar({scalar: timestep})})
     }
 
     jump({timestep}) {
-        this.velocity = this.velocity.add({vector: JUMP})
+        this.velocity = this.velocity.add({vector: JUMP.multScalar({scalar: 1})})
     }
 
     onCalc({timestep, object} = {}) {
         this.object = object
-        timestep = 1
+        //timestep = 1
+        //console.log(timestep)
 
         // check if player is fallen out of screen
         if(object.position.y > 260){
@@ -185,17 +187,17 @@ export class PlayerMovement extends fox.Component {
         // movement on x axis
         if (fox.Input.isKeyDown({key: this.keyLeft}) && canWalkLeft) {
             if(this.velocity.y === 0) object.getComponent({name: "animator"}).setActiveAnimation({name:"runLeft"})
-            this.accelerateX({direction: -1, timestep: timestep});
+            this.accelerateX({direction: -1, timestep: 1});
         } else if (fox.Input.isKeyDown({key: this.keyRight}) && canWalkLeft) {
             if(this.velocity.y === 0) object.getComponent({name: "animator"}).setActiveAnimation({name:"runRight"})
-            this.accelerateX({direction: 1, timestep: timestep});
+            this.accelerateX({direction: 1, timestep: 1});
         } else if(!canWalkLeft || !canWalkRight) {
             this.velocity.x = 0
         }else {
-            this.decelerateX({timestep: timestep});
+            this.decelerateX({timestep: 1});
         }
 
-        object.position = object.position.add({vector: this.velocity})
+        object.position = object.position.add({vector: this.velocity.hadamard({vector: new Vec2D({x: timestep, y:timestep})})})
     }
 }
 

@@ -22,6 +22,6 @@ export class TimingPlatform extends fox.Component {
                 this.platform.platform.applyTexture()
             }
         }
-        this.framecounter++
+        this.framecounter += timestep
     }
 }
