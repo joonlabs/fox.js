@@ -36,7 +36,7 @@ export class Texture extends Asset {
         }
 
         this.rendererData = {
-            texture : undefined
+            texture: undefined
         }
 
         if (src !== undefined) {
@@ -60,7 +60,7 @@ export class Texture extends Asset {
         }
     }
 
-    static fromCanvas({canvas, ctx}){
+    static fromCanvas({canvas, ctx}) {
         let instance = new Texture({src: undefined, width: canvas.width, height: canvas.height})
         instance.rendering.canvas = canvas
         instance.rendering.ctx = ctx || canvas.getContext("2d")
@@ -74,7 +74,7 @@ export class Texture extends Asset {
      * Returns the id of the texture
      * @returns {string}
      */
-    getId(){
+    getId() {
         return this.id
     }
 

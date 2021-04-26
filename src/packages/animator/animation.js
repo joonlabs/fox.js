@@ -24,10 +24,10 @@ export class Animation {
      * @returns {*}
      */
     getTexture({frame}) {
-        if(!this.loop && frame >= this.animationLength){
+        if (!this.loop && frame >= this.animationLength) {
             // returns the last frame
-            return this.frames[this.frames.length-1].texture
-        }else{
+            return this.frames[this.frames.length - 1].texture
+        } else {
             // calculate current texture
             let frameTime = frame % this.animationLength
 

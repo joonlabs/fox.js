@@ -88,7 +88,7 @@ export class Sprite extends GameObject {
      * Changes the current textures and applies the change
      * @param texture Texture to be displayed
      */
-    setTexture({texture}){
+    setTexture({texture}) {
         this.texture = texture
         this.applyTexture()
     }

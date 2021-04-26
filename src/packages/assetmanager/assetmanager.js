@@ -1,5 +1,5 @@
 /**
- * Represents the AssetManager of the game engine. It is responsible 
+ * Represents the AssetManager of the game engine. It is responsible
  * for holding all necessary assets in a global and static scope.
  * @class AssetManager
  */
@@ -47,10 +47,10 @@ export class AssetManager {
      * @returns {object}
      */
     static getTexture({name} = {}) {
-        if(AssetManager.objects.texture[name] !== undefined){
+        if (AssetManager.objects.texture[name] !== undefined) {
             return AssetManager.objects.texture[name]
         }
-        console.warn("src: assetmanager: the texture you are trying to load does not exists: \""+name+"\"")
+        console.warn("src: assetmanager: the texture you are trying to load does not exists: \"" + name + "\"")
     }
 
     /**

@@ -11,13 +11,13 @@ export class Application {
      * Construct method of the object
      * @returns Application
      */
-    constructor({width, height, renderer, logFPS} = {}) {
+    constructor({width, height, renderer, logFPS, minFrameTime} = {}) {
         let _this = this
 
         this.scenes = {
             all: [],
             active: undefined,
-            activeName : undefined
+            activeName: undefined
         }
 
         //settings
@@ -34,15 +34,15 @@ export class Application {
         }
 
         this.frames = {
-            "frame": 0,
+            frame: 0,
+            minFrameTime: minFrameTime !== undefined ? Math.floor(1000 / minFrameTime) : undefined,
+            lastTimestamp: undefined
         }
 
-        this.fps = {
-            "starttime": undefined,
-            "rate": 1000 / 60,
-            "deltatime": 0,
-            "timestep": 1,
-            "maxskippingframes": 5
+        this.time = {
+            startTime: undefined,
+            deltaTime: 0,
+            timestep: 1
         }
 
         if (logFPS) {
@@ -81,14 +81,22 @@ export class Application {
      */
     render(timestamp, _this = this) {
         //calc fps rate
-        if (_this.fps.starttime === undefined) {
-            _this.fps.starttime = timestamp
-            _this.fps.lastFrame = Math.round((timestamp - _this.fps.starttime) / _this.fps.rate)
+        if (_this.time.startTime === undefined) {
+            _this.time.startTime = timestamp
+            _this.frames.lastTimestamp = timestamp
         } else {
-            let currentFrame = Math.round((timestamp - _this.fps.starttime) / _this.fps.rate);
-            _this.fps.deltatime = (currentFrame - _this.fps.lastFrame) * (1000 / 60);
-            _this.fps.timestep = Math.min(_this.fps.deltatime / _this.fps.rate, _this.fps.maxskippingframes)
-            _this.fps.lastFrame = currentFrame
+            let deltaTime = timestamp - _this.frames.lastTimestamp
+            _this.frames.lastTimestamp = timestamp
+            _this.time.deltaTime += deltaTime
+
+            if (_this.time.minFrameTime !== undefined && _this.time.deltaTime < _this.frames.minFrameTime) {
+                window.requestAnimationFrame(function (t) {
+                    _this.render(t, _this)
+                })
+                return
+            }
+
+            _this.time.timestep = _this.time.deltaTime / (1000 / 60)
         }
 
         // TODO: check every timestep needed?
@@ -98,13 +106,17 @@ export class Application {
             if (_this.project.logFPS) this.stats.begin()
 
             // calc the next frame
-            _this.scenes.active.calc({timestep: _this.fps.timestep})
+            _this.scenes.active.calc({timestep: _this.time.timestep})
 
             // render the camera-views to the offscreen canvases
             _this.scenes.active.render({app: _this})
 
             if (_this.project.logFPS) this.stats.end()
         }
+
+        // reset delta time
+        _this.time.deltaTime = 0
+
         window.requestAnimationFrame(function (t) {
             _this.render(t, _this)
         })
@@ -140,8 +152,8 @@ export class Application {
     /**
      * Destructs the current scene
      */
-    destroyCurrentScene(){
-        if(this.scenes.activeName){
+    destroyCurrentScene() {
+        if (this.scenes.activeName) {
             this.scenes.all[this.scenes.activeName].destroy()
         }
     }
@@ -149,7 +161,7 @@ export class Application {
     /**
      * Re-inits the current scene
      */
-    reloadCurrentScene(){
+    reloadCurrentScene() {
         // destroy current scene
         this.destroyCurrentScene()
 
@@ -160,7 +172,7 @@ export class Application {
     /**
      * Re-inits the current scene
      */
-    getCurrentSceneName(){
+    getCurrentSceneName() {
         // init scene
         return this.scenes.activeName
     }

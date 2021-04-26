@@ -17,33 +17,35 @@ export class Scene {
         this.cameras = {
             all: [],
         }
-        this.onInitFn = function(){}
-        this.onDestroyFn = function(){}
+        this.onInitFn = function () {
+        }
+        this.onDestroyFn = function () {
+        }
     }
 
     /**
      * Is called when the scene is loaded by the application and inits all layers and their renderers
      */
-    init(){
-        if(typeof this.onInitFn === "function"){
+    init() {
+        if (typeof this.onInitFn === "function") {
             this.onInitFn()
         }
-        for(let layer of this.layers){
+        for (let layer of this.layers) {
             layer.init()
         }
         this.initialized = true
     }
 
-    onInit({callback}){
+    onInit({callback}) {
         this.onInitFn = callback
     }
 
-    destroy(){
-        if(this.initialized){
-            for(let layer of this.layers){
+    destroy() {
+        if (this.initialized) {
+            for (let layer of this.layers) {
                 layer.destroy()
             }
-            if(typeof this.onDestroyFn === "function"){
+            if (typeof this.onDestroyFn === "function") {
                 this.onDestroyFn()
             }
 
@@ -57,7 +59,7 @@ export class Scene {
         }
     }
 
-    onDestroy({callback}){
+    onDestroy({callback}) {
         this.onDestroyFn = callback
     }
 

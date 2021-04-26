@@ -3,7 +3,7 @@ import {Component} from "../components/index.js";
 /**
  * An Animator is a GameObject-Component for Sprites that holds different animations and changes them accordingly.
  */
-export class Animator extends Component{
+export class Animator extends Component {
     /**
      * Creates an Animator object.
      * @param {object} animations Animations mapped by name (e.g. [{"idleAnim":Animation}])
@@ -20,12 +20,13 @@ export class Animator extends Component{
 
     /**
      * Called every frame, up to 60 times per second
+     * @param {number} timestep
      * @param {object} object
      */
-    onCalc({object} = {}) {
-        this.framecounter ++
+    onCalc({timestep, object} = {}) {
+        this.framecounter += timestep
 
-        object.texture = this.animations[this.activeAnimation].getTexture({frame:this.framecounter})
+        object.texture = this.animations[this.activeAnimation].getTexture({frame: parseInt(this.framecounter)})
         object.applyTexture()
     }
 
@@ -33,8 +34,8 @@ export class Animator extends Component{
      * Changes the active animation by the name provided in the animations parameter of the constructor.
      * @param {string} name Name of the animation
      */
-    setActiveAnimation({name}){
-        if(this.activeAnimation!==name){
+    setActiveAnimation({name}) {
+        if (this.activeAnimation !== name) {
             this.activeAnimation = name
             this.framecounter = 0
         }

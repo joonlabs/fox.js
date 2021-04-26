@@ -31,7 +31,7 @@ export class Canvas2D extends Renderer {
         this.canvas.setAttribute("style", "image-rendering: optimizeSpeed; image-rendering: -moz-crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: -o-crisp-edges; image-rendering: pixelated;")
     }
 
-    getCanvas(){
+    getCanvas() {
         return this.canvas
     }
 
@@ -205,9 +205,9 @@ export class Canvas2D extends Renderer {
 
         //console.log({texture, x, y, width, height, rotation, rotationPosition})
 
-        if(srcX!==undefined && srcY!==undefined && width!==undefined && height!==undefined){
+        if (srcX !== undefined && srcY !== undefined && width !== undefined && height !== undefined) {
             this.ctx.drawImage(texture.getTexture(), srcX, srcY, width, height, x, y, width, height)
-        }else if (width && height) {
+        } else if (width && height) {
             this.ctx.drawImage(texture.getTexture(), x, y, width, height)
         } else {
             this.ctx.drawImage(texture.getTexture(), x, y)

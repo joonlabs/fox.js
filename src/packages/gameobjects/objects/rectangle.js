@@ -34,7 +34,7 @@ export class Rectangle extends GameObject {
             tag: tag
         })
 
-        this.color = color  || new Color()
+        this.color = color || new Color()
     }
 
 
@@ -45,7 +45,7 @@ export class Rectangle extends GameObject {
      */
     calc({timestep} = {}) {
         for (let component of this.components) {
-            if (typeof component.onCalc === "function"){
+            if (typeof component.onCalc === "function") {
                 component.onCalc({
                     timestep: timestep,
                     object: this

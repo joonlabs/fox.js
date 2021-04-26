@@ -155,7 +155,7 @@ export class ParticleSystem extends GameObject {
     render({x, y, width, height, camera, renderer}, _this = this) {
         if (_this.state !== 0) {
             for (let particle of _this.pool) {
-                if (!particle.dead){
+                if (!particle.dead) {
                     particle.render({
                         x: x,
                         y: y,

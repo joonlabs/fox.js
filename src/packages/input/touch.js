@@ -1,9 +1,9 @@
 /**
-* The Touch represents a touch input caused by a touchscreen (gesture)
-*
-* @class Touch
-*/
-export class Touch{
+ * The Touch represents a touch input caused by a touchscreen (gesture)
+ *
+ * @class Touch
+ */
+export class Touch {
     /**
      * Construct method of the object
      * @param {number} x X-position of the collider
@@ -11,11 +11,11 @@ export class Touch{
      * @param {string} identifier Identifier of the touch
      * @returns Touch
      */
-    constructor({identifier, x, y}){
+    constructor({identifier, x, y}) {
         this.identifier = identifier
         this.position = {
-            "x" : x,
-            "y" : y,
+            "x": x,
+            "y": y,
         }
     }
 }

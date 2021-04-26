@@ -34,14 +34,14 @@ export class Layer {
         this.objectmanager = new ObjectManager()
     }
 
-    getId(){
+    getId() {
         return this.id
     }
 
     /**
      * Is called by the scene, when the scene is initialized
      */
-    init(){
+    init() {
         // initiate the renderer if not done
         this.renderer.init({
             width: this.dimensions.width,
@@ -50,7 +50,7 @@ export class Layer {
         })
     }
 
-    destroy(){
+    destroy() {
         this.renderer.destroy()
         this.objectmanager.destroy()
     }
@@ -136,7 +136,7 @@ export class Layer {
      * @param {string} name Name of the objects
      * @returns {any}
      */
-    getObject({name}){
+    getObject({name}) {
         return this.objectmanager.getObject({name: name})
     }
 

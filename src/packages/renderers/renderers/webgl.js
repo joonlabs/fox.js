@@ -8,13 +8,13 @@ import {Texture} from "../../assets/assets/index.js";
  *
  * @class Canvas2D
  */
-export class WebGL extends Renderer{
+export class WebGL extends Renderer {
     /**
      * Construct method of the object
      * @method constructor
      * @returns Canvas2D
      */
-    constructor(){
+    constructor() {
         super()
     }
 
@@ -26,11 +26,11 @@ export class WebGL extends Renderer{
 
         //physical objects for rendering purposes
         useOffscreenCanvas = useOffscreenCanvas || false
-        if(useOffscreenCanvas && window.OffscreenCanvas !== undefined){
+        if (useOffscreenCanvas && window.OffscreenCanvas !== undefined) {
             this.canvas = new OffscreenCanvas(width, height)
             this.ctx = this.canvas.getContext("webgl2")
             Utils.info("src: webgl: support for OffscreenCanvas detected and used")
-        }else{
+        } else {
             this.canvas = document.createElement("canvas")
             this.canvas.width = width
             this.canvas.height = height
@@ -59,10 +59,10 @@ export class WebGL extends Renderer{
         this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.positionBuffer);
 
         // enable alpha blending for overlapping textures
-        if(!useLightingShaders){
+        if (!useLightingShaders) {
             this.ctx.enable(this.ctx.BLEND);
             this.ctx.blendFunc(this.ctx.SRC_ALPHA, this.ctx.ONE_MINUS_SRC_ALPHA);
-        }else{
+        } else {
             this.ctx.enable(this.ctx.BLEND);
             this.ctx.blendFunc(this.ctx.ONE, this.ctx.ONE);
             this.ctx.blendEquation(this.ctx.FUNC_REVERSE_SUBTRACT)
@@ -107,9 +107,9 @@ export class WebGL extends Renderer{
 
         this.ctx.viewport(0, 0, this.canvas.width, this.canvas.height);
     }
-    
+
     destroy() {
-        for(let texture of Object.values(this.webGLTextureStore)){
+        for (let texture of Object.values(this.webGLTextureStore)) {
             this.ctx.deleteTexture(texture)
         }
         this.ctx.getExtension('WEBGL_lose_context').loseContext();
@@ -119,11 +119,11 @@ export class WebGL extends Renderer{
     /**
      * Clears the canvas buffer
      */
-    clear({color}={}){
-        if(color){
-            this.ctx.clearColor(color.r/255, color.g/255, color.b/255, color.a)
+    clear({color} = {}) {
+        if (color) {
+            this.ctx.clearColor(color.r / 255, color.g / 255, color.b / 255, color.a)
             this.ctx.clear(this.ctx.COLOR_BUFFER_BIT)
-        }else{
+        } else {
             this.ctx.clearColor(1, 1, 1, 1)
             this.ctx.clear(this.ctx.COLOR_BUFFER_BIT)
         }
@@ -142,11 +142,11 @@ export class WebGL extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    fillRect({x, y, width, height, rotation, rotationPosition, color, ctx}){
+    fillRect({x, y, width, height, rotation, rotationPosition, color, ctx}) {
         // create texture
         let tex = this.ctx.createTexture()
         this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex)
-        this.ctx.texImage2D(this.ctx.TEXTURE_2D, 0, this.ctx.RGBA, 1, 1, 0, this.ctx.RGBA, this.ctx.UNSIGNED_BYTE, new Uint8Array([color.r, color.g, color.b, color.a*255]))
+        this.ctx.texImage2D(this.ctx.TEXTURE_2D, 0, this.ctx.RGBA, 1, 1, 0, this.ctx.RGBA, this.ctx.UNSIGNED_BYTE, new Uint8Array([color.r, color.g, color.b, color.a * 255]))
 
         // this matrix will convert from pixels to clip space
         let matrix = M4.orthographic(0, this.canvas.width, this.canvas.height, 0, -1, 1);
@@ -189,7 +189,7 @@ export class WebGL extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color, ctx}){
+    strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color, ctx}) {
         Utils.warn("src: webgl: strokeRect is not available in the WebGL-Renderer.")
     }
 
@@ -207,7 +207,7 @@ export class WebGL extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color, ctx}){
+    fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color, ctx}) {
         Utils.warn("src: webgl: fillCircle is not available in the WebGL-Renderer.")
     }
 
@@ -227,7 +227,7 @@ export class WebGL extends Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color, ctx}){
+    strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color, ctx}) {
         Utils.warn("src: webgl: strokeCircle is not available in the WebGL-Renderer.")
     }
 
@@ -249,7 +249,20 @@ export class WebGL extends Renderer{
      * @param {boolean} forceTextureUpload If true, it forces a re-upload of the txeture's content onto the webgl texture via webgl.texImage2D(...)
      * @return {void}
      */
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition, srcX, srcY, texWidth, texHeight, forceTextureUpload}) {
+    renderTexture({
+                      texture,
+                      x,
+                      y,
+                      width,
+                      height,
+                      rotation,
+                      rotationPosition,
+                      srcX,
+                      srcY,
+                      texWidth,
+                      texHeight,
+                      forceTextureUpload
+                  }) {
         srcX = srcX || 0
         srcY = srcY || 0
         texWidth = texWidth || width
@@ -257,14 +270,14 @@ export class WebGL extends Renderer{
         forceTextureUpload = forceTextureUpload || false
 
         // ensure texture is a src.Assets.Texture object
-        if(!texture instanceof Texture){
+        if (!texture instanceof Texture) {
             console.error("src: webgl: renderTexture(...) expects argument texture to be element of Texture.", texture)
         }
 
         // check if texture does not have already a webgl-texture-binding
         let tex,
             textureId = texture.getId()
-        if(forceTextureUpload || !(textureId in this.webGLTextureStore)){
+        if (forceTextureUpload || !(textureId in this.webGLTextureStore)) {
             // create the webgl texture
             tex = this.ctx.createTexture()
             this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex);
@@ -276,12 +289,12 @@ export class WebGL extends Renderer{
             this.ctx.texParameteri(this.ctx.TEXTURE_2D, this.ctx.TEXTURE_WRAP_T, this.ctx.CLAMP_TO_EDGE);
 
             this.webGLTextureStore[textureId] = tex
-        }else{
+        } else {
             // load the existing webgl texture
             tex = this.webGLTextureStore[textureId]
             this.ctx.bindTexture(this.ctx.TEXTURE_2D, tex);
         }
-        
+
         // this matrix will convert from pixels to clip space
         let matrix = M4.orthographic(0, this.canvas.width, this.canvas.height, 0, -1, 1);
 
@@ -289,10 +302,10 @@ export class WebGL extends Renderer{
             // rotate, scale and position matrix
             matrix = M4.translate(matrix, x, y, 0);
             matrix = M4.translate(matrix, rotationPosition.x, rotationPosition.y, 0);
-            matrix = M4.translate(matrix, rotationPosition.x/width, rotationPosition.y/height, 0);
+            matrix = M4.translate(matrix, rotationPosition.x / width, rotationPosition.y / height, 0);
             matrix = M4.axisRotate(matrix, [0, 0, 1], rotation)
             matrix = M4.scale(matrix, width, height, 1);
-            matrix = M4.translate(matrix, -rotationPosition.x/width, -rotationPosition.y/height, 0);
+            matrix = M4.translate(matrix, -rotationPosition.x / width, -rotationPosition.y / height, 0);
         } else {
             // scale and position matrix
             matrix = M4.translate(matrix, x, y, 0);
@@ -306,8 +319,8 @@ export class WebGL extends Renderer{
         // and because our texture coordinates are already a unit quad
         // we can select an area of the texture by scaling the unit quad
         // down
-        let texMatrix = M4.translation(srcX/texWidth, srcY/texHeight, 0);
-        texMatrix = M4.scale(texMatrix, width/texWidth, height/texHeight, 1);
+        let texMatrix = M4.translation(srcX / texWidth, srcY / texHeight, 0);
+        texMatrix = M4.scale(texMatrix, width / texWidth, height / texHeight, 1);
 
         // Set the texture matrix.
         this.ctx.uniformMatrix4fv(this.textureMatrixLocation, false, texMatrix);
@@ -317,8 +330,8 @@ export class WebGL extends Renderer{
     }
 }
 
-class WebGLUtils{
-    static get _vertexShader(){
+class WebGLUtils {
+    static get _vertexShader() {
         return `
             attribute vec4 a_position;
             attribute vec2 a_texcoord;
@@ -335,7 +348,7 @@ class WebGLUtils{
         `
     }
 
-    static get _fragmentShader(){
+    static get _fragmentShader() {
         return `
             precision mediump float;
 
@@ -357,7 +370,7 @@ class WebGLUtils{
         `
     }
 
-    static get _fragmentShaderLighning(){
+    static get _fragmentShaderLighning() {
         return `
             precision mediump float;
 
@@ -389,10 +402,10 @@ class WebGLUtils{
      * Creates the shader programs by compiling the vertex and the fragment shader
      * @param ctx
      */
-    static createProgram({ctx}){
+    static createProgram({ctx}) {
         let shaders = [
-            WebGLUtils._compileShader({ctx:ctx, type:"VERTEX_SHADER", source:WebGLUtils._vertexShader}),
-            WebGLUtils._compileShader({ctx:ctx, type:"FRAGMENT_SHADER", source:WebGLUtils._fragmentShader})
+            WebGLUtils._compileShader({ctx: ctx, type: "VERTEX_SHADER", source: WebGLUtils._vertexShader}),
+            WebGLUtils._compileShader({ctx: ctx, type: "FRAGMENT_SHADER", source: WebGLUtils._fragmentShader})
         ]
         return WebGLUtils._linkProgram({ctx: ctx, shaders: shaders})
     }
@@ -401,10 +414,10 @@ class WebGLUtils{
      * Creates the shader programs by compiling the vertex and the fragment shader
      * @param ctx
      */
-    static createProgramLighting({ctx}){
+    static createProgramLighting({ctx}) {
         let shaders = [
-            WebGLUtils._compileShader({ctx:ctx, type:"VERTEX_SHADER", source:WebGLUtils._vertexShader}),
-            WebGLUtils._compileShader({ctx:ctx, type:"FRAGMENT_SHADER", source:WebGLUtils._fragmentShaderLighning})
+            WebGLUtils._compileShader({ctx: ctx, type: "VERTEX_SHADER", source: WebGLUtils._vertexShader}),
+            WebGLUtils._compileShader({ctx: ctx, type: "FRAGMENT_SHADER", source: WebGLUtils._fragmentShaderLighning})
         ]
         return WebGLUtils._linkProgram({ctx: ctx, shaders: shaders})
     }
@@ -416,15 +429,15 @@ class WebGLUtils{
      * @returns {null|*|WebGLProgram}
      * @private
      */
-    static _linkProgram({ctx, shaders}){
+    static _linkProgram({ctx, shaders}) {
         let program = ctx.createProgram()
-        shaders.forEach(function(shader){
+        shaders.forEach(function (shader) {
             ctx.attachShader(program, shader)
         })
         ctx.linkProgram(program)
 
         let linked = ctx.getProgramParameter(program, ctx.LINK_STATUS);
-        if(!linked){
+        if (!linked) {
             console.warn("src: webgl: program could not be linked.", program, ctx.getProgramInfoLog(program))
             ctx.deleteProgram(program)
             return null
@@ -440,13 +453,13 @@ class WebGLUtils{
      * @param source
      * @returns {WebGLShader|null}
      */
-    static _compileShader({ctx, type, source}){
+    static _compileShader({ctx, type, source}) {
         let shader = ctx.createShader(ctx[type])
         ctx.shaderSource(shader, source)
         ctx.compileShader(shader)
 
         let compiled = ctx.getShaderParameter(shader, ctx.COMPILE_STATUS)
-        if(!compiled){
+        if (!compiled) {
             console.warn("src: webgl: shader could not be compiled.", shader, ctx.getShaderInfoLog(shader))
             ctx.deleteShader(shader)
             return null

@@ -1,23 +1,23 @@
 /**
- * Represents the blueprint for all asset based objects, like images, audios, animations... 
+ * Represents the blueprint for all asset based objects, like images, audios, animations...
  * @class Asset
  */
-export class Asset{
+export class Asset {
     /**
-    * Constructs the Asset Object 
+     * Constructs the Asset Object
 
-    * @return Asset
-    */
-    constructor(){
+     * @return Asset
+     */
+    constructor() {
         this.loaded = false
     }
-    
-    
+
+
     /**
-    * Returns the raw data of the object
-    * @return {object}
-    */
-    getData(_this=this){
-        
+     * Returns the raw data of the object
+     * @return {object}
+     */
+    getData(_this = this) {
+
     }
 }

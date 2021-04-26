@@ -1,39 +1,39 @@
 /**
-* The Renderer class provides the blueprint for all renderers (e.g. the basic canvas2d renderer)
-*
-* @class Renderer
-*/
-export class Renderer{
+ * The Renderer class provides the blueprint for all renderers (e.g. the basic canvas2d renderer)
+ *
+ * @class Renderer
+ */
+export class Renderer {
     /**
      * Construct method of the object
      * @method constructor
      * @returns Renderer
      */
-    constructor(){
+    constructor() {
         this.canvas = undefined
         this.ctx = undefined
         this.initialized = false
     }
 
-    getCanvas(){
+    getCanvas() {
         return this.canvas
     }
 
-    init(){
+    init() {
         this.initialized = true
     }
 
-    destroy(){
+    destroy() {
         this.ctx = null
         this.canvas = null
         this.initialized = false
     }
 
-    isInitialized(){
+    isInitialized() {
         return this.initialized
     }
-    
-    
+
+
     /**
      * Clears the canvases buffer
      * @method clearRect
@@ -44,10 +44,10 @@ export class Renderer{
      * @param {object} layer Layer to be cleared
      * @return {void}
      */
-    clearRect({x, y, width, height, layer}){
+    clearRect({x, y, width, height, layer}) {
         // to be implemented by child class
     }
-    
+
     /**
      * Fills a rect on the canvas
      * @method fillRect
@@ -61,10 +61,10 @@ export class Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    fillRect({x, y, width, height, rotation, rotationPosition, color, layer}){
+    fillRect({x, y, width, height, rotation, rotationPosition, color, layer}) {
         // to be implemented by child class
     }
-    
+
     /**
      * Strokes a rect on the canvas
      * @method strokeRect
@@ -79,10 +79,10 @@ export class Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color, layer}){
+    strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color, layer}) {
         // to be implemented by child class
     }
-    
+
     /**
      * Fills a cirlce on the canvas
      * @method fillCircle
@@ -98,10 +98,10 @@ export class Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color, layer}){
+    fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color, layer}) {
         // to be implemented by child class
     }
-    
+
     /**
      * Strokes a cirlce on the canvas
      * @method strokeCircle
@@ -118,7 +118,7 @@ export class Renderer{
      * @param {object} layer Layer to be rendered to
      * @return {void}
      */
-    strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color, layer}){
+    strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color, layer}) {
         // to be implemented by child class
     }
 }

@@ -91,7 +91,7 @@ export class GameObject {
      * Calls the onBeforeRender method in all components
      * @param {Renderer} renderer Renderer to be used
      */
-    onBeforeRender({renderer}){
+    onBeforeRender({renderer}) {
         for (let component of Object.values(this.components)) {
             if (typeof component.onBeforeRender === "function") {
                 component.onBeforeRender({
@@ -106,9 +106,9 @@ export class GameObject {
      * Calls the onAfterRender method in all components
      * @param {Renderer} renderer Renderer to be used
      */
-    onAfterRender({renderer}){
+    onAfterRender({renderer}) {
         for (let component of Object.values(this.components)) {
-            if (typeof component.onAfterRender === "function"){
+            if (typeof component.onAfterRender === "function") {
                 component.onAfterRender({
                     object: this,
                     renderer: renderer
@@ -151,7 +151,7 @@ export class GameObject {
      * @param {string} name Name of the component
      * @returns {*}
      */
-    getComponent({name}){
+    getComponent({name}) {
         return this.components[name]
     }
 
