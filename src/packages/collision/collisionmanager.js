@@ -14,7 +14,7 @@ export class CollisionManager {
      */
     static colliding({obj1, obj2} = {}) {
         if (!(obj1 instanceof Colliders.Collider) || !(obj2 instanceof Colliders.Collider)) {
-            console.warn("src: collisions: you're asking for a collision between (at least) one non-collider object. fix that. ")
+            console.warn("fox: collisions: you're asking for a collision between (at least) one non-collider object. fix that. ")
             console.trace()
         }
         if (obj1.constructor.name === "RectangleCollider" && obj2.constructor.name === "RectangleCollider") {

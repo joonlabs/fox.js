@@ -55,7 +55,7 @@ export class Texture extends Asset {
                 _this.dimensions = new Vectors.Vec2D({x: img.width, y: img.height})
             }
             img.onerror = function () {
-                console.error("src: asset: texture: failed to load resource '" + src + "'")
+                console.error("fox: asset: texture: failed to load resource '" + src + "'")
             }
         }
     }

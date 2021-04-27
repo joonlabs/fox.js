@@ -94,7 +94,7 @@ export class Particle extends GameObject {
         this.onBeforeRender({renderer: renderer})
 
         if (!this.renderObject) {
-            Utils.warn("src: particle: You're trying to render a particle, that has no render object. " +
+            Utils.warn("fox: particle: You're trying to render a particle, that has no render object. " +
                 "please specify any kind of gameobject e.g. a rectangle")
         }
         x = x + this.position.x

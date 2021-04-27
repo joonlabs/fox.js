@@ -72,7 +72,7 @@ export class Camera{
         for (let layer of layers) {
             if(this.viewport.width > layer.dimensions.width
                 || this.viewport.height > layer.dimensions.height){
-                Utils.warn("src: camera: this camera's viewport is bigger than at least one layer. this can cause the renderer to not render the layer.", this, layer)
+                Utils.warn("fox: camera: this camera's viewport is bigger than at least one layer. this can cause the renderer to not render the layer.", this, layer)
             }
 
             let viewPortWidth = Math.min(this.viewport.width, layer.dimensions.width),

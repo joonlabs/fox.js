@@ -24,7 +24,7 @@ export class GameObject {
         this.position = new Vectors.Vec2D({x: x, y: y})
 
         if (width === undefined || height === undefined) {
-            Utils.warn("src: gameobject: either a width or a height is missing, while creating this gameobject. keep in mind that this also sets the rotation position to (0,0).", this)
+            Utils.warn("fox: gameobject: either a width or a height is missing, while creating this gameobject. keep in mind that this also sets the rotation position to (0,0).", this)
         }
 
         this.dimensions = {

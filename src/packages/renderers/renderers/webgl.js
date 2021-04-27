@@ -29,7 +29,7 @@ export class WebGL extends Renderer {
         if (useOffscreenCanvas && window.OffscreenCanvas !== undefined) {
             this.canvas = new OffscreenCanvas(width, height)
             this.ctx = this.canvas.getContext("webgl2")
-            Utils.info("src: webgl: support for OffscreenCanvas detected and used")
+            Utils.info("fox: webgl: support for OffscreenCanvas detected and used")
         } else {
             this.canvas = document.createElement("canvas")
             this.canvas.width = width
@@ -190,7 +190,7 @@ export class WebGL extends Renderer {
      * @return {void}
      */
     strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color, ctx}) {
-        Utils.warn("src: webgl: strokeRect is not available in the WebGL-Renderer.")
+        Utils.warn("fox: webgl: strokeRect is not available in the WebGL-Renderer.")
     }
 
     /**
@@ -208,7 +208,7 @@ export class WebGL extends Renderer {
      * @return {void}
      */
     fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color, ctx}) {
-        Utils.warn("src: webgl: fillCircle is not available in the WebGL-Renderer.")
+        Utils.warn("fox: webgl: fillCircle is not available in the WebGL-Renderer.")
     }
 
 
@@ -228,7 +228,7 @@ export class WebGL extends Renderer {
      * @return {void}
      */
     strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color, ctx}) {
-        Utils.warn("src: webgl: strokeCircle is not available in the WebGL-Renderer.")
+        Utils.warn("fox: webgl: strokeCircle is not available in the WebGL-Renderer.")
     }
 
 
@@ -271,7 +271,7 @@ export class WebGL extends Renderer {
 
         // ensure texture is a src.Assets.Texture object
         if (!texture instanceof Texture) {
-            console.error("src: webgl: renderTexture(...) expects argument texture to be element of Texture.", texture)
+            console.error("fox: webgl: renderTexture(...) expects argument texture to be element of Texture.", texture)
         }
 
         // check if texture does not have already a webgl-texture-binding
@@ -438,7 +438,7 @@ class WebGLUtils {
 
         let linked = ctx.getProgramParameter(program, ctx.LINK_STATUS);
         if (!linked) {
-            console.warn("src: webgl: program could not be linked.", program, ctx.getProgramInfoLog(program))
+            console.warn("fox: webgl: program could not be linked.", program, ctx.getProgramInfoLog(program))
             ctx.deleteProgram(program)
             return null
         }
@@ -460,7 +460,7 @@ class WebGLUtils {
 
         let compiled = ctx.getShaderParameter(shader, ctx.COMPILE_STATUS)
         if (!compiled) {
-            console.warn("src: webgl: shader could not be compiled.", shader, ctx.getShaderInfoLog(shader))
+            console.warn("fox: webgl: shader could not be compiled.", shader, ctx.getShaderInfoLog(shader))
             ctx.deleteShader(shader)
             return null
         }

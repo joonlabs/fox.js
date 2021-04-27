@@ -26,7 +26,7 @@ export class Lighting extends Layer {
         this.canRenderWithWebGL = true
 
         if (!Utils.isWebGLAvailable()) {
-            Utils.warn("src: Layer.Lighting: To support light, make sure WebGL is supported by your browser")
+            Utils.warn("fox: Layer.Lighting: To support light, make sure WebGL is supported by your browser")
             this.canRenderWithWebGL = false
         }
 

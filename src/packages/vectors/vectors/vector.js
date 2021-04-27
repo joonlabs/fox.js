@@ -23,7 +23,7 @@ export class Vector {
      */
     add({vector} = {}, _this = this) {
         if (vector.constructor.name !== "Vec2D" || _this.constructor.name !== "Vec2D") {
-            console.warn("src: vector: you're trying to add at least one object that is not a vector. this operation failed.");
+            console.warn("fox: vector: you're trying to add at least one object that is not a vector. this operation failed.");
             return;
         }
         return new Vec2D({x: vector.x + _this.x, y: vector.y + _this.y})
@@ -38,7 +38,7 @@ export class Vector {
      */
     sub({vector} = {}, _this = this) {
         if (vector.constructor.name !== "Vec2D" || _this.constructor.name !== "Vec2D") {
-            console.warn("src: vector: you're trying to subtract at least one object that is not a vector. this operation failed.");
+            console.warn("fox: vector: you're trying to subtract at least one object that is not a vector. this operation failed.");
             return;
         }
         return new Vec2D({x: _this.x - vector.x, y: _this.y - vector.y})
