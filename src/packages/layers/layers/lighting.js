@@ -23,9 +23,11 @@ export class Lighting extends Layer {
         })
 
         this.globalLight = globalLight || 0
+        this.canRenderWithWebGL = true
 
         if (!Utils.isWebGLAvailable()) {
             Utils.warn("src: Layer.Lighting: To support light, make sure WebGL is supported by your browser")
+            this.canRenderWithWebGL = false
         }
 
         this.backgroundColor = new Color({a: 1 - Math.min(1, Math.abs(this.globalLight))})
@@ -35,13 +37,24 @@ export class Lighting extends Layer {
      * Is called by the scene, when the scene is initialized
      */
     init() {
-        // re-init the renderer with lighting shaders
-        this.renderer.init({
-            width: this.dimensions.width,
-            height: this.dimensions.height,
-            useLightingShaders: true,
-            useOffscreenCanvas: true
-        })
+        if(this.canRenderWithWebGL){
+            // re-init the renderer with lighting shaders
+            this.renderer.init({
+                width: this.dimensions.width,
+                height: this.dimensions.height,
+                useLightingShaders: true,
+                useOffscreenCanvas: true
+            })
+        }
+    }
+
+    /**
+     * Is called in every loop after the calc method
+     */
+    render({offset, camera}) {
+        if(this.canRenderWithWebGL){
+            super.render({offset, camera});
+        }
     }
 
     /**
@@ -49,6 +62,8 @@ export class Lighting extends Layer {
      * @return {void}
      */
     clear(_this = this) {
-        this.renderer.clear({color: this.backgroundColor})
+        if(this.canRenderWithWebGL) {
+            this.renderer.clear({color: this.backgroundColor})
+        }
     }
 }

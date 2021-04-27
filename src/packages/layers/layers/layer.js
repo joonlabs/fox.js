@@ -1,6 +1,7 @@
-import {WebGL} from "../../renderers/renderers/webgl.js";
+import {WebGL, Canvas2D} from "../../renderers/renderers/index.js";
 import {ObjectManager} from '../../objectmanager/index.js'
 import {Random} from "../../random/index.js";
+import {Utils} from "../../utils/index.js";
 
 /**
  * The Layer represents the canvas that is added to the document's dom
@@ -28,7 +29,7 @@ export class Layer {
         this.scene = undefined
 
         // set the renderer and initiate
-        this.renderer = renderer || new WebGL()
+        this.renderer = renderer || (Utils.isWebGLAvailable() ? new WebGL() : new Canvas2D())
 
         //game stuff
         this.objectmanager = new ObjectManager()

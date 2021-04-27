@@ -40,7 +40,6 @@ scene.onInit({
         let layer = new fox.Layers.Canvas({
             width: 360,
             height: 260,
-            renderer: new fox.Renderers.WebGL(),
         })
         let lighting = new fox.Layers.Lighting({
             width: 360,
