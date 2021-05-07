@@ -64,11 +64,11 @@ export class PointLight extends GameObject {
 
     /**
      * Renders the PointLight with the renderer
-     * @param x X Position of the PointLight
-     * @param y Y Position of the PointLight
-     * @param renderer
+     * @param {number} x X Position of the PointLight
+     * @param {number} y Y Position of the PointLight
+     * @param {AbstractFramebuffer} framebuffer
      */
-    render({x, y, renderer} = {}) {
+    render({x, y, framebuffer} = {}) {
         let render_offset = {
             "x" : x,
             "y" : y,
@@ -79,13 +79,15 @@ export class PointLight extends GameObject {
             render_offset.y += (this.followingObject.position.y + this.followingObject.dimensions.height/2 - this.position.y)
         }
 
-        renderer.renderTexture({
+        // TODO draw lighting
+        /*
+        framebuffer.renderTexture({
             texture : this.lightMapTexture,
             x : render_offset.x - this.radius,
             y: render_offset.y - this.radius,
             width: this.dimensions.width,
             height: this.dimensions.height,
-            rotation: 0
-        })
+            lighting: true
+        })*/
     }
 }

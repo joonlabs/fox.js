@@ -1,6 +1,6 @@
 import fox from '../../../src/index.js'
 import {level01} from "./scenes/level01.js";
-import {level02 } from "./scenes/level02.js";
+import {level02} from "./scenes/level02.js";
 import {level03} from "./scenes/level03.js";
 import {level04} from "./scenes/level04.js";
 import {level05} from "./scenes/level05.js";
@@ -8,12 +8,14 @@ import {level06} from "./scenes/level06.js";
 import {level07} from "./scenes/level07.js";
 import {playground} from "./scenes/playground.js";
 import './assets.js'
+import {Renderers} from "../../../src/packages/renderers/index.js";
 
 // create the new application
 let app = new fox.Application({
     width: 360,
     height: 260,
-    logFPS: true
+    logFPS: true,
+    renderer: new Renderers.WebGL()
 })
 document.body.appendChild(app.view)
 

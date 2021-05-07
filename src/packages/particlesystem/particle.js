@@ -88,9 +88,10 @@ export class Particle extends GameObject {
      * @param {number} x X Position
      * @param {number} y Y Position
      * @param {Renderer} renderer Renderer to be used
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      * @returns {void}
      */
-    render({x, y, renderer} = {}) {
+    render({x, y, renderer, framebuffer} = {}) {
         this.onBeforeRender({renderer: renderer})
 
         if (!this.renderObject) {
@@ -102,7 +103,8 @@ export class Particle extends GameObject {
         this.renderObject.render({
             x: x,
             y: y,
-            renderer: renderer
+            renderer: renderer,
+            framebuffer: framebuffer
         })
 
         this.onAfterRender({renderer: renderer})

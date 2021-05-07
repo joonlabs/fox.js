@@ -1,4 +1,5 @@
 import {Renderer} from './renderer.js'
+import {Utils} from "../../utils/index.js"
 
 
 /**
@@ -56,6 +57,8 @@ export class Canvas2D extends Renderer {
      * @return {void}
      */
     fillRect({x, y, width, height, rotation, rotationPosition, color}) {
+        Utils.warn("src: canvas2d: The Canvas2D Renderer is deprecated.")
+
         if (rotation % (Math.PI * 2) !== 0) {
             this.ctx.save()
             this.ctx.translate(x + rotationPosition.x, y + rotationPosition.y)
@@ -87,6 +90,8 @@ export class Canvas2D extends Renderer {
      * @return {void}
      */
     strokeRect({x, y, width, height, rotation, rotationPosition, lineWidth, color}) {
+        Utils.warn("src: canvas2d: The Canvas2D Renderer is deprecated.")
+
         if (rotation % (Math.PI * 2) !== 0) {
             this.ctx.save()
             this.ctx.translate(x + rotationPosition.x, y + rotationPosition.y)
@@ -121,6 +126,8 @@ export class Canvas2D extends Renderer {
      * @return {void}
      */
     fillCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, color}) {
+        Utils.warn("src: canvas2d: The Canvas2D Renderer is deprecated.")
+
         if (rotation % (Math.PI * 2) !== 0) {
             this.ctx.save()
             this.ctx.translate(x, y)
@@ -159,6 +166,8 @@ export class Canvas2D extends Renderer {
      * @return {void}
      */
     strokeCircle({x, y, radius, rotation, rotationPosition, angleStart, angleEnd, lineWidth, color}) {
+        Utils.warn("src: canvas2d: The Canvas2D Renderer is deprecated.")
+
         if (rotation % (Math.PI * 2) !== 0) {
             this.ctx.save()
             this.ctx.translate(x, y)
@@ -195,6 +204,8 @@ export class Canvas2D extends Renderer {
      * @return {void}
      */
     renderTexture({texture, x, y, width, height, rotation, rotationPosition, srcX, srcY}) {
+        Utils.warn("src: canvas2d: The Canvas2D Renderer is deprecated.")
+
         if (rotation % (Math.PI * 2) !== 0) {
             this.ctx.save()
             this.ctx.translate(x + rotationPosition.x, y + rotationPosition.y)

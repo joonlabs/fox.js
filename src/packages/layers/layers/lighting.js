@@ -1,5 +1,4 @@
 import {Layer} from './layer.js'
-import {WebGL} from "../../renderers/renderers/webgl.js";
 import {Color} from "../../color/color.js";
 import {Utils} from "../../utils/utils.js";
 
@@ -18,8 +17,7 @@ export class Lighting extends Layer {
     constructor({width, height, globalLight} = {}) {
         super({
             width: width,
-            height: height,
-            renderer: new WebGL()
+            height: height
         })
 
         this.globalLight = globalLight || 0
@@ -35,13 +33,7 @@ export class Lighting extends Layer {
      * Is called by the scene, when the scene is initialized
      */
     init() {
-        // re-init the renderer with lighting shaders
-        this.renderer.init({
-            width: this.dimensions.width,
-            height: this.dimensions.height,
-            useLightingShaders: true,
-            useOffscreenCanvas: true
-        })
+
     }
 
     /**
@@ -49,6 +41,6 @@ export class Lighting extends Layer {
      * @return {void}
      */
     clear(_this = this) {
-        this.renderer.clear({color: this.backgroundColor})
+        //this.renderer.clear({color: this.backgroundColor})
     }
 }

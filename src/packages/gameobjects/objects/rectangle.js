@@ -58,12 +58,13 @@ export class Rectangle extends GameObject {
      * Is called every time the game updates, after the calc. Calls it's components render methods.
      * @param {number} x X Coordinate
      * @param {number} y Y Coordinate
-     * @param {number} renderer Renderer to be used
+     * @param {Renderer} renderer Renderer to be rendered with
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be used
      */
-    render({x, y, renderer} = {}) {
+    render({x, y, renderer, framebuffer} = {}) {
         this.onBeforeRender({renderer: renderer})
 
-        renderer.fillRect({
+        framebuffer.renderRectangle({
             x: x,
             y: y,
             width: this.dimensions.width,

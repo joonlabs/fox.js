@@ -26,11 +26,7 @@ export class Application {
             "height": height,
             "logFPS": logFPS || false,
             "pixelated": true,
-            "renderer": renderer || new Renderers.Canvas2D(),
-            // for rendering offscreen canvases to the view, the Canvas2D renderer is recommended,
-            // as webgl in safari and firefox can not mirror the canvas element directly into the buffer
-            // and for this reason drawing canvases takes way more time than in the canvas2d api. this may
-            // change when OffscreenCanvas() becomes supported in those browsers or this problem is adressed directly.
+            "renderer": renderer || new Renderers.WebGL(),
         }
 
         this.frames = {

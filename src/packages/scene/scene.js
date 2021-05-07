@@ -137,10 +137,11 @@ export class Scene {
 
     /**
      * Adds a camera to the engines cameras
-     * @param {object} camera Camera to be added
-     * @returns {void}
+     * @param {Camera} camera Camera to be added
+     * @returns {Scene}
      */
     addCamera({camera} = {}) {
+        camera.init({renderer: this.application.project.renderer})
         this.cameras.all.push(camera)
         return this
     }
