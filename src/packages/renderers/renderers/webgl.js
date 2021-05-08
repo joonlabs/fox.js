@@ -211,5 +211,4 @@ export class WebGL extends Renderer {
 
         this.gl.deleteTexture(tex)
     }
-
 }

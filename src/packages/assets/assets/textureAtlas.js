@@ -45,7 +45,7 @@ export class TextureAtlas extends Asset {
             _this.onTextureLoadedFn()
         }
         img.onerror = function () {
-            console.error("src: asset: texture: failed to load resource '" + src + "'")
+            console.error("fox: asset: texture: failed to load resource '" + src + "'")
         }
     }
 

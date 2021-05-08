@@ -50,7 +50,7 @@ export class AssetManager {
         if (AssetManager.objects.texture[name] !== undefined) {
             return AssetManager.objects.texture[name]
         }
-        console.warn("src: assetmanager: the texture you are trying to load does not exists: \"" + name + "\"")
+        console.warn("fox: assetmanager: the texture you are trying to load does not exists: \"" + name + "\"")
     }
 
     /**
@@ -77,7 +77,7 @@ export class AssetManager {
                 }
             })();
         } else {
-            console.warn("src: AssetManager: The texture you're subscribing the loaded event for does not exists")
+            console.warn("fox: AssetManager: The texture you're subscribing the loaded event for does not exists")
         }
     }
 
@@ -96,7 +96,7 @@ export class AssetManager {
                 }
             })();
         } else {
-            console.warn("src: AssetManager: The audio you've subscribed the loaded event for does not exists")
+            console.warn("fox: AssetManager: The audio you've subscribed the loaded event for does not exists")
         }
     }
 

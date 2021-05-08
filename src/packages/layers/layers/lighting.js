@@ -21,9 +21,11 @@ export class Lighting extends Layer {
         })
 
         this.globalLight = globalLight || 0
+        this.canRenderWithWebGL = true
 
         if (!Utils.isWebGLAvailable()) {
-            Utils.warn("src: Layer.Lighting: To support light, make sure WebGL is supported by your browser")
+            Utils.warn("fox: Layer.Lighting: To support light, make sure WebGL is supported by your browser")
+            this.canRenderWithWebGL = false
         }
 
         this.backgroundColor = new Color({a: 1 - Math.min(1, Math.abs(this.globalLight))})
@@ -33,7 +35,6 @@ export class Lighting extends Layer {
      * Is called by the scene, when the scene is initialized
      */
     init() {
-
     }
 
     /**

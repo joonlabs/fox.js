@@ -1,5 +1,6 @@
 import {ObjectManager} from '../../objectmanager/index.js'
 import {Random} from "../../random/index.js";
+import {Utils} from "../../utils/index.js";
 
 /**
  * The Layer represents the canvas that is added to the document's dom
