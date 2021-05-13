@@ -1,10 +1,8 @@
 import {Renderer} from './renderer.js'
-import {Utils} from "../../utils/index.js"
 import * as M4 from './m4.js'
 import {Texture} from "../../assets/assets/index.js"
-import {Framebuffer, WebGLUtils, WebGLTexture} from "./webgl/index.js"
-import {Program} from "./webgl/program.js"
-import {VertexArray} from "./webgl/vertexarray.js"
+import {WebGLUtils, WebGLTexture, Framebuffers, Program, VertexArray} from "./webgl/index.js"
+import {FramebufferType} from "./index.js"
 
 /**
  * The WebGL is the basic renderer using the html5 webgl api
@@ -36,14 +34,6 @@ export class WebGL extends Renderer {
         this.gl.imageSmoothingEnabled = false
         this.glVao = this.gl.getExtension("OES_vertex_array_object")
         this.canvas.setAttribute("style", "image-rendering: optimizeSpeed; image-rendering: -moz-crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: -o-crisp-edges; image-rendering: pixelated;")
-
-        this.mainFramebuffer = new Framebuffer({
-            renderer: this,
-            width: width,
-            height: height,
-            framebufferRef: null,
-            textureRef: null,
-        })
 
         this.textureProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils._vertexShaderTexture, fragmentShaderSrc: WebGLUtils._fragmentShaderTexture})
         this.lightingProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils._vertexShaderTexture, fragmentShaderSrc: WebGLUtils._fragmentShaderLighting})
@@ -114,7 +104,16 @@ export class WebGL extends Renderer {
             this.rectangleVAO
         ]
 
+        this.mainFramebuffer = new Framebuffers.Framebuffer({
+            renderer: this,
+            width: width,
+            height: height,
+            framebufferRef: null,
+            textureRef: null,
+        })
+
         this.gl.enable(this.gl.BLEND);
+        this.gl.blendFuncSeparate(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA, this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -133,8 +132,13 @@ export class WebGL extends Renderer {
         super.destroy();
     }
 
-    createFramebuffer({width, height}) {
-        return new Framebuffer({renderer: this, width, height})
+    createFramebuffer({width, height, type}) {
+        switch (type) {
+            case FramebufferType.LIGHTING:
+                return new Framebuffers.Lightingbuffer({renderer: this, width, height})
+            default:
+                return new Framebuffers.Framebuffer({renderer: this, width, height})
+        }
     }
 
     getMainFramebuffer() {
@@ -147,7 +151,7 @@ export class WebGL extends Renderer {
      * @returns {WebGLTexture}
      */
     getOrUploadTexture({texture}) {
-        if (texture instanceof Framebuffer) {
+        if (texture instanceof Framebuffers.Framebuffer) {
             return texture.texture
         } else {
             if (this.textureStore.has(texture.getId())) {

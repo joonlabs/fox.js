@@ -2,7 +2,7 @@ import {Color} from "../../../color/index.js"
 import {Texture} from "./texture.js"
 import * as M4 from "../m4.js"
 import {AbstractFramebuffer} from "../framebuffer.js"
-import {Utils} from "../../../utils/index.js"
+import {WebGLUtils} from "./index.js"
 
 export class Framebuffer extends AbstractFramebuffer {
 
@@ -28,6 +28,8 @@ export class Framebuffer extends AbstractFramebuffer {
         this.renderer = renderer
         this.height = height
         this.width = width
+        this.program = renderer.textureProgram
+        this.vao = renderer.textureVAO
 
         if (framebufferRef !== undefined) {
             this.framebufferRef = framebufferRef
@@ -49,9 +51,12 @@ export class Framebuffer extends AbstractFramebuffer {
      * @param clearColor The color that should be used to clear the framebuffer, defaults to black
      */
     clear({clearColor} = {}) {
+        const gl = this.renderer.gl
         clearColor = clearColor || new Color()
-        this.renderer.gl.clearColor(...clearColor.asNormalizedRGBAList())
-        this.renderer.gl.clear(this.renderer.gl.COLOR_BUFFER_BIT)
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebufferRef)
+        gl.clearColor(...clearColor.asNormalizedRGBAList())
+        gl.clear(gl.COLOR_BUFFER_BIT)
     }
 
     /**
@@ -60,67 +65,44 @@ export class Framebuffer extends AbstractFramebuffer {
      * @param {Texture | AbstractFramebuffer} texture Texture to be rendered
      * @param {number} x X position of the texture
      * @param {number} y Y position of the texture
-     * @param {number} width Width of the texture
-     * @param {number} height Height of the texture
+     * @param {number} [width] Width of the texture
+     * @param {number} [height] Height of the texture
      * @param {number} [rotation] Rotation of the texture
      * @param {object} [rotationPosition] rotationPosition of the texture
-     * @param {boolean} [lighting] If the lighting shader should be used
      * @return {void}
      */
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition, lighting}) {
+    renderTexture({texture, x, y, width, height, rotation, rotationPosition}) {
         const glTexture = this.renderer.getOrUploadTexture({texture})
+        width = width === undefined ? texture.width : width
+        height = height === undefined ? texture.height : height
         rotation = rotation === undefined ? 0 : rotation
         rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
 
         const gl = this.renderer.gl
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebufferRef)
+        gl.viewport(0, 0, this.width, this.height)
 
-        const program = lighting === true ? this.renderer.lightingProgram : this.renderer.textureProgram
-        const vao = lighting === true ? this.renderer.lightingVAO : this.renderer.textureVAO
-
-        program.use()
-        vao.bind()
+        this.program.use()
+        this.vao.bind()
         gl.activeTexture(gl.TEXTURE0)
         glTexture.bind()
 
-        if (lighting === true) {
-            gl.blendFunc(gl.ONE, gl.ONE);
-            gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT)
-        } else {
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        }
+        let matrix = M4.multiply(
+            WebGLUtils.createFramebufferMatrix({width: this.width, height: this.height, flipY: this.framebufferRef === null}),
+            WebGLUtils.createObjectMatrix({x, y, width, height, rotation: {angle: rotation, ...rotationPosition}})
+        )
 
-        // this matrix will convert from pixels to clip space
-        let matrix = M4.orthographic(0, this.width, 0, this.height, -1, 1)
-        if (this.framebufferRef === null) {
-            // Flip the image when drawing to the real canvas
-            matrix = M4.orthographic(0, this.width, this.height, 0, -1, 1)
-        }
-
-        if (rotation % (Math.PI * 2) !== 0) {
-            // rotate, scale and position matrix
-            matrix = M4.translate(matrix, x, y, 0);
-            matrix = M4.translate(matrix, rotationPosition.x, rotationPosition.y, 0);
-            matrix = M4.translate(matrix, rotationPosition.x / width, rotationPosition.y / height, 0);
-            matrix = M4.axisRotate(matrix, [0, 0, 1], rotation)
-            matrix = M4.scale(matrix, width, height, 1);
-            matrix = M4.translate(matrix, -rotationPosition.x / width, -rotationPosition.y / height, 0);
-        } else {
-            // scale and position matrix
-            matrix = M4.translate(matrix, x, y, 0);
-            matrix = M4.scale(matrix, width, height, 1);
-        }
 
         // set matrix and render
-        program.setUniformMatrix({uniform: "u_matrix", matrix})
+        this.program.setUniformMatrix({uniform: "u_matrix", matrix})
 
-        program.setUniformMatrix({uniform: "u_textureMatrix", matrix: M4.identity()})
+        this.program.setUniformMatrix({uniform: "u_textureMatrix", matrix: M4.identity()})
 
-        program.setIntegerUniform({uniform: "u_texture", value: 0})
+        this.program.setIntegerUniform({uniform: "u_texture", value: 0})
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
-        vao.unbind()
+        this.vao.unbind()
     }
 
     renderRectangle({x, y, width, height, rotation, rotationPosition, color}) {
@@ -129,6 +111,7 @@ export class Framebuffer extends AbstractFramebuffer {
 
         const gl = this.renderer.gl
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebufferRef)
+        gl.viewport(0, 0, this.width, this.height)
 
         const program = this.renderer.rectangleProgram
         const vao = this.renderer.rectangleVAO
@@ -137,28 +120,12 @@ export class Framebuffer extends AbstractFramebuffer {
         vao.bind()
         gl.activeTexture(gl.TEXTURE0)
 
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-        // this matrix will convert from pixels to clip space
-        let matrix = M4.orthographic(0, this.width, 0, this.height, -1, 1)
-        if (this.framebufferRef === null) {
-            // Flip the image when drawing to the real canvas
-            matrix = M4.orthographic(0, this.width, this.height, 0, -1, 1)
-        }
-
-        if (rotation % (Math.PI * 2) !== 0) {
-            // rotate, scale and position matrix
-            matrix = M4.translate(matrix, x, y, 0);
-            matrix = M4.translate(matrix, rotationPosition.x, rotationPosition.y, 0);
-            matrix = M4.translate(matrix, rotationPosition.x / width, rotationPosition.y / height, 0);
-            matrix = M4.axisRotate(matrix, [0, 0, 1], rotation)
-            matrix = M4.scale(matrix, width, height, 1);
-            matrix = M4.translate(matrix, -rotationPosition.x / width, -rotationPosition.y / height, 0);
-        } else {
-            // scale and position matrix
-            matrix = M4.translate(matrix, x, y, 0);
-            matrix = M4.scale(matrix, width, height, 1);
-        }
+        let matrix = M4.multiply(
+            WebGLUtils.createFramebufferMatrix({width: this.width, height: this.height, flipY: this.framebufferRef === null}),
+            WebGLUtils.createObjectMatrix({x, y, width, height, rotation: {angle: rotation, ...rotationPosition}})
+        )
 
         // set matrix and render
         program.setUniformMatrix({uniform: "u_matrix", matrix})

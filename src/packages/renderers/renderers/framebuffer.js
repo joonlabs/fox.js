@@ -22,14 +22,13 @@ export class AbstractFramebuffer {
      * @param {Texture | AbstractFramebuffer} texture Texture to be rendered
      * @param {number} x X position of the texture
      * @param {number} y Y position of the texture
-     * @param {number} width Width of the texture
-     * @param {number} height Height of the texture
-     * @param {number} rotation Rotation of the texture
-     * @param {object} rotationPosition rotationPosition of the texture
-     * @param {boolean} [lighting] If the lighting shader should be used
+     * @param {number} [width] Width of the texture
+     * @param {number} [height] Height of the texture
+     * @param {number} [rotation] Rotation of the texture
+     * @param {object} [rotationPosition] rotationPosition of the texture
      * @return {void}
      */
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition, lighting}) {
+    renderTexture({texture, x, y, width, height, rotation, rotationPosition}) {
         // to be implemented by child class
     }
 
@@ -48,4 +47,12 @@ export class AbstractFramebuffer {
     renderRectangle({x, y, width, height, rotation, rotationPosition, color}) {
         // to be implemented by child class
     }
+}
+
+/**
+ * @enum {string}
+ */
+export const FramebufferType = {
+    NORMAL: "normal",
+    LIGHTING: "lighting"
 }

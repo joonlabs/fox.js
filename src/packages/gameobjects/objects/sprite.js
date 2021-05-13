@@ -1,6 +1,4 @@
 import {GameObject} from '../gameobject.js'
-import {Vectors} from '../../vectors/index.js'
-import {Color} from '../../color/index.js'
 
 /**
  * The Sprite represents the basic 2d sprite, that is responsible for rendering images to the screen

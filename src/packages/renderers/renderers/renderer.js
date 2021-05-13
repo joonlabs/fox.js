@@ -36,9 +36,10 @@ export class Renderer {
     /**
      * @param {number} width Width of the framebuffer
      * @param {number} height Height of the framebuffer
+     * @param {FramebufferType} [type] The type of framebuffer that should be created
      * @return {AbstractFramebuffer}
      */
-    createFramebuffer({width, height}) {
+    createFramebuffer({width, height, type}) {
         // to be implemented by child class
     }
 

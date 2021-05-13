@@ -1,6 +1,7 @@
 import {GameObject} from '../../gameobject.js'
 import {Color} from "../../../color/index.js";
 import {Texture} from "../../../assets/assets/index.js";
+import {Utils} from "../../../utils/index.js"
 
 export class PointLight extends GameObject {
     /**
@@ -75,19 +76,16 @@ export class PointLight extends GameObject {
         }
 
         if(this.followingObject!==undefined){
-            render_offset.x += (this.followingObject.position.x  + this.followingObject.dimensions.width/2 - this.position.x)
+            render_offset.x += (this.followingObject.position.x + this.followingObject.dimensions.width/2  - this.position.x)
             render_offset.y += (this.followingObject.position.y + this.followingObject.dimensions.height/2 - this.position.y)
         }
 
-        // TODO draw lighting
-        /*
         framebuffer.renderTexture({
-            texture : this.lightMapTexture,
-            x : render_offset.x - this.radius,
+            texture: this.lightMapTexture,
+            x: render_offset.x - this.radius,
             y: render_offset.y - this.radius,
             width: this.dimensions.width,
             height: this.dimensions.height,
-            lighting: true
-        })*/
+        })
     }
 }

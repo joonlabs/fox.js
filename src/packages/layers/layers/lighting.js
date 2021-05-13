@@ -1,6 +1,7 @@
 import {Layer} from './layer.js'
 import {Color} from "../../color/color.js";
-import {Utils} from "../../utils/utils.js";
+import {FramebufferType} from "../../renderers/index.js"
+import {Utils} from "../../utils/index.js"
 
 /**
  * The LayerLighting represents the lighting layer, that only renders light objects
@@ -12,6 +13,7 @@ export class Lighting extends Layer {
      * Construct method of the object
      * @param {number} width Width of the canvas, if not specified the project's width is taken automatically
      * @param {number} height Width of the canvas, if not specified the project's height is taken automatically
+     * @param {number} globalLight The brightness of the global light, 0 means complete darkness, 1 means full brightness
      * @returns LayerCanvas
      */
     constructor({width, height, globalLight} = {}) {
@@ -21,12 +23,6 @@ export class Lighting extends Layer {
         })
 
         this.globalLight = globalLight || 0
-        this.canRenderWithWebGL = true
-
-        if (!Utils.isWebGLAvailable()) {
-            Utils.warn("fox: Layer.Lighting: To support light, make sure WebGL is supported by your browser")
-            this.canRenderWithWebGL = false
-        }
 
         this.backgroundColor = new Color({a: 1 - Math.min(1, Math.abs(this.globalLight))})
     }
@@ -34,7 +30,12 @@ export class Lighting extends Layer {
     /**
      * Is called by the scene, when the scene is initialized
      */
-    init() {
+    init({renderer}) {
+        this.lightingBuffer = renderer.createFramebuffer({
+            width: this.dimensions.width,
+            height: this.dimensions.height,
+            type: FramebufferType.LIGHTING
+        })
     }
 
     /**
@@ -42,6 +43,17 @@ export class Lighting extends Layer {
      * @return {void}
      */
     clear(_this = this) {
-        //this.renderer.clear({color: this.backgroundColor})
+        this.lightingBuffer.clear({clearColor: this.backgroundColor})
+    }
+
+    render({offset, framebuffer}) {
+        this.lightingBuffer.clear({clearColor: this.backgroundColor})
+        super.render({offset, framebuffer: this.lightingBuffer})
+
+        framebuffer.renderTexture({
+            texture: this.lightingBuffer,
+            x: 0,
+            y: 0,
+        })
     }
 }

@@ -1,3 +1,5 @@
+import * as M4 from "../m4.js"
+
 export class Utils {
     static get _vertexShaderTexture() {
         return `
@@ -11,7 +13,7 @@ export class Utils {
             
             void main() {
                gl_Position = u_matrix * a_position;
-               v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;//a_texcoord;
+               v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
             }
         `
     }
@@ -42,17 +44,7 @@ export class Utils {
             uniform sampler2D u_texture;
             
             void main() {
-                // ignore edges when image is positioned out of space 
-                if (v_texcoord.x < 0.0 ||
-                   v_texcoord.y < 0.0 ||
-                   v_texcoord.x > 1.0 ||
-                   v_texcoord.y > 1.0) {
-                    
-                    gl_FragColor = vec4(0);
-                } else {
-                    gl_FragColor = texture2D(u_texture, v_texcoord);
-                    gl_FragColor.rgb = ((gl_FragColor.rgb - 0.5) * max(1.0, 0.0)) + 0.5;
-                }
+                gl_FragColor = texture2D(u_texture, v_texcoord);
             }
         `
     }
@@ -66,21 +58,12 @@ export class Utils {
             uniform sampler2D u_texture;
 
             void main() {
-                // ignore edges when image is positioned out of space 
-                if (v_texcoord.x < 0.0 ||
-                   v_texcoord.y < 0.0 ||
-                   v_texcoord.x > 1.0 ||
-                   v_texcoord.y > 1.0) {
-
-                    gl_FragColor = vec4(0);
-                } else {
-                    vec4 c = texture2D(u_texture, v_texcoord);
-                    float r = 1.0;
-                    float g = 1.0;
-                    float b = 0.0;
-                    float a = (0.299*(c.r) + 0.587*(c.g) + 0.114*(c.b));
-                    gl_FragColor = vec4(1.0-(1.0-r)*a, 1.0-(1.0-g)*a, 1.0-(1.0-b)*a, a);
-                }
+                vec4 c = texture2D(u_texture, v_texcoord);
+                float r = 1.0;
+                float g = 1.0;
+                float b = 0.0;
+                float a = (0.299*(c.r) + 0.587*(c.g) + 0.114*(c.b));
+                gl_FragColor = vec4(1.0-(1.0-r)*a, 1.0-(1.0-g)*a, 1.0-(1.0-b)*a, a);
             }
         `
     }
@@ -140,5 +123,34 @@ export class Utils {
         }
 
         return shader
+    }
+
+    static createFramebufferMatrix({width, height, flipY}) {
+        let matrix = M4.identity()
+        if (flipY) {
+            M4.scale(matrix, 1, -1, 1, matrix)
+        }
+        M4.translate(matrix, -1, -1, 0, matrix)
+        M4.scale(matrix, 2 / width, 2 / height, 1, matrix)
+
+        return matrix
+    }
+
+    static createObjectMatrix({x, y, width, height, rotation}) {
+        let matrix = M4.identity()
+        M4.translate(matrix, x, y, 0, matrix)
+        M4.multiply(matrix, this.createRotationMatrix(rotation), matrix)
+        M4.scale(matrix, width, height, 1, matrix)
+
+        return matrix
+    }
+
+    static createRotationMatrix({angle, x, y}) {
+        let matrix = M4.identity()
+        M4.translate(matrix, -x, -y, 0, matrix)
+        M4.zRotate(matrix, angle, matrix)
+        M4.translate(matrix, x, y, 0, matrix)
+
+        return matrix
     }
 }

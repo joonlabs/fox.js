@@ -1,6 +1,5 @@
 import {ObjectManager} from '../../objectmanager/index.js'
 import {Random} from "../../random/index.js";
-import {Utils} from "../../utils/index.js";
 
 /**
  * The Layer represents the canvas that is added to the document's dom
@@ -36,8 +35,9 @@ export class Layer {
 
     /**
      * Is called by the scene, when the scene is initialized
+     * @param {Renderer} renderer Can be used to initialize certain scenes
      */
-    init() {
+    init({renderer}) {
 
     }
 
@@ -71,16 +71,14 @@ export class Layer {
     /**
      * Is called in every loop after the calc method
      */
-    render({offset, camera, framebuffer}) {
+    render({offset, framebuffer}) {
         for (let obj of this.objectmanager.getObjects()) {
             obj.render({
                 x: offset.x + obj.position.x,
                 y: offset.y + obj.position.y,
                 width: obj.dimensions.width,
                 height: obj.dimensions.height,
-                camera: camera,
                 framebuffer: framebuffer,
-                renderer: this.renderer
             })
         }
     }
@@ -90,7 +88,7 @@ export class Layer {
      * @return {void}
      */
     clear(_this = this) {
-        //this.renderer.clear()
+
     }
 
     /**

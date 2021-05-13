@@ -1,3 +1,4 @@
-import * as Renderers from './renderers/index.js'
+import {WebGL, Canvas2D, FramebufferType} from './renderers/index.js'
 
-export {Renderers}
+export let Renderers = {Canvas2D, WebGL}
+export { FramebufferType }

@@ -138,7 +138,7 @@ export class Application {
         this.destroyCurrentScene()
 
         // init scene
-        this.scenes.all[name].init()
+        this.scenes.all[name].init({renderer: this.project.renderer})
 
         // set active scene
         this.scenes.active = this.scenes.all[name]
@@ -162,7 +162,7 @@ export class Application {
         this.destroyCurrentScene()
 
         // init current scene again
-        this.scenes.active.init()
+        this.scenes.active.init({renderer: this.project.renderer})
     }
 
     /**

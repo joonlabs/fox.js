@@ -24,14 +24,16 @@ export class Scene {
     }
 
     /**
-     * Is called when the scene is loaded by the application and inits all layers and their renderers
+     * Is called when the scene is loaded by the application and inits all layers
+     * @param {Renderer} renderer The renderer that should be used to initialize
      */
-    init() {
+    init({renderer}) {
+        this.renderer = renderer
         if (typeof this.onInitFn === "function") {
             this.onInitFn()
         }
         for (let layer of this.layers) {
-            layer.init()
+            layer.init({renderer})
         }
         this.initialized = true
     }
@@ -89,6 +91,11 @@ export class Scene {
      */
     addLayer({layer} = {}) {
         layer.setScene({scene: this})
+
+        if (this.initialized) {
+            layer.init({renderer: this.renderer})
+        }
+
         this.layers.push(layer)
         return this
     }
