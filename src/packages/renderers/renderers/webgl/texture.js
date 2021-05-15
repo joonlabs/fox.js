@@ -18,7 +18,7 @@ export class Texture {
             this.textureRef = textureRef
         } else {
             this.textureRef = gl.createTexture()
-            gl.bindTexture(gl.TEXTURE_2D, this.textureRef)
+            this.bind()
 
             if (pixels === null || (pixels instanceof ArrayBuffer && ArrayBuffer.isView(pixels))) {
                 this.width = width;
@@ -38,7 +38,10 @@ export class Texture {
     }
 
     bind() {
-        this.renderer.gl.bindTexture(this.renderer.gl.TEXTURE_2D, this.textureRef)
+        if (this.renderer.boundTexture !== this) {
+            this.renderer.gl.bindTexture(this.renderer.gl.TEXTURE_2D, this.textureRef)
+            this.renderer.boundTexture = this
+        }
     }
 
     destroy() {

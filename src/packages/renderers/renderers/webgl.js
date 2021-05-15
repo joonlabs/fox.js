@@ -19,13 +19,22 @@ export class WebGL extends Renderer {
         super()
     }
 
-    init({width, height, useLightingShaders, useOffscreenCanvas}) {
+    init({width, height}) {
         super.init()
 
         // init internal webgl-texture store
         this.textureStore = new Map()
 
         this.compiledShaders = new Map()
+
+        this.boundFramebuffer = null
+        this.boundVAO = null
+        this.boundProgram = null
+        this.boundTexture = null
+        this.boundClearColor = null
+        this.boundViewport = null
+        this.boundBlendFunc = null
+        this.boundBlendEquation = null
 
         this.canvas = document.createElement("canvas")
         this.canvas.width = width
@@ -36,11 +45,9 @@ export class WebGL extends Renderer {
         this.canvas.setAttribute("style", "image-rendering: optimizeSpeed; image-rendering: -moz-crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: -o-crisp-edges; image-rendering: pixelated;")
 
         this.textureProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils._vertexShaderTexture, fragmentShaderSrc: WebGLUtils._fragmentShaderTexture})
-        this.lightingProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils._vertexShaderTexture, fragmentShaderSrc: WebGLUtils._fragmentShaderLighting})
         this.rectangleProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils._vertexShaderSolid, fragmentShaderSrc: WebGLUtils._fragmentShaderSolid})
         this.programs = [
             this.textureProgram,
-            this.lightingProgram,
             this.rectangleProgram
         ]
 
@@ -72,21 +79,6 @@ export class WebGL extends Renderer {
             }
         })
 
-        this.lightingVAO = new VertexArray({
-            renderer: this,
-            setup() {
-                let positionLocation = _this.gl.getAttribLocation(_this.lightingProgram.programRef, "a_position");
-                let texcoordLocation = _this.gl.getAttribLocation(_this.lightingProgram.programRef, "a_texcoord");
-
-                _this.gl.bindBuffer(_this.gl.ARRAY_BUFFER, _this.quadBuffer);
-                _this.gl.enableVertexAttribArray(positionLocation);
-                _this.gl.vertexAttribPointer(positionLocation, 2, _this.gl.FLOAT, false, 0, 0);
-                _this.gl.bindBuffer(_this.gl.ARRAY_BUFFER, _this.quadBuffer);
-                _this.gl.enableVertexAttribArray(texcoordLocation);
-                _this.gl.vertexAttribPointer(texcoordLocation, 2, _this.gl.FLOAT, false, 0, 0);
-            }
-        })
-
         this.rectangleVAO = new VertexArray({
             renderer: this,
             setup() {
@@ -100,7 +92,6 @@ export class WebGL extends Renderer {
 
         this.VAOs = [
             this.textureVAO,
-            this.lightingVAO,
             this.rectangleVAO
         ]
 
@@ -113,8 +104,7 @@ export class WebGL extends Renderer {
         })
 
         this.gl.enable(this.gl.BLEND);
-        this.gl.blendFuncSeparate(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA, this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
-        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+        this.setBlendFuncSeparate({srcRGB: this.gl.SRC_ALPHA, dstRGB: this.gl.ONE_MINUS_SRC_ALPHA, srcAlpha: this.gl.ONE, dstAlpha: this.gl.ONE_MINUS_SRC_ALPHA});
     }
 
     destroy() {
@@ -170,49 +160,43 @@ export class WebGL extends Renderer {
         }
     }
 
-    /**
-     * Fills a rect on the canvas
-     * @method fillRect
-     * @param {number} x X position of the rect
-     * @param {number} y Y position of the rect
-     * @param {number} width Width of the rect
-     * @param {number} height Height of the rect
-     * @param {number} rotation Rotation of the rect
-     * @param {object} rotationPosition rotationPosition of the rect
-     * @param {object} color Color of the rect
-     * @param {object} layer Layer to be rendered to
-     * @return {void}
-     */
-    fillRect({x, y, width, height, rotation, rotationPosition, color, ctx}) {
-        // create texture
-        let tex = this.gl.createTexture()
-        this.gl.bindTexture(this.gl.TEXTURE_2D, tex)
-        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array([color.r, color.g, color.b, color.a * 255]))
-
-        // this matrix will convert from pixels to clip space
-        let matrix = M4.orthographic(0, this.canvas.width, this.canvas.height, 0, -1, 1);
-
-        if (rotation % (Math.PI * 2) !== 0) {
-            // rotate, scale and position matrix
-            matrix = M4.translate(matrix, x, y, 0);
-            matrix = M4.translate(matrix, width / 2, height / 2, 0);
-            matrix = M4.translate(matrix, .5, .5, 0);
-            matrix = M4.axisRotate(matrix, [0, 0, 1], rotation)
-            matrix = M4.scale(matrix, width, height, 1);
-            matrix = M4.translate(matrix, -.5, -.5, 0);
-        } else {
-            // scale and position matrix
-            matrix = M4.translate(matrix, x, y, 0);
-            matrix = M4.scale(matrix, width, height, 1);
+    setViewport({x, y, width, height}) {
+        if (   this.boundViewport?.x      !== x
+            || this.boundViewport?.y      !== y
+            || this.boundViewport?.width  !== width
+            || this.boundViewport?.height !== height
+        ) {
+            this.gl.viewport(x, y, width, height)
+            this.boundViewport = {x, y, width, height}
         }
+    }
 
-        // set matrix and render
-        this.program.setUniformMatrix({uniform: "u_matrix", matrix})
+    setClearColor(color) {
+        if (   this.boundClearColor?.r !== color.r
+            || this.boundClearColor?.g !== color.g
+            || this.boundClearColor?.b !== color.b
+            || this.boundClearColor?.a !== color.a
+        ) {
+            this.gl.clearColor(...color.asNormalizedRGBAList())
+            this.boundClearColor = color
+        }
+    }
 
-        this.program.setIntegerUniform({uniform: "u_texture", value: 0})
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+    setBlendFuncSeparate({srcRGB, dstRGB, srcAlpha, dstAlpha}) {
+        if (this.boundBlendFunc?.srcRGB !== srcRGB
+            ||this.boundBlendFunc?.dstRGB !== dstRGB
+            ||this.boundBlendFunc?.srcAlpha !== srcAlpha
+            ||this.boundBlendFunc?.dstAlpha !== dstAlpha
+        ) {
+            this.gl.blendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha)
+            this.boundBlendFunc = {srcRGB, dstRGB, srcAlpha, dstAlpha}
+        }
+    }
 
-
-        this.gl.deleteTexture(tex)
+    setBlendEquation({mode}) {
+        if (this.boundBlendEquation !== mode) {
+            this.gl.blendEquation(mode)
+            this.boundBlendEquation = mode
+        }
     }
 }

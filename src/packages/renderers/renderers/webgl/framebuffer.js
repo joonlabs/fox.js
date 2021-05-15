@@ -25,19 +25,28 @@ export class Framebuffer extends AbstractFramebuffer {
             pixels: null,
             textureRef: textureRef
         })
+        const gl = renderer.gl
         this.renderer = renderer
         this.height = height
         this.width = width
         this.program = renderer.textureProgram
         this.vao = renderer.textureVAO
+        this.blendFunc = {srcRGB: gl.SRC_ALPHA, dstRGB: gl.ONE_MINUS_SRC_ALPHA, srcAlpha: gl.ONE, dstAlpha: gl.ONE_MINUS_SRC_ALPHA}
+        this.blendEquation = {mode: gl.FUNC_ADD}
 
         if (framebufferRef !== undefined) {
             this.framebufferRef = framebufferRef
         } else {
-            const gl = renderer.gl
             this.framebufferRef = gl.createFramebuffer()
-            gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebufferRef)
+            this.bind()
             gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture.textureRef, 0)
+        }
+    }
+
+    bind() {
+        if (this.renderer.boundFramebuffer !== this) {
+            this.renderer.gl.bindFramebuffer(this.renderer.gl.FRAMEBUFFER, this.framebufferRef)
+            this.renderer.boundFramebuffer = this
         }
     }
 
@@ -54,8 +63,8 @@ export class Framebuffer extends AbstractFramebuffer {
         const gl = this.renderer.gl
         clearColor = clearColor || new Color()
 
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebufferRef)
-        gl.clearColor(...clearColor.asNormalizedRGBAList())
+        this.bind()
+        this.renderer.setClearColor(clearColor)
         gl.clear(gl.COLOR_BUFFER_BIT)
     }
 
@@ -79,8 +88,10 @@ export class Framebuffer extends AbstractFramebuffer {
         rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
 
         const gl = this.renderer.gl
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebufferRef)
-        gl.viewport(0, 0, this.width, this.height)
+        this.bind()
+        this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})
+        this.renderer.setBlendFuncSeparate(this.blendFunc)
+        this.renderer.setBlendEquation(this.blendEquation)
 
         this.program.use()
         this.vao.bind()
@@ -110,8 +121,8 @@ export class Framebuffer extends AbstractFramebuffer {
         rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
 
         const gl = this.renderer.gl
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebufferRef)
-        gl.viewport(0, 0, this.width, this.height)
+        this.bind()
+        this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})
 
         const program = this.renderer.rectangleProgram
         const vao = this.renderer.rectangleVAO
@@ -120,7 +131,7 @@ export class Framebuffer extends AbstractFramebuffer {
         vao.bind()
         gl.activeTexture(gl.TEXTURE0)
 
-        gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        //this.renderer.setBlendFuncSeparate({srcRGB: gl.SRC_ALPHA, dstRGB: gl.ONE_MINUS_SRC_ALPHA, srcAlpha: gl.ONE, dstAlpha: gl.ONE_MINUS_SRC_ALPHA});
 
         let matrix = M4.multiply(
             WebGLUtils.createFramebufferMatrix({width: this.width, height: this.height, flipY: this.framebufferRef === null}),

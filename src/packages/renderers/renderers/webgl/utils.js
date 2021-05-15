@@ -24,13 +24,9 @@ export class Utils {
             
             uniform mat4 u_matrix;
             uniform mat4 u_textureMatrix;
-            uniform vec4 u_color;
-            
-            varying vec4 v_color;
             
             void main() {
                gl_Position = u_matrix * a_position;
-               v_color = u_color;
             }
         `
     }
@@ -49,33 +45,14 @@ export class Utils {
         `
     }
 
-    static get _fragmentShaderLighting() {
-        return `
-            precision mediump float;
-
-            varying vec2 v_texcoord;
-
-            uniform sampler2D u_texture;
-
-            void main() {
-                vec4 c = texture2D(u_texture, v_texcoord);
-                float r = 1.0;
-                float g = 1.0;
-                float b = 0.0;
-                float a = (0.299*(c.r) + 0.587*(c.g) + 0.114*(c.b));
-                gl_FragColor = vec4(1.0-(1.0-r)*a, 1.0-(1.0-g)*a, 1.0-(1.0-b)*a, a);
-            }
-        `
-    }
-
     static get _fragmentShaderSolid() {
         return `
             precision mediump float;
 
-            varying vec4 v_color;
+            uniform vec4 u_color;
 
             void main() {
-                gl_FragColor = v_color;
+                gl_FragColor = u_color;
             }
         `
     }
@@ -125,6 +102,13 @@ export class Utils {
         return shader
     }
 
+    /**
+     * Creates a framebuffer matrix
+     * @param width The width of the framebuffer
+     * @param height The height of the framebuffer
+     * @param flipY If the framebuffer should be flipped along the y axis
+     * @returns {Matrix4}
+     */
     static createFramebufferMatrix({width, height, flipY}) {
         let matrix = M4.identity()
         if (flipY) {
@@ -136,6 +120,18 @@ export class Utils {
         return matrix
     }
 
+    /**
+     * Creates an object matrix
+     * @param x The x position of the object
+     * @param y The y position of the object
+     * @param width The width of the object
+     * @param height The height of the object
+     * @param rotation The object rotation
+     * @param rotation.angle The rotation angle in radians
+     * @param rotation.x The x rotation center
+     * @param rotation.y The y rotation center
+     * @returns {Matrix4}
+     */
     static createObjectMatrix({x, y, width, height, rotation}) {
         let matrix = M4.identity()
         M4.translate(matrix, x, y, 0, matrix)
@@ -145,6 +141,13 @@ export class Utils {
         return matrix
     }
 
+    /**
+     * Creates a rotation matrix
+     * @param angle The angle in radians
+     * @param x The x rotation center
+     * @param y The y rotation center
+     * @returns {Matrix4}
+     */
     static createRotationMatrix({angle, x, y}) {
         let matrix = M4.identity()
         M4.translate(matrix, -x, -y, 0, matrix)

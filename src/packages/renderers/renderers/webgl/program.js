@@ -25,7 +25,10 @@ export class Program {
     }
 
     use() {
-        this.renderer.gl.useProgram(this.programRef)
+        if (this.renderer.boundProgram !== this) {
+            this.renderer.gl.useProgram(this.programRef)
+            this.renderer.boundProgram = this
+        }
     }
 
     setIntegerUniform({uniform, value, v1, v2, v3}) {

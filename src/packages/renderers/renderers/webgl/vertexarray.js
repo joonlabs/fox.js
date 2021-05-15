@@ -20,10 +20,13 @@ export class VertexArray {
     }
 
     bind() {
-        if (this.vaoRef !== null) {
-            this.renderer.glVao.bindVertexArrayOES(this.vaoRef)
-        } else {
-            this.setup()
+        if (this.renderer.boundVAO !== this) {
+            if (this.vaoRef !== null) {
+                this.renderer.glVao.bindVertexArrayOES(this.vaoRef)
+            } else {
+                this.setup()
+            }
+            this.renderer.boundVAO = this
         }
     }
 
@@ -31,6 +34,7 @@ export class VertexArray {
         if (this.vaoRef !== null) {
             this.renderer.glVao.bindVertexArrayOES(null)
         }
+        this.renderer.boundVAO = null
     }
 
     destroy() {
