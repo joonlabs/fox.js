@@ -48,8 +48,7 @@ export class PointLight extends GameObject {
 
         let ctx = canvas.getContext("2d")
 
-        ctx.fillStyle = "black"
-        ctx.fillRect(0, 0, this.radius*2, this.radius*2)
+        ctx.clearRect(0, 0, this.radius*2, this.radius*2)
 
         let gradient = ctx.createRadialGradient(this.radius, this.radius, this.innerRadius, this.radius, this.radius, this.radius);
 

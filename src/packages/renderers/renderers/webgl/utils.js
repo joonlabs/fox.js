@@ -150,9 +150,9 @@ export class Utils {
      */
     static createRotationMatrix({angle, x, y}) {
         let matrix = M4.identity()
-        M4.translate(matrix, -x, -y, 0, matrix)
-        M4.zRotate(matrix, angle, matrix)
         M4.translate(matrix, x, y, 0, matrix)
+        M4.zRotate(matrix, angle, matrix)
+        M4.translate(matrix, -x, -y, 0, matrix)
 
         return matrix
     }

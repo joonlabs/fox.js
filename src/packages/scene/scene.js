@@ -35,6 +35,9 @@ export class Scene {
         for (let layer of this.layers) {
             layer.init({renderer})
         }
+        for (let camera of this.cameras.all) {
+            camera.init({renderer})
+        }
         this.initialized = true
     }
 
@@ -148,7 +151,9 @@ export class Scene {
      * @returns {Scene}
      */
     addCamera({camera} = {}) {
-        camera.init({renderer: this.application.project.renderer})
+        if (this.initialized) {
+            camera.init({renderer: this.renderer})
+        }
         this.cameras.all.push(camera)
         return this
     }
