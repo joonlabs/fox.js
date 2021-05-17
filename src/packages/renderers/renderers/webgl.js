@@ -1,5 +1,4 @@
 import {Renderer} from './renderer.js'
-import * as M4 from './m4.js'
 import {Texture} from "../../assets/assets/index.js"
 import {WebGLUtils, WebGLTexture, Framebuffers, Program, VertexArray} from "./webgl/index.js"
 import {FramebufferType} from "./index.js"

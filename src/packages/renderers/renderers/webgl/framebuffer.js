@@ -15,7 +15,7 @@ export class Framebuffer extends AbstractFramebuffer {
      * @param {WebGLTexture | null} [textureRef]
      */
     constructor({renderer, width, height, framebufferRef, textureRef}) {
-        super({renderer})
+        super({renderer, width, height})
         this.texture = new Texture({
             renderer,
             level: 0,
@@ -26,9 +26,6 @@ export class Framebuffer extends AbstractFramebuffer {
             textureRef: textureRef
         })
         const gl = renderer.gl
-        this.renderer = renderer
-        this.height = height
-        this.width = width
         this.program = renderer.textureProgram
         this.vao = renderer.textureVAO
         this.blendFunc = {srcRGB: gl.SRC_ALPHA, dstRGB: gl.ONE_MINUS_SRC_ALPHA, srcAlpha: gl.ONE, dstAlpha: gl.ONE_MINUS_SRC_ALPHA}

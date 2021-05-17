@@ -2,10 +2,14 @@ export class AbstractFramebuffer {
 
     /**
      * Creates a framebuffer object
-     * @param renderer {Renderer}
+     * @param {WebGL | Canvas2D} renderer
+     * @param {number} width
+     * @param {number} height
      */
-    constructor({renderer}) {
+    constructor({renderer, width, height}) {
         this.renderer = renderer
+        this.width = width
+        this.height = height
     }
 
     /**

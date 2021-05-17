@@ -10,11 +10,14 @@ export class Renderer {
      * @returns Renderer
      */
     constructor() {
-        this.canvas = undefined
-        this.ctx = undefined
+        this.canvas = null
         this.initialized = false
     }
 
+    /**
+     *
+     * @returns {HTMLCanvasElement}
+     */
     getCanvas() {
         return this.canvas
     }
@@ -24,8 +27,6 @@ export class Renderer {
     }
 
     destroy() {
-        this.ctx = null
-        this.canvas = null
         this.initialized = false
     }
 
