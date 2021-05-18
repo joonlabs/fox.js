@@ -1,4 +1,4 @@
-import {Utils} from "./utils.js"
+import {WebGLUtils} from "./utils.js"
 import {Utils as WarningUtils} from "../../../utils/index.js"
 
 export class Program {
@@ -15,7 +15,7 @@ export class Program {
         const vertexShader = this._compileShader({type: "VERTEX_SHADER", source: vertexShaderSrc})
         const fragmentShader = this._compileShader({type: "FRAGMENT_SHADER", source: fragmentShaderSrc})
 
-        this.programRef = Utils.linkProgram({ctx: renderer.gl, shaders: [vertexShader, fragmentShader]})
+        this.programRef = WebGLUtils.linkProgram({ctx: renderer.gl, shaders: [vertexShader, fragmentShader]})
 
         this.uniforms = new Map()
     }
@@ -143,7 +143,7 @@ export class Program {
         if (this.renderer.compiledShaders.has(source))
             return this.renderer.compiledShaders.get(source)
         else {
-            const shader = Utils.compileShader({ctx: this.renderer.gl, type, source})
+            const shader = WebGLUtils.compileShader({ctx: this.renderer.gl, type, source})
             if (shader !== null)
                 this.renderer.compiledShaders.set(source, shader)
             return shader

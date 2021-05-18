@@ -1,6 +1,6 @@
 import * as M4 from "../m4.js"
 
-export class Utils {
+export class WebGLUtils {
     static get _vertexShaderTexture() {
         return `
             attribute vec4 a_position;
