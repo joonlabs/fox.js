@@ -7,7 +7,7 @@ export class Lightingbuffer extends Framebuffer {
 
         const gl = renderer.gl
         this.blendFunc = {srcRGB: gl.ONE, dstRGB: gl.ONE, srcAlpha: gl.ONE, dstAlpha: gl.ONE}
-        this.blendEquation = {mode: gl.FUNC_REVERSE_SUBTRACT}
+        this.blendEquation = {modeRGB: gl.FUNC_REVERSE_SUBTRACT, modeAlpha: gl.FUNC_REVERSE_SUBTRACT}
     }
 
 }

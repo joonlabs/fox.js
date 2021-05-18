@@ -29,7 +29,7 @@ export class Framebuffer extends AbstractFramebuffer {
         this.program = renderer.textureProgram
         this.vao = renderer.textureVAO
         this.blendFunc = {srcRGB: gl.SRC_ALPHA, dstRGB: gl.ONE_MINUS_SRC_ALPHA, srcAlpha: gl.ONE, dstAlpha: gl.ONE_MINUS_SRC_ALPHA}
-        this.blendEquation = {mode: gl.FUNC_ADD}
+        this.blendEquation = {modeRGB: gl.FUNC_ADD, modeAlpha: gl.FUNC_ADD}
 
         if (framebufferRef !== undefined) {
             this.framebufferRef = framebufferRef
@@ -88,7 +88,7 @@ export class Framebuffer extends AbstractFramebuffer {
         this.bind()
         this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})
         this.renderer.setBlendFuncSeparate(this.blendFunc)
-        this.renderer.setBlendEquation(this.blendEquation)
+        this.renderer.setBlendEquationSeperate(this.blendEquation)
 
         this.program.use()
         this.vao.bind()

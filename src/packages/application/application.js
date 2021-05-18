@@ -28,7 +28,7 @@ export class Application {
             "logFPS": logFPS || false,
             "pixelated": true,
             "renderer": renderer
-                || Utils.isWebGLAvailable() ? new Renderers.WebGL() : new Renderers.Canvas2D(),
+                || (Utils.isWebGLAvailable() ? new Renderers.WebGL() : new Renderers.Canvas2D()),
         }
 
         this.frames = {
