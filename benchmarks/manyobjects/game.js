@@ -32,16 +32,12 @@ function init(){
     scene.addLayer({layer: layer})
     scene.addCamera({camera: camera})
 
-    function getRandomArbitrary(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-
     for (let i = 0; i < 1000; i++) {
-        const objWidth  = getRandomArbitrary(10, 200)
-        const objHeight = getRandomArbitrary(10, 200)
-        const objX      = getRandomArbitrary(0, canvasWidth - objWidth)
-        const objY      = getRandomArbitrary(0, canvasHeight - objHeight)
-        const objRot    = getRandomArbitrary(0.001, 0.03)
+        const objWidth  = fox.Random.range({min: 10, max: 200})
+        const objHeight = fox.Random.range({min: 10, max: 200})
+        const objX      = fox.Random.range({min: 0, max: canvasWidth - objWidth})
+        const objY      = fox.Random.range({min: 0, max: canvasHeight - objHeight})
+        const objRot    = fox.Random.range({min: 0.001, max: 0.03})
 
         new RandomObject({
             x: objX,
