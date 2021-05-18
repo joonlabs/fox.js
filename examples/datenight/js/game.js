@@ -1,6 +1,6 @@
 import fox from '../../../src/index.js'
 import {level01} from "./scenes/level01.js";
-import {level02 } from "./scenes/level02.js";
+import {level02} from "./scenes/level02.js";
 import {level03} from "./scenes/level03.js";
 import {level04} from "./scenes/level04.js";
 import {level05} from "./scenes/level05.js";

@@ -24,14 +24,19 @@ export class Scene {
     }
 
     /**
-     * Is called when the scene is loaded by the application and inits all layers and their renderers
+     * Is called when the scene is loaded by the application and inits all layers
+     * @param {Renderer} renderer The renderer that should be used to initialize
      */
-    init() {
+    init({renderer}) {
+        this.renderer = renderer
         if (typeof this.onInitFn === "function") {
             this.onInitFn()
         }
         for (let layer of this.layers) {
-            layer.init()
+            layer.init({renderer})
+        }
+        for (let camera of this.cameras.all) {
+            camera.init({renderer})
         }
         this.initialized = true
     }
@@ -89,6 +94,11 @@ export class Scene {
      */
     addLayer({layer} = {}) {
         layer.setScene({scene: this})
+
+        if (this.initialized) {
+            layer.init({renderer: this.renderer})
+        }
+
         this.layers.push(layer)
         return this
     }
@@ -106,27 +116,12 @@ export class Scene {
     }
 
     /**
-     * Clears all internal offscreen-canvases
-     * @return {Scene}
-     */
-    clear() {
-        for (let layer of this.layers) {
-            layer.clear()
-        }
-        return this
-    }
-
-    /**
      * Renders the intern offscreen-canvases
      * @param {object} app Application element passed to the function for reading project data
      * @returns {Scene}
      */
     render({app} = {}) {
         for (let camera of this.cameras.all) {
-            // clear all layers
-            for (let layer of this.layers) {
-                layer.clear()
-            }
             // render to all offscreen canvases
             camera.render({app: app, layers: this.layers})
             // render to the screen canvas
@@ -137,10 +132,13 @@ export class Scene {
 
     /**
      * Adds a camera to the engines cameras
-     * @param {object} camera Camera to be added
-     * @returns {void}
+     * @param {Camera} camera Camera to be added
+     * @returns {Scene}
      */
     addCamera({camera} = {}) {
+        if (this.initialized) {
+            camera.init({renderer: this.renderer})
+        }
         this.cameras.all.push(camera)
         return this
     }

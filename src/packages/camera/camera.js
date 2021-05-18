@@ -5,13 +5,13 @@ import {Utils} from '../utils/index.js'
  * Represents a Camera for rendering the scene.
  * @class
  */
-export class Camera{
+export class Camera {
     /**
      * Construct method of the object
      * @method constructor
      * @param {number} x X-position of the camera
      * @param {number} y Y-position of the camera
-     * @param {object} viewport Vierport of the camera (x, y, width, height)
+     * @param {object} viewport Viewport of the camera (x, y, width, height)
      * @param {number} zoom Zoom level of the camera
      * @returns Camera
      */
@@ -29,6 +29,15 @@ export class Camera{
         }
         
         this.followingObject = undefined
+    }
+
+    /**
+     * Initializes the camera
+     * @param renderer {Renderer} The renderer that should be used by this camera
+     */
+    init({renderer}) {
+        this.renderer = renderer
+        this.cameraBuffer = renderer.createFramebuffer({width: this.viewport.width, height: this.viewport.height})
     }
     
     /**
@@ -69,28 +78,13 @@ export class Camera{
      * @returns {void}
      */
     renderToScreen({app, layers}={}){
-        for (let layer of layers) {
-            if(this.viewport.width > layer.dimensions.width
-                || this.viewport.height > layer.dimensions.height){
-                Utils.warn("fox: camera: this camera's viewport is bigger than at least one layer. this can cause the renderer to not render the layer.", this, layer)
-            }
-
-            let viewPortWidth = Math.min(this.viewport.width, layer.dimensions.width),
-                viewPortHeight = Math.min(this.viewport.height, layer.dimensions.height)
-            app.project.renderer.renderTexture({
-                texture: layer,
-                forceTextureUpload : true,
-                x: this.coordinates.x,
-                y: this.coordinates.y,
-                rotation: 0,
-                width: viewPortWidth * this.settings.zoom,
-                height: viewPortHeight * this.settings.zoom,
-                srcX: (this.viewport.x + (viewPortWidth * this.settings.zoom - viewPortWidth)/2 ),
-                srcY: (this.viewport.y + (viewPortHeight * this.settings.zoom - viewPortHeight)/2 ),
-                texWidth: layer.dimensions.width * this.settings.zoom,
-                texHeight: layer.dimensions.height * this.settings.zoom
-            })
-        }
+        app.project.renderer.getMainFramebuffer().renderTexture({
+            texture: this.cameraBuffer,
+            x: this.coordinates.x,
+            y: this.coordinates.y,
+            width: this.viewport.width * this.settings.zoom,
+            height: this.viewport.height * this.settings.zoom,
+        })
     }
 
     /**
@@ -114,7 +108,7 @@ export class Camera{
             }
         }
 
-
+        this.cameraBuffer.clear()
         //object manager based rendering of sprites
         for(let layer of layers){
             layer.render({
@@ -122,7 +116,8 @@ export class Camera{
                     x : -render_offset.x,
                     y : -render_offset.y
                 },
-                camera : this
+                camera : this,
+                framebuffer: this.cameraBuffer
             })
         }
     }

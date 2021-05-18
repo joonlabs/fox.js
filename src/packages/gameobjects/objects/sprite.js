@@ -1,6 +1,4 @@
 import {GameObject} from '../gameobject.js'
-import {Vectors} from '../../vectors/index.js'
-import {Color} from '../../color/index.js'
 
 /**
  * The Sprite represents the basic 2d sprite, that is responsible for rendering images to the screen
@@ -34,28 +32,21 @@ export class Sprite extends GameObject {
         })
 
         this.texture = texture
-
-        this.rendering = {
-            canvas: document.createElement("canvas"),
-            ctx: undefined,
-            data: undefined
-        }
-        this.rendering.ctx = this.rendering.canvas.getContext("2d")
-        this.applyTexture()
     }
 
     /**
      * Is called after every time the game updated.
      * @param {number} x X Coordinate
      * @param {number} y Y Coordinate
-     * @param {number} renderer Renderer to be used
+     * @param {Renderer} renderer Renderer to be used
+     * @param {AbstractFramebuffer} framebuffer
      */
-    render({x, y, renderer} = {}) {
+    render({x, y, renderer, framebuffer} = {}) {
         this.onBeforeRender({renderer: renderer})
 
         // render texture
         if (this.texture && this.texture.loaded) {
-            renderer.renderTexture({
+            framebuffer.renderTexture({
                 texture: this.texture,
                 x: x + this.texture.getOffset().x,
                 y: y + this.texture.getOffset().y,
@@ -63,25 +54,10 @@ export class Sprite extends GameObject {
                 height: this.texture.getHeight(),
                 rotation: this.rotation,
                 rotationPosition: this.rotationPosition,
-                ctx: this.layer.ctx
             })
         }
 
         this.onAfterRender({renderer: renderer})
-    }
-
-    /**
-     * Applies the texture from the texture canvas to the game object's canvas
-     */
-    applyTexture() {
-        if (this.dimensions.width === undefined) this.dimensions.width = this.texture.getTexture().width
-        if (this.dimensions.height === undefined) this.dimensions.height = this.texture.getTexture().height
-        if (this.texture) {
-            this.rendering.canvas.width = this.texture.getTexture().width
-            this.rendering.canvas.height = this.texture.getTexture().height
-            this.rendering.ctx.drawImage(this.texture.getTexture(), 0, 0)
-            //this.rendering.data = this.rendering.ctx.getImageData(0, 0, this.rendering.canvas.width, this.rendering.canvas.height)
-        }
     }
 
     /**
@@ -90,6 +66,5 @@ export class Sprite extends GameObject {
      */
     setTexture({texture}) {
         this.texture = texture
-        this.applyTexture()
     }
 }

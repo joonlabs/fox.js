@@ -142,7 +142,7 @@ export class ParticleSystem extends GameObject {
                     _this.resetParticle({particle: particle})
                 } else {
                     if (!particle.dead) {
-                        particle.lifetime += 1
+                        particle.lifetime += timestep
                         particle.calc({timestep: timestep})
                     }
                 }
@@ -152,7 +152,7 @@ export class ParticleSystem extends GameObject {
         this.frames++
     }
 
-    render({x, y, width, height, camera, renderer}, _this = this) {
+    render({x, y, width, height, camera, renderer, framebuffer}, _this = this) {
         if (_this.state !== 0) {
             for (let particle of _this.pool) {
                 if (!particle.dead) {
@@ -162,6 +162,7 @@ export class ParticleSystem extends GameObject {
                         width: particle.dimensions.width,
                         height: particle.dimensions.height,
                         camera: camera,
+                        framebuffer: framebuffer,
                         renderer: renderer
                     })
                 }

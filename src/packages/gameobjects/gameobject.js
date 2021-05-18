@@ -124,8 +124,9 @@ export class GameObject {
      * @param {number} width Width of the object
      * @param {number} height Height of the object
      * @param {Renderer} renderer Renderer to be rendered with
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */
-    render({x, y, width, height, renderer}) {
+    render({x, y, width, height, renderer, framebuffer}) {
 
     }
 

@@ -1,7 +1,5 @@
-import {WebGL, Canvas2D} from "../../renderers/renderers/index.js";
 import {ObjectManager} from '../../objectmanager/index.js'
 import {Random} from "../../random/index.js";
-import {Utils} from "../../utils/index.js";
 
 /**
  * The Layer represents the canvas that is added to the document's dom
@@ -14,10 +12,9 @@ export class Layer {
      * @method constructor
      * @param {number} width Width of the canvas, if not specified the project's width is taken automatically
      * @param {number} height Width of the canvas, if not specified the project's height is taken automatically
-     * @param {Renderer} renderer Renderer to use when rendering this layer (either new WebGL() or new Canvas2D())
      * @returns Layer
      */
-    constructor({width, height, renderer} = {}) {
+    constructor({width, height} = {}) {
         //dimensions
         this.dimensions = {
             "width": width,
@@ -27,9 +24,6 @@ export class Layer {
         this.id = Random.ID()
 
         this.scene = undefined
-
-        // set the renderer and initiate
-        this.renderer = renderer || (Utils.isWebGLAvailable() ? new WebGL() : new Canvas2D())
 
         //game stuff
         this.objectmanager = new ObjectManager()
@@ -41,18 +35,13 @@ export class Layer {
 
     /**
      * Is called by the scene, when the scene is initialized
+     * @param {Renderer} renderer Can be used to initialize certain scenes
      */
-    init() {
-        // initiate the renderer if not done
-        this.renderer.init({
-            width: this.dimensions.width,
-            height: this.dimensions.height,
-            useOffscreenCanvas: true
-        })
+    init({renderer}) {
+
     }
 
     destroy() {
-        this.renderer.destroy()
         this.objectmanager.destroy()
     }
 
@@ -73,14 +62,6 @@ export class Layer {
     }
 
     /**
-     * Returns the layer's internal (offscreen-)canvas.
-     * @returns {*}
-     */
-    getTexture() {
-        return this.renderer.getCanvas()
-    }
-
-    /**
      * Is called in every loop, up to 60 times a second
      */
     calc({timestep}) {
@@ -90,25 +71,16 @@ export class Layer {
     /**
      * Is called in every loop after the calc method
      */
-    render({offset, camera}) {
+    render({offset, framebuffer}) {
         for (let obj of this.objectmanager.getObjects()) {
             obj.render({
                 x: offset.x + obj.position.x,
                 y: offset.y + obj.position.y,
                 width: obj.dimensions.width,
                 height: obj.dimensions.height,
-                camera: camera,
-                renderer: this.renderer
+                framebuffer: framebuffer,
             })
         }
-    }
-
-    /**
-     * Is called every time before the render method is called and clears the whole canvas
-     * @return {void}
-     */
-    clear(_this = this) {
-        this.renderer.clear()
     }
 
     /**

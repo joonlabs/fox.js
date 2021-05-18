@@ -1,6 +1,7 @@
 import {Renderers} from '../../packages/renderers/index.js'
 import {Input} from '../../packages/input/index.js'
 import {Stats} from '../../packages/stats/index.js'
+import {Utils} from "../utils/index.js"
 
 /**
  * Represents the main game engine class. An application instance is responsible for creatig and holding the game, loop, etc.
@@ -26,11 +27,8 @@ export class Application {
             "height": height,
             "logFPS": logFPS || false,
             "pixelated": true,
-            "renderer": renderer || new Renderers.Canvas2D(),
-            // for rendering offscreen canvases to the view, the Canvas2D renderer is recommended,
-            // as webgl in safari and firefox can not mirror the canvas element directly into the buffer
-            // and for this reason drawing canvases takes way more time than in the canvas2d api. this may
-            // change when OffscreenCanvas() becomes supported in those browsers or this problem is adressed directly.
+            "renderer": renderer
+                || Utils.isWebGLAvailable() ? new Renderers.WebGL() : new Renderers.Canvas2D(),
         }
 
         this.frames = {
@@ -142,7 +140,7 @@ export class Application {
         this.destroyCurrentScene()
 
         // init scene
-        this.scenes.all[name].init()
+        this.scenes.all[name].init({renderer: this.project.renderer})
 
         // set active scene
         this.scenes.active = this.scenes.all[name]
@@ -166,7 +164,7 @@ export class Application {
         this.destroyCurrentScene()
 
         // init current scene again
-        this.scenes.active.init()
+        this.scenes.active.init({renderer: this.project.renderer})
     }
 
     /**

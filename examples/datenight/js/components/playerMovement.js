@@ -95,7 +95,6 @@ export class PlayerMovement extends fox.Component {
                         if(platform.ownedByPlayerType === undefined){
                             platform.ownedByPlayerType = this.playerType
                             platform.platform.texture = fox.AssetManager.getTexture({name: "Platform_"+this.playerType+(platform.type === Platform.types.DEFAULT_BIG ? "_Wide" : "")})
-                            platform.platform.applyTexture()
                         }
                     }
                 }
@@ -124,7 +123,6 @@ export class PlayerMovement extends fox.Component {
                     if(platform.ownedByPlayerType === undefined){
                         platform.ownedByPlayerType = this.playerType
                         platform.platform.texture = fox.AssetManager.getTexture({name: "Platform_"+this.playerType+"_Vertical"})
-                        platform.platform.applyTexture()
                     }
                 }
             }

@@ -39,11 +39,7 @@ export class Utils {
         }
         let canvas = document.createElement('canvas')
         let ctx = canvas.getContext('webgl')
-        if (ctx) {
-            Utils.storage.webGLEnabled = true
-        } else {
-            Utils.storage.webGLEnabled = false
-        }
+        Utils.storage.webGLEnabled = !!ctx;
         return Utils.storage.webGLEnabled
     }
 }

@@ -1,6 +1,7 @@
 import {GameObject} from '../../gameobject.js'
 import {Color} from "../../../color/index.js";
 import {Texture} from "../../../assets/assets/index.js";
+import {Utils} from "../../../utils/index.js"
 
 export class PointLight extends GameObject {
     /**
@@ -47,8 +48,7 @@ export class PointLight extends GameObject {
 
         let ctx = canvas.getContext("2d")
 
-        ctx.fillStyle = "black"
-        ctx.fillRect(0, 0, this.radius*2, this.radius*2)
+        ctx.clearRect(0, 0, this.radius*2, this.radius*2)
 
         let gradient = ctx.createRadialGradient(this.radius, this.radius, this.innerRadius, this.radius, this.radius, this.radius);
 
@@ -64,28 +64,27 @@ export class PointLight extends GameObject {
 
     /**
      * Renders the PointLight with the renderer
-     * @param x X Position of the PointLight
-     * @param y Y Position of the PointLight
-     * @param renderer
+     * @param {number} x X Position of the PointLight
+     * @param {number} y Y Position of the PointLight
+     * @param {AbstractFramebuffer} framebuffer
      */
-    render({x, y, renderer} = {}) {
+    render({x, y, framebuffer} = {}) {
         let render_offset = {
             "x" : x,
             "y" : y,
         }
 
         if(this.followingObject!==undefined){
-            render_offset.x += (this.followingObject.position.x  + this.followingObject.dimensions.width/2 - this.position.x)
+            render_offset.x += (this.followingObject.position.x + this.followingObject.dimensions.width/2  - this.position.x)
             render_offset.y += (this.followingObject.position.y + this.followingObject.dimensions.height/2 - this.position.y)
         }
 
-        renderer.renderTexture({
-            texture : this.lightMapTexture,
-            x : render_offset.x - this.radius,
+        framebuffer.renderTexture({
+            texture: this.lightMapTexture,
+            x: render_offset.x - this.radius,
             y: render_offset.y - this.radius,
             width: this.dimensions.width,
             height: this.dimensions.height,
-            rotation: 0
         })
     }
 }

@@ -15,11 +15,9 @@ export class TimingPlatform extends fox.Component {
             if(this.platform.ownedByPlayerType === "Pink"){
                 this.platform.ownedByPlayerType = "Blue"
                 this.platform.platform.texture = fox.AssetManager.getTexture({name: "Platform_Blue"})
-                this.platform.platform.applyTexture()
             }else if(this.platform.ownedByPlayerType === "Blue"){
                 this.platform.ownedByPlayerType = "Pink"
                 this.platform.platform.texture = fox.AssetManager.getTexture({name: "Platform_Pink"})
-                this.platform.platform.applyTexture()
             }
         }
         this.framecounter += timestep

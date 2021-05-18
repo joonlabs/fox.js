@@ -27,7 +27,6 @@ export class Animator extends Component {
         this.framecounter += timestep
 
         object.texture = this.animations[this.activeAnimation].getTexture({frame: parseInt(this.framecounter)})
-        object.applyTexture()
     }
 
     /**
