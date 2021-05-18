@@ -116,27 +116,12 @@ export class Scene {
     }
 
     /**
-     * Clears all internal offscreen-canvases
-     * @return {Scene}
-     */
-    clear() {
-        for (let layer of this.layers) {
-            layer.clear()
-        }
-        return this
-    }
-
-    /**
      * Renders the intern offscreen-canvases
      * @param {object} app Application element passed to the function for reading project data
      * @returns {Scene}
      */
     render({app} = {}) {
         for (let camera of this.cameras.all) {
-            // clear all layers
-            for (let layer of this.layers) {
-                layer.clear()
-            }
             // render to all offscreen canvases
             camera.render({app: app, layers: this.layers})
             // render to the screen canvas

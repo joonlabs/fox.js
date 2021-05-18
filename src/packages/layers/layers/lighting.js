@@ -38,14 +38,6 @@ export class Lighting extends Layer {
         })
     }
 
-    /**
-     * Is called every time before the render method is called and clears the whole canvas
-     * @return {void}
-     */
-    clear(_this = this) {
-        this.lightingBuffer.clear({clearColor: this.backgroundColor})
-    }
-
     render({offset, framebuffer}) {
         this.lightingBuffer.clear({clearColor: this.backgroundColor})
         super.render({offset, framebuffer: this.lightingBuffer})

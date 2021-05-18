@@ -84,14 +84,6 @@ export class Layer {
     }
 
     /**
-     * Is called every time before the render method is called and clears the whole canvas
-     * @return {void}
-     */
-    clear(_this = this) {
-
-    }
-
-    /**
      * Adds an object to the layer.
      * @param {string} name Name of the object
      * @param {object} object Object to be added

@@ -8,7 +8,6 @@ import {level06} from "./scenes/level06.js";
 import {level07} from "./scenes/level07.js";
 import {playground} from "./scenes/playground.js";
 import './assets.js'
-import {Renderers} from "../../../src/packages/renderers/index.js";
 
 // create the new application
 let app = new fox.Application({
