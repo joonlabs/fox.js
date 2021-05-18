@@ -1,6 +1,7 @@
 import {Renderers} from '../../packages/renderers/index.js'
 import {Input} from '../../packages/input/index.js'
 import {Stats} from '../../packages/stats/index.js'
+import {Utils} from "../utils/index.js"
 
 /**
  * Represents the main game engine class. An application instance is responsible for creatig and holding the game, loop, etc.
@@ -26,7 +27,8 @@ export class Application {
             "height": height,
             "logFPS": logFPS || false,
             "pixelated": true,
-            "renderer": renderer || new Renderers.WebGL(),
+            "renderer": renderer
+                || Utils.isWebGLAvailable() ? new Renderers.WebGL() : new Renderers.Canvas2D(),
         }
 
         this.frames = {

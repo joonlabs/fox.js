@@ -14,8 +14,7 @@ import {Renderers} from "../../../src/packages/renderers/index.js";
 let app = new fox.Application({
     width: 360,
     height: 260,
-    logFPS: true,
-    renderer: new Renderers.WebGL()
+    logFPS: true
 })
 document.body.appendChild(app.view)
 
