@@ -119,7 +119,7 @@ export class Framebuffer extends AbstractFramebuffer {
         this.bind()
         this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})
         this.renderer.setBlendFuncSeparate(this.blendFunc)
-        this.renderer.setBlendEquation(this.blendEquation)
+        this.renderer.setBlendEquationSeperate(this.blendEquation)
 
         const program = this.renderer.rectangleProgram
         const vao = this.renderer.rectangleVAO
