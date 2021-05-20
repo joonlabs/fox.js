@@ -213,10 +213,11 @@ export class WebGL extends Renderer {
         }
     }
 
-    setBlendEquation({mode}) {
-        if (this.boundBlendEquation !== mode) {
-            this.gl.blendEquation(mode)
-            this.boundBlendEquation = mode
+    setBlendEquationSeperate({modeRGB, modeAlpha}) {
+        if (this.boundBlendEquation?.modeRGB !== modeRGB
+            || this.boundBlendEquation?.modeAlpha !== modeAlpha) {
+            this.gl.blendEquationSeparate(modeRGB, modeAlpha)
+            this.boundBlendEquation = {modeRGB, modeAlpha}
         }
     }
 }
