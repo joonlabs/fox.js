@@ -1,4 +1,4 @@
 import {Canvas} from "./canvas.js"
-import {LightingCanvas} from "./lightingcanvas.js"
+import {BlendingCanvas} from "./blendingCanvas.js"
 
-export {Canvas, LightingCanvas}
+export {Canvas, BlendingCanvas}

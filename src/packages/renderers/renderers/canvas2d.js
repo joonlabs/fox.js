@@ -1,6 +1,6 @@
 import {Renderer} from './renderer.js'
 import {FramebufferType} from "./framebuffer.js"
-import {Canvas, LightingCanvas} from "./canvas2d/index.js"
+import {Canvas, BlendingCanvas} from "./canvas2d/index.js"
 
 
 /**
@@ -30,8 +30,8 @@ export class Canvas2D extends Renderer {
 
     createFramebuffer({width, height, type}) {
         switch (type) {
-            case FramebufferType.LIGHTING:
-                return new LightingCanvas({renderer: this, width, height})
+            case FramebufferType.MULTIPLY_BLENDING:
+                return new BlendingCanvas({renderer: this, width, height})
             default:
                 return new Canvas({renderer: this, width, height})
         }
