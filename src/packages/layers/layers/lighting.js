@@ -1,7 +1,6 @@
 import {Layer} from './layer.js'
 import {Color} from "../../color/color.js";
 import {FramebufferType} from "../../renderers/index.js"
-import {Utils} from "../../utils/index.js"
 
 /**
  * The LayerLighting represents the lighting layer, that only renders light objects
@@ -24,7 +23,8 @@ export class Lighting extends Layer {
 
         this.globalLight = globalLight || 0
 
-        this.backgroundColor = new Color({a: 1 - Math.min(1, Math.abs(this.globalLight))})
+        let backgroundGrey = (1 - Math.min(1, Math.abs(this.globalLight))) * 255
+        this.backgroundColor = new Color({r: backgroundGrey, g: backgroundGrey, b: backgroundGrey})
     }
 
     /**
@@ -34,16 +34,27 @@ export class Lighting extends Layer {
         this.lightingBuffer = renderer.createFramebuffer({
             width: this.dimensions.width,
             height: this.dimensions.height,
-            type: FramebufferType.LIGHTING
+            type: FramebufferType.NORMAL
+        })
+        this.blendBuffer = renderer.createFramebuffer({
+            width: this.dimensions.width,
+            height: this.dimensions.height,
+            type: FramebufferType.MULTIPLY_BLENDING
         })
     }
 
     render({offset, framebuffer}) {
         this.lightingBuffer.clear({clearColor: this.backgroundColor})
+        this.blendBuffer.clear()
         super.render({offset, framebuffer: this.lightingBuffer})
 
-        framebuffer.renderTexture({
+        this.blendBuffer.blendTexture({
+            base: framebuffer,
             texture: this.lightingBuffer,
+        })
+
+        framebuffer.renderTexture({
+            texture: this.blendBuffer,
             x: 0,
             y: 0,
         })

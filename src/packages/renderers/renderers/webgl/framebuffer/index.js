@@ -1,3 +1,3 @@
-import {Lightingbuffer} from "./lightingbuffer.js"
+import {BlendingBuffer} from "./blendingbuffer.js"
 
-export {Lightingbuffer}
+export {BlendingBuffer}

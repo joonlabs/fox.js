@@ -37,10 +37,15 @@ export class Texture {
         }
     }
 
-    bind() {
-        if (this.renderer.boundTexture !== this) {
+    bind({textureUnit} = {textureUnit: this.renderer.gl.TEXTURE0}) {
+        if (this.renderer.boundTexture.texture[textureUnit] !== this) {
+            if (this.renderer.boundTexture.unit !== textureUnit) {
+                this.renderer.gl.activeTexture(textureUnit)
+                this.renderer.boundTexture.unit = textureUnit
+            }
+
             this.renderer.gl.bindTexture(this.renderer.gl.TEXTURE_2D, this.textureRef)
-            this.renderer.boundTexture = this
+            this.renderer.boundTexture.texture[textureUnit] = this
         }
     }
 

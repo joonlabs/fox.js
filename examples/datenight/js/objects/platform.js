@@ -89,6 +89,7 @@ export class Platform {
                 y: y-15,
                 radius: 120,
                 intensity: 1,
+                hue: new fox.Color({r: 255, g: 255, b: 127}),
                 layer: lightingLayer
             })
             lightingLayer.addObject({object: this.light})

@@ -29,7 +29,10 @@ export class WebGL extends Renderer {
         this.boundFramebuffer = null
         this.boundVAO = null
         this.boundProgram = null
-        this.boundTexture = null
+        this.boundTexture = {
+            texture: {},
+            unit: null
+        }
         this.boundClearColor = null
         this.boundViewport = null
         this.boundBlendFunc = null
@@ -43,11 +46,13 @@ export class WebGL extends Renderer {
         this.glVao = this.gl.getExtension("OES_vertex_array_object")
         this.canvas.setAttribute("style", "image-rendering: optimizeSpeed; image-rendering: -moz-crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: -o-crisp-edges; image-rendering: pixelated;")
 
-        this.textureProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils._vertexShaderTexture, fragmentShaderSrc: WebGLUtils._fragmentShaderTexture})
-        this.rectangleProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils._vertexShaderSolid, fragmentShaderSrc: WebGLUtils._fragmentShaderSolid})
+        this.textureProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils.vertexShaderTexture, fragmentShaderSrc: WebGLUtils.fragmentShaderTexture})
+        this.rectangleProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils.vertexShaderSolid, fragmentShaderSrc: WebGLUtils.fragmentShaderSolid})
+        this.multiplyBlendingProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils.vertexShaderBlending, fragmentShaderSrc: WebGLUtils.fragmentShaderMultiplyBlend})
         this.programs = [
             this.textureProgram,
-            this.rectangleProgram
+            this.rectangleProgram,
+            this.multiplyBlendingProgram
         ]
 
         // Buffer used to draw quads
@@ -78,6 +83,21 @@ export class WebGL extends Renderer {
             }
         })
 
+        this.multiplyBlendingVAO = new VertexArray({
+            renderer: this,
+            setup() {
+                let positionLocation = _this.gl.getAttribLocation(_this.multiplyBlendingProgram.programRef, "a_position");
+                let texcoordLocation = _this.gl.getAttribLocation(_this.multiplyBlendingProgram.programRef, "a_texcoord");
+
+                _this.gl.bindBuffer(_this.gl.ARRAY_BUFFER, _this.quadBuffer);
+                _this.gl.enableVertexAttribArray(positionLocation);
+                _this.gl.vertexAttribPointer(positionLocation, 2, _this.gl.FLOAT, false, 0, 0);
+                _this.gl.bindBuffer(_this.gl.ARRAY_BUFFER, _this.quadBuffer);
+                _this.gl.enableVertexAttribArray(texcoordLocation);
+                _this.gl.vertexAttribPointer(texcoordLocation, 2, _this.gl.FLOAT, false, 0, 0);
+            }
+        })
+
         this.rectangleVAO = new VertexArray({
             renderer: this,
             setup() {
@@ -91,7 +111,8 @@ export class WebGL extends Renderer {
 
         this.VAOs = [
             this.textureVAO,
-            this.rectangleVAO
+            this.rectangleVAO,
+            this.multiplyBlendingVAO
         ]
 
         this.mainFramebuffer = new Framebuffers.Framebuffer({
@@ -123,8 +144,8 @@ export class WebGL extends Renderer {
 
     createFramebuffer({width, height, type}) {
         switch (type) {
-            case FramebufferType.LIGHTING:
-                return new Framebuffers.Lightingbuffer({renderer: this, width, height})
+            case FramebufferType.MULTIPLY_BLENDING:
+                return new Framebuffers.BlendingBuffer({renderer: this, width, height, fragmentShaderKey: FramebufferType.MULTIPLY_BLENDING})
             default:
                 return new Framebuffers.Framebuffer({renderer: this, width, height})
         }
