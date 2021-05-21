@@ -58,5 +58,5 @@ export class AbstractFramebuffer {
  */
 export const FramebufferType = {
     NORMAL: "normal",
-    LIGHTING: "lighting"
+    MULTIPLY_BLENDING: "multiply_blending"
 }

@@ -92,14 +92,12 @@ export class Framebuffer extends AbstractFramebuffer {
 
         this.program.use()
         this.vao.bind()
-        gl.activeTexture(gl.TEXTURE0)
-        glTexture.bind()
+        glTexture.bind({textureUnit: gl.TEXTURE0})
 
         let matrix = M4.multiply(
             WebGLUtils.createFramebufferMatrix({width: this.width, height: this.height, flipY: this.framebufferRef === null}),
             WebGLUtils.createObjectMatrix({x, y, width, height, rotation: {angle: rotation, ...rotationPosition}})
         )
-
 
         // set matrix and render
         this.program.setUniformMatrix({uniform: "u_matrix", matrix})
@@ -120,6 +118,8 @@ export class Framebuffer extends AbstractFramebuffer {
         const gl = this.renderer.gl
         this.bind()
         this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})
+        this.renderer.setBlendFuncSeparate(this.blendFunc)
+        this.renderer.setBlendEquationSeperate(this.blendEquation)
 
         const program = this.renderer.rectangleProgram
         const vao = this.renderer.rectangleVAO
@@ -127,8 +127,6 @@ export class Framebuffer extends AbstractFramebuffer {
         program.use()
         vao.bind()
         gl.activeTexture(gl.TEXTURE0)
-
-        //this.renderer.setBlendFuncSeparate({srcRGB: gl.SRC_ALPHA, dstRGB: gl.ONE_MINUS_SRC_ALPHA, srcAlpha: gl.ONE, dstAlpha: gl.ONE_MINUS_SRC_ALPHA});
 
         let matrix = M4.multiply(
             WebGLUtils.createFramebufferMatrix({width: this.width, height: this.height, flipY: this.framebufferRef === null}),

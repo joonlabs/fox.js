@@ -1,7 +1,7 @@
 import * as M4 from "../m4.js"
 
 export class WebGLUtils {
-    static get _vertexShaderTexture() {
+    static get vertexShaderTexture() {
         return `
             attribute vec4 a_position;
             attribute vec2 a_texcoord;
@@ -18,7 +18,7 @@ export class WebGLUtils {
         `
     }
 
-    static get _vertexShaderSolid() {
+    static get vertexShaderSolid() {
         return `
             attribute vec4 a_position;
             
@@ -31,7 +31,27 @@ export class WebGLUtils {
         `
     }
 
-    static get _fragmentShaderTexture() {
+    static get vertexShaderBlending() {
+        return `
+            attribute vec4 a_position;
+            attribute vec2 a_texcoord;
+            
+            uniform mat4 u_matrix;
+            uniform mat4 u_textureMatrix;
+            uniform mat4 u_baseMatrix;
+            
+            varying vec2 v_texcoord;
+            varying vec2 v_basecoord;
+            
+            void main() {
+               gl_Position = u_matrix * a_position;
+               v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
+               v_basecoord = (u_baseMatrix * vec4(a_texcoord, 0, 1)).xy;
+            }
+        `
+    }
+
+    static get fragmentShaderTexture() {
         return `
             precision mediump float;
 
@@ -45,7 +65,7 @@ export class WebGLUtils {
         `
     }
 
-    static get _fragmentShaderSolid() {
+    static get fragmentShaderSolid() {
         return `
             precision mediump float;
 
@@ -53,6 +73,25 @@ export class WebGLUtils {
 
             void main() {
                 gl_FragColor = u_color;
+            }
+        `
+    }
+
+    static get fragmentShaderMultiplyBlend() {
+        return `
+            precision mediump float;
+
+            varying vec2 v_texcoord;
+            varying vec2 v_basecoord;
+            
+            uniform sampler2D u_base;
+            uniform sampler2D u_texture;
+            
+            void main() {
+                vec4 baseColor = texture2D(u_base, v_basecoord);
+                vec4 textureColor = texture2D(u_texture, v_texcoord);
+            
+                gl_FragColor = baseColor * textureColor;
             }
         `
     }

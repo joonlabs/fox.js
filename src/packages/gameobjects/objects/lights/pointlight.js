@@ -26,7 +26,17 @@ export class PointLight extends GameObject {
         this.radius = radius
         this.innerRadius = innerRadius || 0
         this.intensity = intensity || 1
-        this.hue =  hue || new Color()
+        this.hue =  hue || new Color({
+            r: 255,
+            g: 255,
+            b: 255,
+        })
+        this.lightColor = new Color({
+            r: this.hue.r * this.intensity,
+            g: this.hue.g * this.intensity,
+            b: this.hue.b * this.intensity,
+            a: this.intensity
+        })
 
         this.followingGameObject = undefined
 
@@ -52,7 +62,7 @@ export class PointLight extends GameObject {
 
         let gradient = ctx.createRadialGradient(this.radius, this.radius, this.innerRadius, this.radius, this.radius, this.radius);
 
-        gradient.addColorStop(0, "rgba(255, 255, 255, "+this.intensity+")");
+        gradient.addColorStop(0, this.lightColor.toString());
         gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
         ctx.fillStyle = gradient;
         ctx.beginPath()
