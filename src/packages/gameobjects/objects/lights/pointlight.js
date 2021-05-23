@@ -32,9 +32,9 @@ export class PointLight extends GameObject {
             b: 255,
         })
         this.lightColor = new Color({
-            r: this.hue.r * this.intensity,
-            g: this.hue.g * this.intensity,
-            b: this.hue.b * this.intensity,
+            r: this.hue.r,
+            g: this.hue.g,
+            b: this.hue.b,
             a: this.intensity
         })
 
@@ -62,8 +62,18 @@ export class PointLight extends GameObject {
 
         let gradient = ctx.createRadialGradient(this.radius, this.radius, this.innerRadius, this.radius, this.radius, this.radius);
 
+        /**
+         * fixing color overflow problems facing Safari 14.1 on MacOS and iOS
+         */
+        this.lightColor.r *= 254/255
+        this.lightColor.g *= 254/255
+        this.lightColor.b *= 254/255
+
+        let fadeOutColor = this.lightColor.clone()
+        fadeOutColor.a = 0
+
         gradient.addColorStop(0, this.lightColor.toString());
-        gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+        gradient.addColorStop(1, fadeOutColor.toString());
         ctx.fillStyle = gradient;
         ctx.beginPath()
         ctx.arc(this.radius, this.radius, this.radius, 0, Math.PI*2)

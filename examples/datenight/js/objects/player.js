@@ -74,7 +74,7 @@ export class Player {
             radius: 85,
             intensity: 1,
             hue: (texture === "Pink")
-                ? new fox.Color({r: 231, g: 54, b: 182})
+                ? new fox.Color({r: 255, g: 120, b: 232})
                 : new fox.Color({r: 65, g: 182, b: 247})
         })
         this.light.followObject({

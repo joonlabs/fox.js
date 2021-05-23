@@ -23,7 +23,7 @@ export class Lighting extends Layer {
 
         this.globalLight = globalLight || 0
 
-        let backgroundGrey = (1 - Math.min(1, Math.abs(this.globalLight))) * 255
+        let backgroundGrey = Math.min(1, Math.abs(this.globalLight)) * 255
         this.backgroundColor = new Color({r: backgroundGrey, g: backgroundGrey, b: backgroundGrey})
     }
 

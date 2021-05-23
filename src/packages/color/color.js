@@ -4,6 +4,11 @@
  * @class Color
  */
 export class Color {
+    r;
+    g;
+    b;
+    a;
+
     /**
      * Construct method of the object
      * @method constructor
@@ -53,5 +58,18 @@ export class Color {
      */
     asRGBList() {
         return [this.r, this.g, this.b]
+    }
+
+    /**
+     * Clones the color and returns a new Color-object
+     * @returns {Color}
+     */
+    clone() {
+        return new Color({
+            r: this.r,
+            g: this.g,
+            b: this.b,
+            a: this.a,
+        })
     }
 }

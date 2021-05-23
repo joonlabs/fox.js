@@ -17,6 +17,10 @@ export class Vec2D extends Vector {
         this.y = y || 0
     }
 
+    /**
+     * Clones the vector and returns a new Vec2D-object
+     * @returns {Vec2D}
+     */
     clone() {
         return new Vec2D({x: this.x, y: this.y})
     }
