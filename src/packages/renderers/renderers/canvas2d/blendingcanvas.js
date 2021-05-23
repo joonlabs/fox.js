@@ -5,11 +5,6 @@ export class BlendingCanvas extends Canvas {
         super(params);
     }
 
-    clear({clearColor} = {}) {
-        this.ctx.globalCompositeOperation = "copy"
-        super.clear({clearColor})
-    }
-
     blendTexture({base, texture}) {
         this.ctx.globalCompositeOperation = "copy"
         super.renderTexture({

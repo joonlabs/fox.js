@@ -34,7 +34,7 @@ export class Lighting extends Layer {
         this.lightingBuffer = renderer.createFramebuffer({
             width: this.dimensions.width,
             height: this.dimensions.height,
-            type: FramebufferType.NORMAL
+            type: FramebufferType.LIGHTING
         })
         this.blendBuffer = renderer.createFramebuffer({
             width: this.dimensions.width,
