@@ -167,4 +167,13 @@ export class GameObject {
             component.onDestroy({object: this})
         }
     }
+
+    /**
+     * Updates the z value and re-orders the objects in the layer
+     * @param {number} z New Value for the z index
+     */
+    setZ({z}){
+        this.z = z
+        this.layer.objectmanager.reorderObjects()
+    }
 }

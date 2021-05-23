@@ -9,11 +9,12 @@ export class ObjectManager {
      * @returns ObjectManager
      */
     constructor() {
-        this.objects = {}
+        this.objects = new Map()
     }
 
+
     destroy() {
-        this.objects = {}
+        this.objects = new Map()
     }
 
     /**
@@ -23,7 +24,8 @@ export class ObjectManager {
      * @return {void}
      */
     addObject({name, object} = {}) {
-        this.objects[name] = object
+        this.objects.set(name, object)
+        this.reorderObjects()
     }
 
     /**
@@ -32,7 +34,7 @@ export class ObjectManager {
      * @returns {any}
      */
     getObject({name}) {
-        return this.objects[name]
+        return this.objects.get(name)
     }
 
     /**
@@ -41,7 +43,7 @@ export class ObjectManager {
      * @return {void}
      */
     removeObject({name}) {
-        delete this.objects[name]
+        this.objects.delete(name)
     }
 
     /**
@@ -49,13 +51,11 @@ export class ObjectManager {
      * @return {void}
      */
     reorderObjects() {
-        let orderedObjects = Object.values(this.objects)
-        orderedObjects.sort((function (a, b) {
-            if (a.z < b.z) return -1;
-            if (a.z > b.z) return 1;
-            return this.indexOf(a) - this.indexOf(b);
-        }).bind(orderedObjects))
-        return orderedObjects
+        this.objects = new Map([...this.objects].sort(function (a, b) {
+            if (a[1].z < b[1].z) return -1;
+            if (a[1].z > b[1].z) return 1;
+            return 0
+        }))
     }
 
     /**
@@ -64,12 +64,14 @@ export class ObjectManager {
      * @return {void}
      */
     calc({timestep} = {}) {
-        for (let obj of this.getObjects()) {
-            obj.calc({timestep: timestep})
-        }
+        this.objects.forEach(obj => obj.calc({timestep: timestep}))
     }
 
+    /**
+     * Returns all objects
+     * @returns {*|{}}
+     */
     getObjects() {
-        return this.reorderObjects()
+        return this.objects
     }
 }
