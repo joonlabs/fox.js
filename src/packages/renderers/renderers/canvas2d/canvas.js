@@ -21,8 +21,11 @@ export class Canvas extends AbstractFramebuffer {
     clear({clearColor} = {}) {
         clearColor = clearColor || new Color()
 
+        let compOperation = this.ctx.globalCompositeOperation
+        this.ctx.globalCompositeOperation = "copy"
         this.ctx.fillStyle = clearColor.toString()
         this.ctx.fillRect(0, 0, this.width, this.height)
+        this.ctx.globalCompositeOperation = compOperation
     }
 
     renderTexture({texture, x, y, width, height, rotation, rotationPosition}) {

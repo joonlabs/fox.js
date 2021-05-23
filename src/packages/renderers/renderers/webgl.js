@@ -146,6 +146,8 @@ export class WebGL extends Renderer {
         switch (type) {
             case FramebufferType.MULTIPLY_BLENDING:
                 return new Framebuffers.BlendingBuffer({renderer: this, width, height, fragmentShaderKey: FramebufferType.MULTIPLY_BLENDING})
+            case FramebufferType.LIGHTING:
+                return new Framebuffers.LightingBuffer({renderer: this, width, height})
             default:
                 return new Framebuffers.Framebuffer({renderer: this, width, height})
         }
