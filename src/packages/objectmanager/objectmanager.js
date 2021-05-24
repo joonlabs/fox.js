@@ -10,11 +10,15 @@ export class ObjectManager {
      */
     constructor() {
         this.objects = new Map()
+        this.biggestZ = undefined;
     }
 
 
+    /**
+     * Removes all objects
+     */
     destroy() {
-        this.objects = new Map()
+        this.objects.clear()
     }
 
     /**
@@ -25,7 +29,11 @@ export class ObjectManager {
      */
     addObject({name, object} = {}) {
         this.objects.set(name, object)
-        this.reorderObjects()
+        if (this.biggestZ > object.z) {
+            this.reorderObjects()
+        } else {
+            this.biggestZ = object.z
+        }
     }
 
     /**
@@ -52,9 +60,7 @@ export class ObjectManager {
      */
     reorderObjects() {
         this.objects = new Map([...this.objects].sort(function (a, b) {
-            if (a[1].z < b[1].z) return -1;
-            if (a[1].z > b[1].z) return 1;
-            return 0
+            return a[1].z - b[1].z
         }))
     }
 
