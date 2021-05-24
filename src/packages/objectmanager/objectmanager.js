@@ -9,11 +9,16 @@ export class ObjectManager {
      * @returns ObjectManager
      */
     constructor() {
-        this.objects = {}
+        this.objects = new Map()
+        this.biggestZ = undefined;
     }
 
+
+    /**
+     * Removes all objects
+     */
     destroy() {
-        this.objects = {}
+        this.objects.clear()
     }
 
     /**
@@ -23,7 +28,12 @@ export class ObjectManager {
      * @return {void}
      */
     addObject({name, object} = {}) {
-        this.objects[name] = object
+        this.objects.set(name, object)
+        if (this.biggestZ > object.z) {
+            this.reorderObjects()
+        } else {
+            this.biggestZ = object.z
+        }
     }
 
     /**
@@ -32,7 +42,7 @@ export class ObjectManager {
      * @returns {any}
      */
     getObject({name}) {
-        return this.objects[name]
+        return this.objects.get(name)
     }
 
     /**
@@ -41,7 +51,7 @@ export class ObjectManager {
      * @return {void}
      */
     removeObject({name}) {
-        delete this.objects[name]
+        this.objects.delete(name)
     }
 
     /**
@@ -49,13 +59,9 @@ export class ObjectManager {
      * @return {void}
      */
     reorderObjects() {
-        let orderedObjects = Object.values(this.objects)
-        orderedObjects.sort((function (a, b) {
-            if (a.z < b.z) return -1;
-            if (a.z > b.z) return 1;
-            return this.indexOf(a) - this.indexOf(b);
-        }).bind(orderedObjects))
-        return orderedObjects
+        this.objects = new Map([...this.objects].sort(function (a, b) {
+            return a[1].z - b[1].z
+        }))
     }
 
     /**
@@ -64,12 +70,14 @@ export class ObjectManager {
      * @return {void}
      */
     calc({timestep} = {}) {
-        for (let obj of this.getObjects()) {
-            obj.calc({timestep: timestep})
-        }
+        this.objects.forEach(obj => obj.calc({timestep: timestep}))
     }
 
+    /**
+     * Returns all objects
+     * @returns {*|{}}
+     */
     getObjects() {
-        return this.reorderObjects()
+        return this.objects
     }
 }

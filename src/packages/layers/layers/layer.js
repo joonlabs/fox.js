@@ -72,15 +72,13 @@ export class Layer {
      * Is called in every loop after the calc method
      */
     render({offset, framebuffer}) {
-        for (let obj of this.objectmanager.getObjects()) {
-            obj.render({
-                x: offset.x + obj.position.x,
-                y: offset.y + obj.position.y,
-                width: obj.dimensions.width,
-                height: obj.dimensions.height,
-                framebuffer: framebuffer,
-            })
-        }
+        this.objectmanager.getObjects().forEach(obj => obj.render({
+            x: offset.x + obj.position.x,
+            y: offset.y + obj.position.y,
+            width: obj.dimensions.width,
+            height: obj.dimensions.height,
+            framebuffer: framebuffer,
+        }))
     }
 
     /**
@@ -95,7 +93,7 @@ export class Layer {
         })
 
         // default the name if not set to objectX
-        name = name || "object" + Object.keys(this.objectmanager.objects).length.toString()
+        name = name || "object" + this.objectmanager.objects.size
 
         // add object to objectmanager
         this.objectmanager.addObject({
