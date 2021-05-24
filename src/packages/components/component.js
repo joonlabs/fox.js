@@ -12,15 +12,16 @@ export class Component {
      * @param {object} object
      * @return {void}
      */
-    onInit({object} = {}, _this = this) {
+    onInit({object} = {}) {
     }
 
     /**
      * Is called every time when the game object is calculated.
+     * @param {number} timestep
      * @param {object} object
      * @return {void}
      */
-    onCalc({object} = {}, _this = this) {
+    onCalc({timestep, object} = {}) {
     }
 
     /**
@@ -28,7 +29,7 @@ export class Component {
      * @param {object} object
      * @return {void}
      */
-    onBeforeRender({object} = {}, _this = this) {
+    onBeforeRender({object} = {}) {
     }
 
     /**
@@ -36,7 +37,7 @@ export class Component {
      * @param {object} object
      * @return {void}
      */
-    onAfterRender({object} = {}, _this = this) {
+    onAfterRender({object} = {}) {
     }
 
     /**
@@ -44,6 +45,6 @@ export class Component {
      * @param {object} object
      * @return {void}
      */
-    onDestroy({object} = {}, _this = this) {
+    onDestroy({object} = {}) {
     }
 }
