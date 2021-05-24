@@ -37,23 +37,6 @@ export class Rectangle extends GameObject {
         this.color = color || new Color()
     }
 
-
-    /**
-     * Is called every time the game updates. Calls it's components calc methods.
-     * @param {number} timestep Normalized DeltaTime to catch up with frame skips
-     * @return {void}
-     */
-    calc({timestep} = {}) {
-        for (let component of this.components) {
-            if (typeof component.onCalc === "function") {
-                component.onCalc({
-                    timestep: timestep,
-                    object: this
-                })
-            }
-        }
-    }
-
     /**
      * Is called every time the game updates, after the calc. Calls it's components render methods.
      * @param {number} x X Coordinate
