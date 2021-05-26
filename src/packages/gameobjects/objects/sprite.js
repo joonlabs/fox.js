@@ -134,8 +134,8 @@ export class Sprite extends GameObject {
             let textureRatio = this.texture.dimensions.height / this.texture.dimensions.width,
                 spriteRatio = this.dimensions.height / this.dimensions.width
 
-            let finalWidth = undefined,
-                finalHeight = undefined
+            let finalWidth,
+                finalHeight
 
             if(spriteRatio < textureRatio){
                 finalHeight = this.dimensions.height
@@ -150,8 +150,8 @@ export class Sprite extends GameObject {
             let textureRatio = this.texture.dimensions.height / this.texture.dimensions.width,
                 spriteRatio = this.dimensions.height / this.dimensions.width
 
-            let finalWidth = undefined,
-                finalHeight = undefined
+            let finalWidth,
+                finalHeight
 
             if(spriteRatio > textureRatio){
                 finalHeight = this.dimensions.height
