@@ -112,6 +112,9 @@ export class Scene {
         for (let layer of this.layers) {
             layer.calc({timestep})
         }
+        for (let camera of this.cameras.all) {
+            camera.calc({timestep})
+        }
         return this
     }
 

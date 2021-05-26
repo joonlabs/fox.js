@@ -38,17 +38,7 @@ export class PointLight extends GameObject {
             a: this.intensity
         })
 
-        this.followingGameObject = undefined
-
         this.computeLightMap()
-    }
-
-    followObject({object} = {}) {
-        this.followingObject = object
-    }
-
-    unfollowObject() {
-        this.followingObject = undefined
     }
 
     computeLightMap(){
@@ -88,20 +78,10 @@ export class PointLight extends GameObject {
      * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */
     render({offset, framebuffer} = {}) {
-        let render_offset = {
-            "x" : this.position.x + offset.x,
-            "y" : this.position.y + offset.y,
-        }
-
-        if(this.followingObject!==undefined){
-            render_offset.x += (this.followingObject.position.x + this.followingObject.dimensions.width/2  - this.position.x)
-            render_offset.y += (this.followingObject.position.y + this.followingObject.dimensions.height/2 - this.position.y)
-        }
-
         framebuffer.renderTexture({
             texture: this.lightMapTexture,
-            x: render_offset.x - this.radius,
-            y: render_offset.y - this.radius,
+            x: this.position.x + offset.x - this.radius,
+            y: this.position.y + offset.y - this.radius,
             width: this.dimensions.width,
             height: this.dimensions.height,
         })

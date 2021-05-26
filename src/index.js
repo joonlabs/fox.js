@@ -15,7 +15,8 @@ import {Renderers} from './packages/renderers/index.js'
 import {Scene} from './packages/scene/index.js'
 import {Vectors} from './packages/vectors/index.js'
 import {Application} from './packages/application/index.js'
-import {Component} from './packages/components/index.js'
+import {Component} from './packages/component/index.js'
+import * as Components from './packages/components/index.js'
 import {Utils} from './packages/utils/index.js'
 import {TexturePositionMode, TextureSizeMode} from "./packages/gameobjects/objects/sprite.js";
 
@@ -31,6 +32,7 @@ let fox = {
     CollisionManager,
     Color,
     Component,
+    Components,
     GameObjects,
     Input,
     Layers,

@@ -221,8 +221,9 @@ let light = new fox.GameObjects.Lights.PointLight({
     intensity: 1
 })
 // make the light follow the player
-light.followObject({
-    object : player
+light.addComponent({
+    name: "FollowPlayer",
+    component: new fox.Components.Basic.FollowGameObject({gameObject: player})
 })
 
 // add the light to the lighting layer

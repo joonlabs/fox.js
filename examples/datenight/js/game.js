@@ -29,7 +29,7 @@ fox.AssetManager.onResourcesLoaded({
         app.addScene({name: "level07", scene: level07})
         app.addScene({name: "playground", scene: playground})
 
-        app.loadScene({name: "level01"})
+        app.loadScene({name: "playground"})
         window.app = app
     }
 })

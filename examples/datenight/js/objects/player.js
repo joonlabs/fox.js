@@ -1,5 +1,6 @@
 import fox from "../../../../src/index.js";
 import {PlayerMovement} from "../components/playerMovement.js";
+import {FollowGameObject} from "../../../../src/packages/components/basic/index.js";
 
 export class Player {
     constructor({x, y, texture, layer, lightingLayer, scene, movement}) {
@@ -77,8 +78,9 @@ export class Player {
                 ? new fox.Color({r: 255, g: 120, b: 232})
                 : new fox.Color({r: 65, g: 182, b: 247})
         })
-        this.light.followObject({
-            object : this.player
+        this.light.addComponent({
+            name: "FollowPlayer",
+            component: new FollowGameObject({gameObject: this.player})
         })
 
         lightingLayer.addObject({name: "light"+texture, object: this.light})

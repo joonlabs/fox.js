@@ -2,7 +2,7 @@ import fox from "../../../../src/index.js";
 import {Platform} from "../objects/platform.js";
 import {Vec2D} from "../../../../src/packages/vectors/vectors/index.js";
 
-const SPEED_MAXIMUM = 4
+const SPEED_MAXIMUM = 4*3
 const ACCELERATION = new fox.Vectors.Vec2D({x: 2 * 7, y: 0})
 const DECELERATION = new fox.Vectors.Vec2D({x: 0.55 * 3, y: 0})
 const GRAVITY = new fox.Vectors.Vec2D({x: 0, y: 0.5 * 3})
@@ -34,8 +34,10 @@ export class PlayerMovement extends fox.Component {
     accelerateX({direction, timestep}) {
         if (direction === 1 && this.velocity.x < SPEED_MAXIMUM) {
             this.velocity = this.velocity.add({vector: ACCELERATION.multScalar({scalar: direction}).multScalar({scalar: timestep})})
+            if(this.velocity.x > SPEED_MAXIMUM) this.velocity.x = SPEED_MAXIMUM
         } else if (direction === -1 && this.velocity.x > -SPEED_MAXIMUM) {
             this.velocity = this.velocity.add({vector: ACCELERATION.multScalar({scalar: direction}).multScalar({scalar: timestep})})
+            if(this.velocity.x < -SPEED_MAXIMUM) this.velocity.x = -SPEED_MAXIMUM
         }
     }
 

@@ -58,20 +58,13 @@ export class Particle extends GameObject {
     }
 
     /**
-     * Is called every time the game updates. Calls it's components calc methods and updates it' position based on velocity and acceleration.
+     * Is called every time the game updates. Calls it's component calc methods and updates it' position based on velocity and acceleration.
      * @param {number} timestep Normalized DeltaTime to catch up with frame skips
      * @method calc
      * @return {void}
      */
     calc({timestep} = {}) {
-        for (let component of Object.values(this.components)) {
-            if (typeof component.onCalc === "function") {
-                component.onCalc({
-                    timestep: timestep,
-                    object: this
-                })
-            }
-        }
+        this.componentHolder.onCalc({object: this, timestep})
 
         this.position = {
             x: (this.position.x + this.velocity.x * timestep),
