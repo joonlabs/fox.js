@@ -1,47 +1,22 @@
 import fox from "../../../../src/index.js";
 import {Player} from "../objects/player.js";
 import {Platform} from "../objects/platform.js";
+import {Utils} from "./utils.js";
 
 let scene = new fox.Scene()
 
 scene.onInit({
     callback: function(){
-        let camera = new fox.Camera({
-            viewport: {
-                width: 360,
-                height: 260
-            },
-        })
-
-        let layer = new fox.Layers.Canvas({
-            width: 360,
-            height: 260,
-        })
-        let lighting = new fox.Layers.Lighting({
-            width: 360,
-            height: 360,
-            globalLight: 0.5
-        })
+        let {camera, layer, lighting, background} = Utils.generateCameraLayerLightingBackground()
 
         scene.addLayer({layer: layer})
         scene.addLayer({layer: lighting})
         scene.addCamera({camera: camera})
 
-        // create background
-        let background = new fox.GameObjects.Sprite({
-            x: 0,
-            y: 0,
-            width: 360,
-            height: 260,
-            layer: layer,
-            texture: fox.AssetManager.getTexture({name: "background"})
-        })
-        layer.addObject({name: "background", object: background})
-
         // create players
         let playerOne = new Player({
-            x: 80+35,
-            y: 220-16,
+            x: (80+35) * 3,
+            y: (220-16) * 3,
             texture: "Blue",
             layer: layer,
             lightingLayer: lighting,
@@ -54,8 +29,8 @@ scene.onInit({
         })
 
         let playerTwo = new Player({
-            x: 180+35,
-            y: 220-16,
+            x: (180+35) * 3,
+            y: (220-16) * 3,
             texture: "Pink",
             layer: layer,
             lightingLayer: lighting,
@@ -69,16 +44,16 @@ scene.onInit({
 
         // create platforms
         let platforms = [
-            {type: Platform.types.WOODEN_BIG, coordinates: [80, 220]},
-            {type: Platform.types.WOODEN_BIG, coordinates: [180, 220]},
-            {type: Platform.types.VERTICAL, coordinates: [161, 130]},
-            {type: Platform.types.VERTICAL, coordinates: [61, 130]},
-            {type: Platform.types.DEFAULT, coordinates: [10, 165]},
-            {type: Platform.types.DEFAULT, coordinates: [270, 165]},
-            {type: Platform.types.DEFAULT, coordinates: [45, 110]},
-            {type: Platform.types.DEFAULT, coordinates: [220, 110]},
-            {type: Platform.types.GOAL, coordinates: [138, 80]},
-            {type: Platform.types.VERTICAL, coordinates: [105, 5]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [80 * 3, 220 * 3]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [180 * 3, 220 * 3]},
+            {type: Platform.types.VERTICAL, coordinates: [161 * 3, 130 * 3]},
+            {type: Platform.types.VERTICAL, coordinates: [61 * 3, 130 * 3]},
+            {type: Platform.types.DEFAULT, coordinates: [10 * 3, 165 * 3]},
+            {type: Platform.types.DEFAULT, coordinates: [270 * 3, 165 * 3]},
+            {type: Platform.types.DEFAULT, coordinates: [45 * 3, 110 * 3]},
+            {type: Platform.types.DEFAULT, coordinates: [220 * 3, 110 * 3]},
+            {type: Platform.types.GOAL, coordinates: [138 * 3, 80 * 3]},
+            {type: Platform.types.VERTICAL, coordinates: [105 * 3, 5 * 3]},
         ]
         let counter = 0
         for (let platform of platforms) {

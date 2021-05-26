@@ -1,4 +1,5 @@
 import {Vector} from './vector.js'
+import {Utils} from "../../utils/utils.js";
 
 /**
  * The Vec2D class represents a 2D Vector with a x and y coordinate
@@ -6,15 +7,38 @@ import {Vector} from './vector.js'
  * @class Vec2D
  */
 export class Vec2D extends Vector {
+    x;
+    y;
+
+    get width() {
+        return this.x
+    }
+
+    get height() {
+        return this.y
+    }
+
+    set width(value) {
+        this.x = value
+    }
+
+    set height(value) {
+        this.y = value
+    }
+
     /**
-     * Construct method of the object
+     * Construct method of the Vec2D class
      * @method constructor
+     * @param {number} [x] x value of the vector
+     * @param {number} [y] y value of the vector
+     * @param {number} [width] Alias for the x value of the vector
+     * @param {number} [height] Alias for the y value of the vector
      * @returns Vec2D
      */
-    constructor({x, y} = {}) {
+    constructor({x, y, width, height} = {}) {
         super()
-        this.x = x || 0
-        this.y = y || 0
+        this.x = x || width || 0
+        this.y = y || height || 0
     }
 
     /**
@@ -23,5 +47,107 @@ export class Vec2D extends Vector {
      */
     clone() {
         return new Vec2D({x: this.x, y: this.y})
+    }
+
+    /**
+     * Returns the biggest component
+     * @returns {number}
+     */
+    max() {
+        return Math.max(this.x, this.y)
+    }
+
+    /**
+     * Returns the smallest component
+     * @returns {number}
+     */
+    min() {
+        return Math.min(this.x, this.y)
+    }
+
+    /**
+     * Adds two vectors
+     * @method add
+     * @param {Vec2D} vector Vector to be added
+     * @returns {Vec2D}
+     */
+    add({vector} = {}) {
+        if (vector.constructor.name !== "Vec2D") {
+            Utils.warn("fox: vector: you're trying to add at least one Vec2D that is not a vector. this operation failed.")
+            return
+        }
+        return new Vec2D({x: vector.x + this.x, y: vector.y + this.y})
+    }
+
+    /**
+     * Subtracts two vectors
+     * @method sub
+     * @param {Vec2D} vector Vector to be subtracted
+     * @returns {Vec2D}
+     */
+    sub({vector} = {}) {
+        if (vector.constructor.name !== "Vec2D") {
+            Utils.warn("fox: vector: you're trying to subtract at least one Vec2D that is not a vector. this operation failed.")
+            return
+        }
+        return new Vec2D({x: this.x - vector.x, y: this.y - vector.y})
+    }
+
+    /**
+     * Perfomes the hadamard product of two vectors
+     * @method hadamard
+     * @param {Vec2D} vector Vector to be hadamard multiplied with
+     * @returns {Vec2D}
+     */
+    hadamard({vector} = {}) {
+        if (vector.constructor.name !== "Vec2D") {
+            Utils.warn("fox: vector: you're trying to subtract at least one Vec2D that is not a vector. this operation failed.")
+            return
+        }
+        return new Vec2D({x: vector.x * this.x, y: vector.y * this.y})
+    }
+
+    /**
+     * Perfomes the dot product of two vectors
+     * @method dot
+     * @param {Vec2D} vector Vector to be "dotted" with
+     * @returns {Vec2D}
+     */
+    dotProduct({vector}) {
+        if (vector.constructor.name !== "Vec2D") {
+            Utils.warn("fox: vector: you're trying to subtract at least one Vec2D that is not a vector. this operation failed.")
+            return
+        }
+        return (vector.x * this.x + vector.y * this.y)
+    }
+
+    /**
+     * Adds a Scalar to a vector
+     * @method addScalar
+     * @param {number} scalar Scalar to be added
+     * @returns {Vec2D}
+     */
+    addScalar({scalar}) {
+        return new Vec2D({x: scalar + this.x, y: scalar + this.y})
+    }
+
+    /**
+     * Adds a Scalar to a vector
+     * @method subScalar
+     * @param {number} scalar Scalar to be subtracted
+     * @returns {Vec2D}
+     */
+    subScalar({scalar}) {
+        return new Vec2D({x: this.x - scalar, y: this.y - scalar})
+    }
+
+    /**
+     * Multiplies a Scalar with a vector
+     * @method multScalar
+     * @param {number} scalar Scalar to be multiplied with
+     * @returns {Vec2D}
+     */
+    multScalar({scalar}) {
+        return new Vec2D({x: scalar * this.x, y: scalar * this.y})
     }
 }

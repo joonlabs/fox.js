@@ -10,7 +10,6 @@ body > canvas{
     top: 50vh;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #fff;
     border-radius: 5px;
     box-sizing: border-box;
 }

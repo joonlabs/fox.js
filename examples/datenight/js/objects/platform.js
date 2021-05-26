@@ -16,17 +16,17 @@ export class Platform {
         if (type === Platform.types.DEFAULT
             || type === Platform.types.WOODEN
             || type === Platform.types.TIMING) {
-            width = 28 * 2
-            height = 10 * 2
+            width = 28 * 2 * 3
+            height = 10 * 2 * 3
         } else if (type === Platform.types.DEFAULT_BIG
             || type === Platform.types.WOODEN_BIG
             || type === Platform.types.GOAL) {
-            width = 44 * 2
-            height = 10 * 2
-        } else if (type === Platform.types.VERTICAL){
-            height = 42 * 2
-            width = 12 * 2
-        }else{
+            width = 44 * 2 * 3
+            height = 10 * 2 * 3
+        } else if (type === Platform.types.VERTICAL) {
+            height = 42 * 2 * 3
+            width = 12 * 2 * 3
+        } else {
             console.error("Unsupported platform type: ", type)
         }
 
@@ -49,19 +49,19 @@ export class Platform {
         })
 
         this.platform.addComponent({
-            name : "collider",
+            name: "collider",
             component: new fox.Colliders.RectangleCollider({
-                width: width - (type===Platform.types.VERTICAL ? 18 : 10),
+                width: width - (type === Platform.types.VERTICAL ? 18 * 3 : 10 * 3),
                 height: height,
                 offset: {
-                    x: (type===Platform.types.VERTICAL ? 9 : 5),
-                    y: (type===Platform.types.VERTICAL ? 3 : 0)
+                    x: (type === Platform.types.VERTICAL ? 9 * 3 : 5 * 3),
+                    y: (type === Platform.types.VERTICAL ? 3 * 3 : 0)
                 },
                 debug: {hitbox: false}
             })
         })
 
-        if(type === Platform.types.TIMING){
+        if (type === Platform.types.TIMING) {
             this.platform.addComponent({
                 component: new TimingPlatform({platform: this})
             })
@@ -69,25 +69,25 @@ export class Platform {
 
         layer.addObject({object: this.platform})
 
-        if(type === Platform.types.GOAL){
+        if (type === Platform.types.GOAL) {
             this.reachedGoal = {
-                Blue : false,
-                Pink : false,
+                Blue: false,
+                Pink: false,
             }
             this.table = new fox.GameObjects.Sprite({
-                x: x-5,
-                y: y-42,
-                width: 48*2,
-                height: 38*2,
+                x: x - 5 * 3,
+                y: y - 42 * 3,
+                width: (48 * 2) * 3,
+                height: (38 * 2) * 3,
                 layer: layer,
                 texture: fox.AssetManager.getTexture({name: "DinnerTable"}),
             })
             layer.addObject({object: this.table})
 
             this.light = new fox.GameObjects.Lights.PointLight({
-                x: x+35,
-                y: y-15,
-                radius: 120,
+                x: x + 35 * 3,
+                y: y - 15 * 3,
+                radius: 120 * 3,
                 intensity: 1,
                 hue: new fox.Color({r: 255, g: 255, b: 127}),
                 layer: lightingLayer

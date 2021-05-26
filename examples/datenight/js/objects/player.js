@@ -9,8 +9,8 @@ export class Player {
         this.player = new fox.GameObjects.Sprite({
             x:x,
             y:y,
-            width: 16,
-            height: 16,
+            width: 16 * 3,
+            height: 16 * 3,
             z: 2,
             texture : fox.AssetManager.getTexture({name: "Player_"+texture+"_Idle1"})
         })
@@ -18,8 +18,8 @@ export class Player {
         this.player.addComponent({
             name: "collider",
             component : new fox.Colliders.RectangleCollider({
-                width: 16,
-                height: 16,
+                width: 16 * 3,
+                height: 16 * 3,
                 debug: {hitbox: false}
             })
         })
@@ -71,7 +71,7 @@ export class Player {
         })
 
         this.light = new fox.GameObjects.Lights.PointLight({
-            radius: 85,
+            radius: 85 * 3,
             intensity: 1,
             hue: (texture === "Pink")
                 ? new fox.Color({r: 255, g: 120, b: 232})

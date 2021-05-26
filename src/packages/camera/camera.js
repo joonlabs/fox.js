@@ -94,8 +94,8 @@ export class Camera {
     render({app, layers}={}){
 
         let render_offset = {
-            "x" : 0,
-            "y" : 0,
+            x : 0,
+            y : 0,
         }
 
         if(this.followingObject!==undefined){

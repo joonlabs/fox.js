@@ -1,4 +1,52 @@
 import {GameObject} from '../gameobject.js'
+import {Vec2D} from "../../vectors/vectors/vec2d.js";
+import {Color} from "../../color/color.js";
+
+export let TextureSizeMode = {
+    STRETCH : "STRETCH",
+    COVER : "COVER",
+    CONTAIN : "CONTAIN"
+}
+
+export let TexturePositionMode = {
+    TOP_LEFT: new Vec2D({
+        width: 0,
+        height: 0
+    }),
+    TOP_CENTER: new Vec2D({
+        width: 0.5,
+        height: 0
+    }),
+    TOP_RIGHT: new Vec2D({
+        width: 1,
+        height: 0
+    }),
+    CENTER_LEFT: new Vec2D({
+        width: 0,
+        height: 0.5
+    }),
+    CENTER : new Vec2D({
+        width: 0.5,
+        height: 0.5
+    }),
+    CENTER_RIGHT: new Vec2D({
+        width: 1,
+        height: 0.5
+    }),
+    BOTTOM_LEFT: new Vec2D({
+        width: 0,
+        height: 1
+    }),
+    BOTTOM_CENTER : new Vec2D({
+        width: 0.5,
+        height: 1
+    }),
+    BOTTOM_RIGHT: new Vec2D({
+        width: 1,
+        height: 1
+    }),
+}
+
 
 /**
  * The Sprite represents the basic 2d sprite, that is responsible for rendering images to the screen
@@ -16,10 +64,12 @@ export class Sprite extends GameObject {
      * @param {object} rotationPosition Rotation position vector of the Colligame objectder relative to it self
      * @param {string} tag Tag of the object for grouping multiple objects logically together
      * @param {Texture} texture Texture of the object
+     * @param {TextureSizeMode} textureSizeMode Size mode of the texture
+     * @param {TexturePositionMode} texturePositionMode Position mode of the texture
      * @param {number} z Depth information for sorting in layer
      * @returns CircleCollider
      */
-    constructor({x, y, width, height, rotation, rotationPosition, tag, texture, z} = {}) {
+    constructor({x, y, width, height, rotation, rotationPosition, tag, texture, textureSizeMode, texturePositionMode, z} = {}) {
         super({
             x: x,
             y: y,
@@ -32,32 +82,37 @@ export class Sprite extends GameObject {
         })
 
         this.texture = texture
+        this.texturePosition = new Vec2D()
+        this.textureDimensions = new Vec2D()
+
+        this.textureSizeMode = textureSizeMode || TextureSizeMode.STRETCH
+        this.texturePositionMode = texturePositionMode || TexturePositionMode.CENTER
+
+        this._calcTextureVectors()
     }
 
     /**
      * Is called after every time the game updated.
-     * @param {number} x X Coordinate
-     * @param {number} y Y Coordinate
-     * @param {Renderer} renderer Renderer to be used
-     * @param {AbstractFramebuffer} framebuffer
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */
-    render({x, y, renderer, framebuffer} = {}) {
-        this.onBeforeRender({renderer: renderer})
+    render({offset, framebuffer} = {}) {
+        this.onBeforeRender({offset: offset, framebuffer: framebuffer})
 
         // render texture
         if (this.texture && this.texture.loaded) {
             framebuffer.renderTexture({
                 texture: this.texture,
-                x: x + this.texture.getOffset().x,
-                y: y + this.texture.getOffset().y,
-                width: this.texture.getWidth(),
-                height: this.texture.getHeight(),
+                x: this.position.x + offset.x + this.texturePosition.x + this.texture.getOffset().x,
+                y: this.position.y + offset.y + this.texturePosition.y + this.texture.getOffset().y,
+                width: this.textureDimensions.width,
+                height: this.textureDimensions.height,
                 rotation: this.rotation,
                 rotationPosition: this.rotationPosition,
             })
         }
 
-        this.onAfterRender({renderer: renderer})
+        this.onAfterRender({offset: offset, framebuffer: framebuffer})
     }
 
     /**
@@ -66,5 +121,79 @@ export class Sprite extends GameObject {
      */
     setTexture({texture}) {
         this.texture = texture
+    }
+
+    /**
+     * Updates the width and re-calculates the resulting texture dimensions
+     * @param {number} width New width of the sprite
+     */
+    setWidth({width}) {
+        this.dimensions.width = width
+        this._calcTextureVectors()
+    }
+
+    /**
+     * Updates the height and re-calculates the resulting texture dimensions
+     * @param {number} height New height of the sprite
+     */
+    setHeight({height}) {
+        this.dimensions.height = height
+        this._calcTextureVectors()
+    }
+
+    /**
+     * Updates the dimensions and re-calculates the resulting texture dimensions
+     * @param {number} width New width of the sprite
+     * @param {number} height New height of the sprite
+     */
+    setDimensions({width, height}) {
+        this.dimensions.width = width
+        this.dimensions.height = height
+        this._calcTextureVectors()
+    }
+
+    _calcTextureVectors() {
+        // set texture dimensions
+        if(this.textureSizeMode === TextureSizeMode.STRETCH){
+            this.textureDimensions.width = this.dimensions.width
+            this.textureDimensions.height = this.dimensions.height
+        }else if(this.textureSizeMode === TextureSizeMode.CONTAIN){
+            let textureRatio = this.texture.dimensions.height / this.texture.dimensions.width,
+                spriteRatio = this.dimensions.height / this.dimensions.width
+
+            let finalWidth,
+                finalHeight
+
+            if(spriteRatio < textureRatio){
+                finalHeight = this.dimensions.height
+                finalWidth = finalHeight / textureRatio
+            }else{
+                finalWidth = this.dimensions.width
+                finalHeight = finalWidth * textureRatio
+            }
+            this.textureDimensions.width = finalWidth
+            this.textureDimensions.height = finalHeight
+        }else if(this.textureSizeMode === TextureSizeMode.COVER){
+            let textureRatio = this.texture.dimensions.height / this.texture.dimensions.width,
+                spriteRatio = this.dimensions.height / this.dimensions.width
+
+            let finalWidth,
+                finalHeight
+
+            if(spriteRatio > textureRatio){
+                finalHeight = this.dimensions.height
+                finalWidth = finalHeight / textureRatio
+            }else{
+                finalWidth = this.dimensions.width
+                finalHeight = finalWidth * textureRatio
+            }
+            this.textureDimensions.width = finalWidth
+            this.textureDimensions.height = finalHeight
+        }
+
+        // set texture position
+        this.texturePosition = this.dimensions
+                                .sub({vector: this.textureDimensions})
+                                .hadamard({vector: this.texturePositionMode})
     }
 }

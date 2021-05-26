@@ -84,14 +84,13 @@ export class PointLight extends GameObject {
 
     /**
      * Renders the PointLight with the renderer
-     * @param {number} x X Position of the PointLight
-     * @param {number} y Y Position of the PointLight
-     * @param {AbstractFramebuffer} framebuffer
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */
-    render({x, y, framebuffer} = {}) {
+    render({offset, framebuffer} = {}) {
         let render_offset = {
-            "x" : x,
-            "y" : y,
+            "x" : this.position.x + offset.x,
+            "y" : this.position.y + offset.y,
         }
 
         if(this.followingObject!==undefined){

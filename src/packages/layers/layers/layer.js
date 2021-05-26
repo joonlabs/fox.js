@@ -7,6 +7,8 @@ import {Random} from "../../random/index.js";
  * @class Layer
  */
 export class Layer {
+    objectmanager;
+
     /**
      * Construct method of the object
      * @method constructor
@@ -70,13 +72,12 @@ export class Layer {
 
     /**
      * Is called in every loop after the calc method
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */
     render({offset, framebuffer}) {
         this.objectmanager.getObjects().forEach(obj => obj.render({
-            x: offset.x + obj.position.x,
-            y: offset.y + obj.position.y,
-            width: obj.dimensions.width,
-            height: obj.dimensions.height,
+            offset: offset,
             framebuffer: framebuffer,
         }))
     }
