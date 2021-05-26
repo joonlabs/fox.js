@@ -89,7 +89,7 @@ export class Scene {
     /**
      * Adds a layer to the scene
      * @method addLayer
-     * @param {object} layer Layer to be added
+     * @param {Layer} layer Layer to be added
      * @returns {Scene}
      */
     addLayer({layer} = {}) {
