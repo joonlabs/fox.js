@@ -9,15 +9,42 @@ export let TextureSizeMode = {
 }
 
 export let TexturePositionMode = {
-    TOP_LEFT : "TOP_LEFT",
-    TOP_CENTER: "TOP_CENTER",
-    TOP_RIGHT: "TOP_RIGHT",
-    CENTER_LEFT: "CENTER_LEFT",
-    CENTER : "CENTER",
-    CENTER_RIGHT: "CENTER_RIGHT",
-    BOTTOM_LEFT: "BOTTOM_LEFT",
-    BOTTOM_CENTER : "BOTTOM_CENTER",
-    BOTTOM_RIGHT: "BOTTOM_RIGHT",
+    TOP_LEFT: new Vec2D({
+        width: 0,
+        height: 0
+    }),
+    TOP_CENTER: new Vec2D({
+        width: 0.5,
+        height: 0
+    }),
+    TOP_RIGHT: new Vec2D({
+        width: 1,
+        height: 0
+    }),
+    CENTER_LEFT: new Vec2D({
+        width: 0,
+        height: 0.5
+    }),
+    CENTER : new Vec2D({
+        width: 0.5,
+        height: 0.5
+    }),
+    CENTER_RIGHT: new Vec2D({
+        width: 1,
+        height: 0.5
+    }),
+    BOTTOM_LEFT: new Vec2D({
+        width: 0,
+        height: 1
+    }),
+    BOTTOM_CENTER : new Vec2D({
+        width: 0.5,
+        height: 1
+    }),
+    BOTTOM_RIGHT: new Vec2D({
+        width: 1,
+        height: 1
+    }),
 }
 
 
@@ -165,36 +192,8 @@ export class Sprite extends GameObject {
         }
 
         // set texture position
-        if(this.texturePositionMode === TexturePositionMode.TOP_LEFT
-            || this.texturePositionMode === TexturePositionMode.TOP_CENTER
-            || this.texturePositionMode === TexturePositionMode.TOP_RIGHT){
-            this.texturePosition.y = 0
-        }
-        if(this.texturePositionMode === TexturePositionMode.CENTER_LEFT
-            || this.texturePositionMode === TexturePositionMode.CENTER
-            || this.texturePositionMode === TexturePositionMode.CENTER_RIGHT){
-            this.texturePosition.y = (this.dimensions.height - this.textureDimensions.height) / 2
-        }
-        if(this.texturePositionMode === TexturePositionMode.BOTTOM_LEFT
-            || this.texturePositionMode === TexturePositionMode.BOTTOM_CENTER
-            || this.texturePositionMode === TexturePositionMode.BOTTOM_RIGHT){
-            this.texturePosition.y = this.dimensions.height - this.textureDimensions.height
-        }
-
-        if(this.texturePositionMode === TexturePositionMode.TOP_LEFT
-            || this.texturePositionMode === TexturePositionMode.CENTER_LEFT
-            || this.texturePositionMode === TexturePositionMode.BOTTOM_LEFT){
-            this.texturePosition.x = 0
-        }
-        if(this.texturePositionMode === TexturePositionMode.TOP_CENTER
-            || this.texturePositionMode === TexturePositionMode.CENTER
-            || this.texturePositionMode === TexturePositionMode.BOTTOM_CENTER){
-            this.texturePosition.x = (this.dimensions.width - this.textureDimensions.width) / 2
-        }
-        if(this.texturePositionMode === TexturePositionMode.TOP_RIGHT
-            || this.texturePositionMode === TexturePositionMode.CENTER_RIGHT
-            || this.texturePositionMode === TexturePositionMode.BOTTOM_RIGHT){
-            this.texturePosition.x = this.dimensions.width - this.textureDimensions.width
-        }
+        this.texturePosition = this.dimensions
+                                .sub({vector: this.textureDimensions})
+                                .hadamard({vector: this.texturePositionMode})
     }
 }
