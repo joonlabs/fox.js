@@ -1,5 +1,6 @@
 import {Vectors} from '../vectors/index.js'
 import {Utils} from '../utils/index.js'
+import {Vec2D} from "../vectors/vectors/vec2d.js";
 
 /**
  * The GameObject represents the basic object of the engine. All kind of sprites, etc. extend it
@@ -27,15 +28,15 @@ export class GameObject {
             Utils.warn("fox: gameobject: either a width or a height is missing, while creating this gameobject. keep in mind that this also sets the rotation position to (0,0).", this)
         }
 
-        this.dimensions = {
-            "width": width,
-            "height": height,
-        }
+        this.dimensions = new Vec2D({
+            width: width,
+            height: height
+        })
 
         this.z = z || 0
 
         this.rotation = rotation || 0
-        this.rotationPosition = rotationPosition || new Vectors.Vec2D({x: parseInt(width / 2), y: parseInt(height / 2)})
+        this.rotationPosition = rotationPosition || new Vectors.Vec2D({x: Math.floor(width / 2), y: Math.floor(height / 2)})
         this.tag = tag
 
         this.settings = {
@@ -49,8 +50,8 @@ export class GameObject {
         this.layer = undefined
 
         this.debug = {
-            enabled: debug != undefined,
-            hitbox: (debug != undefined && debug.hitbox != undefined && debug.hitbox)
+            enabled: debug !== undefined,
+            hitbox: (debug !== undefined && debug.hitbox !== undefined && debug.hitbox)
         }
     }
 
@@ -89,14 +90,16 @@ export class GameObject {
 
     /**
      * Calls the onBeforeRender method in all components
-     * @param {Renderer} renderer Renderer to be used
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */
-    onBeforeRender({renderer}) {
+    onBeforeRender({offset, framebuffer}) {
         for (let component of Object.values(this.components)) {
             if (typeof component.onBeforeRender === "function") {
                 component.onBeforeRender({
                     object: this,
-                    renderer: renderer
+                    offset: offset,
+                    framebuffer: framebuffer
                 })
             }
         }
@@ -104,14 +107,16 @@ export class GameObject {
 
     /**
      * Calls the onAfterRender method in all components
-     * @param {Renderer} renderer Renderer to be used
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */
-    onAfterRender({renderer}) {
+    onAfterRender({offset, framebuffer}) {
         for (let component of Object.values(this.components)) {
             if (typeof component.onAfterRender === "function") {
                 component.onAfterRender({
                     object: this,
-                    renderer: renderer
+                    offset: offset,
+                    framebuffer: framebuffer
                 })
             }
         }
@@ -119,15 +124,11 @@ export class GameObject {
 
     /**
      * Is called after every time the game updated.
-     * @param {number} x X position of the object
-     * @param {number} y Y position of the object
-     * @param {number} width Width of the object
-     * @param {number} height Height of the object
-     * @param {Renderer} renderer Renderer to be rendered with
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
      * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */
-    render({x, y, width, height, renderer, framebuffer}) {
-
+    render({offset, framebuffer}) {
+        // to be implemented by child class
     }
 
     /**
@@ -162,10 +163,10 @@ export class GameObject {
      * @return {void}
      */
     removeComponent({name} = {}) {
-        delete this.components[name]
-        if (typeof component.onDestroy === "function") {
-            component.onDestroy({object: this})
+        if (typeof this.components[name].onDestroy === "function") {
+            this.components[name].onDestroy({object: this})
         }
+        delete this.components[name]
     }
 
     /**

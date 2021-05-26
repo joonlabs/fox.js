@@ -43,18 +43,17 @@ export class Circle extends GameObject {
 
     /**
      * Is called every time the game updates, after the calc. Calls it's components render methods.
-     * @param {number} x X Coordinate
-     * @param {number} y Y Coordinate
-     * @param {number} renderer Renderer to be used
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */
-    render({x, y, renderer} = {}) {
-        this.onBeforeRender({renderer: renderer})
+    render({offset, framebuffer} = {}) {
+        this.onBeforeRender({offset: offset, framebuffer: framebuffer})
 
-        let x_ = x + this.dimensions.width / 2,
-            y_ = y + this.dimensions.height / 2,
+        let x_ = this.position.x + this.dimensions.width / 2,
+            y_ = this.position.y + this.dimensions.height / 2,
             radius = this.dimensions.width / 2
 
-        renderer.fillCircle({
+        framebuffer.renderCircle({
             x: x_,
             y: y_,
             radius: radius,
@@ -66,6 +65,6 @@ export class Circle extends GameObject {
             ctx: this.layer.ctx
         })
 
-        this.onAfterRender({renderer: renderer})
+        this.onAfterRender({offset: offset, framebuffer: framebuffer})
     }
 }

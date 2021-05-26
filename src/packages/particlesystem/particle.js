@@ -84,29 +84,23 @@ export class Particle extends GameObject {
     }
 
     /**
-     * Is called every time the game updates, after the calc. Calls it's components render methods.
-     * @param {number} x X Position
-     * @param {number} y Y Position
-     * @param {Renderer} renderer Renderer to be used
+     * Is called after every time the game updated.
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
      * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
-     * @returns {void}
      */
-    render({x, y, renderer, framebuffer} = {}) {
-        this.onBeforeRender({renderer: renderer})
+    render({offset, framebuffer} = {}) {
+        this.onBeforeRender({offset: offset, framebuffer: framebuffer})
 
-        if (!this.renderObject) {
+        if (!this.renderObject instanceof GameObject) {
             Utils.warn("fox: particle: You're trying to render a particle, that has no render object. " +
                 "please specify any kind of gameobject e.g. a rectangle")
+        }else{
+            this.renderObject.render({
+                offset: offset,
+                framebuffer: framebuffer
+            })
         }
-        x = x + this.position.x
-        y = y + this.position.y
-        this.renderObject.render({
-            x: x,
-            y: y,
-            renderer: renderer,
-            framebuffer: framebuffer
-        })
 
-        this.onAfterRender({renderer: renderer})
+        this.onAfterRender({offset: offset, framebuffer: framebuffer})
     }
 }

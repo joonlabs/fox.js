@@ -152,18 +152,18 @@ export class ParticleSystem extends GameObject {
         this.frames++
     }
 
-    render({x, y, width, height, camera, renderer, framebuffer}, _this = this) {
-        if (_this.state !== 0) {
-            for (let particle of _this.pool) {
+    /**
+     * Is called after every time the game updated.
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
+     */
+    render({offset, framebuffer}) {
+        if (this.state !== 0) {
+            for (let particle of this.pool) {
                 if (!particle.dead) {
                     particle.render({
-                        x: x,
-                        y: y,
-                        width: particle.dimensions.width,
-                        height: particle.dimensions.height,
-                        camera: camera,
-                        framebuffer: framebuffer,
-                        renderer: renderer
+                        offset : offset,
+                        framebuffer: framebuffer
                     })
                 }
             }

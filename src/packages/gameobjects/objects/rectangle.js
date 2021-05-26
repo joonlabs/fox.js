@@ -39,17 +39,15 @@ export class Rectangle extends GameObject {
 
     /**
      * Is called every time the game updates, after the calc. Calls it's components render methods.
-     * @param {number} x X Coordinate
-     * @param {number} y Y Coordinate
-     * @param {Renderer} renderer Renderer to be rendered with
-     * @param {AbstractFramebuffer} framebuffer Framebuffer to be used
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */
-    render({x, y, renderer, framebuffer} = {}) {
-        this.onBeforeRender({renderer: renderer})
+    render({offset, framebuffer} = {}) {
+        this.onBeforeRender({offset: offset, framebuffer: framebuffer})
 
         framebuffer.renderRectangle({
-            x: x,
-            y: y,
+            x: this.position.x + offset.x,
+            y: this.position.y + offset.y,
             width: this.dimensions.width,
             height: this.dimensions.height,
             color: this.color,
@@ -57,6 +55,6 @@ export class Rectangle extends GameObject {
             rotationPosition: this.rotationPosition,
         })
 
-        this.onAfterRender({renderer: renderer})
+        this.onAfterRender({offset: offset, framebuffer: framebuffer})
     }
 }

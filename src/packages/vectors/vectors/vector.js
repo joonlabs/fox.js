@@ -1,4 +1,3 @@
-import {Vec2D} from './vec2d.js';
 import {Utils} from "../../utils/index.js";
 
 /**
@@ -16,87 +15,96 @@ export class Vector {
     }
 
     /**
+     * Clones the vector and returns a new Vector-object
+     * @returns {Vector}
+     */
+    clone() {
+        // to be implemented by child class
+    }
+
+    /**
+     * Returns the biggest component
+     * @returns {number}
+     */
+    max() {
+        // to be implemented by child class
+    }
+
+    /**
+     * Returns the smallest component
+     * @returns {number}
+     */
+    min() {
+        // to be implemented by child class
+    }
+
+    /**
      * Adds two vectors
      * @method add
-     * @param {object} vector Vector to be added
-     * @param {object} _this reference to itself
-     * @returns {object}
+     * @param {Vector} vector Vector to be added
+     * @returns {Vector}
      */
-    add({vector} = {}, _this = this) {
-        if (vector.constructor.name !== "Vec2D" || _this.constructor.name !== "Vec2D") {
-            Utils.warn("fox: vector: you're trying to add at least one object that is not a vector. this operation failed.");
-            return;
-        }
-        return new Vec2D({x: vector.x + _this.x, y: vector.y + _this.y})
+    add({vector} = {}) {
+        // to be implemented by child class
     }
 
     /**
      * Subtracts two vectors
      * @method sub
-     * @param {object} vector Vector to be subtracted
-     * @param {object} _this reference to itself
-     * @returns {object}
+     * @param {Vector} vector Vector to be subtracted
+     * @returns {Vector}
      */
-    sub({vector} = {}, _this = this) {
-        if (vector.constructor.name !== "Vec2D" || _this.constructor.name !== "Vec2D") {
-            Utils.warn("fox: vector: you're trying to subtract at least one object that is not a vector. this operation failed.");
-            return;
-        }
-        return new Vec2D({x: _this.x - vector.x, y: _this.y - vector.y})
+    sub({vector} = {}) {
+        // to be implemented by child class
     }
 
     /**
      * Perfomes the hadamard product of two vectors
      * @method hadamard
-     * @param {object} vector Vector to be hadamard multiplied with
-     * @param {object} _this reference to itself
-     * @returns {object}
+     * @param {Vector} vector Vector to be hadamard multiplied with
+     * @returns {Vector}
      */
-    hadamard({vector} = {}, _this = this) {
-        return new Vec2D({x: vector.x * _this.x, y: vector.y * _this.y})
+    hadamard({vector} = {}) {
+        // to be implemented by child class
     }
 
     /**
      * Perfomes the dot product of two vectors
      * @method dot
-     * @param {object} vector Vector to be "dotted" with
-     * @param {object} _this reference to itself
-     * @returns {object}
+     * @param {Vector} vector Vector to be "dotted" with
+     * @returns {Vector}
      */
-    dotProduct({vector} = {}, _this = this) {
-        return (vector.x * _this.x + vector.y * _this.y)
+    dotProduct({vector}) {
+        // to be implemented by child class
     }
 
     /**
      * Adds a Scalar to a vector
      * @method addScalar
      * @param {number} scalar Scalar to be added
-     * @param {object} _this reference to itself
-     * @returns {object}
+     * @returns {Vector}
      */
-    addScalar({scalar} = {}, _this = this) {
-        return new Vec2D({x: scalar + _this.x, y: scalar + _this.y})
+    addScalar({scalar}) {
+        // to be implemented by child class
     }
 
     /**
      * Adds a Scalar to a vector
      * @method subScalar
      * @param {number} scalar Scalar to be subtracted
-     * @param {object} _this reference to itself
-     * @returns {object}
+     * @returns {Vector}
      */
-    subScalar({scalar} = {}, _this = this) {
-        return new Vec2D({x: _this.x - scalar, y: _this.y - scalar})
+    subScalar({scalar}) {
+        // to be implemented by child class
     }
 
     /**
      * Multiplies a Scalar with a vector
      * @method multScalar
      * @param {number} scalar Scalar to be multiplied with
-     * @param {object} _this reference to itself
-     * @returns {object}
+     * @returns {Vector}
      */
-    multScalar({scalar} = {}, _this = this) {
-        return new Vec2D({x: scalar * _this.x, y: scalar * _this.y})
+    multScalar({scalar}) {
+        // to be implemented by child class
     }
 }

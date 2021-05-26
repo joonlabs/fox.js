@@ -11,8 +11,8 @@ import './assets.js'
 
 // create the new application
 let app = new fox.Application({
-    width: 360,
-    height: 260,
+    width: 1080,
+    height: 780,
     logFPS: true
 })
 document.body.appendChild(app.view)
