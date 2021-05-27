@@ -1,8 +1,6 @@
 import fox from "../../../../src/index.js";
 import {Player} from "../objects/player.js";
 import {Platform} from "../objects/platform.js";
-import {Vec2D} from "../../../../src/packages/vectors/vectors/index.js";
-import {FollowGameObject} from "../../../../src/packages/components/basic/followGameObject.js";
 
 let scene = new fox.Scene()
 
@@ -99,12 +97,10 @@ scene.onInit({
         })
 
         camera.addComponent({
-            name: "FOLLOW_PLAYER",
-            component: new FollowGameObject({gameObject: playerOne.player, offset: new Vec2D({x: -360, y: -200})})
+            component: new fox.Components.Basic.FollowGameObject({gameObject: playerOne.player, offset: new fox.Vectors.Vec2D({x: -270, y: -200})})
         })
         camera4.addComponent({
-            name: "FOLLOW_PLAYER",
-            component: new FollowGameObject({gameObject: playerTwo.player, offset: new Vec2D({x: -360, y: -200})})
+            component: new fox.Components.Basic.FollowGameObject({gameObject: playerTwo.player, offset: new fox.Vectors.Vec2D({x: -270, y: -200})})
         })
 
         // create platforms

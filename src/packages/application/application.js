@@ -45,6 +45,7 @@ export class Application {
 
         if (logFPS) {
             this.stats = new Stats();
+            this.stats.addPanel(new Stats.LabelPanel("Renderer", "black", "white", this.project.renderer.constructor.name))
             this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
             document.body.appendChild(this.stats.dom);
         }
@@ -57,7 +58,7 @@ export class Application {
         this.view = this.project.renderer.getCanvas()
 
         //start rendering
-        window.requestAnimationFrame(function (timestamp) {
+        window.requestAnimationFrame(timestamp => {
             _this.render(timestamp, _this)
         })
     }
@@ -88,8 +89,8 @@ export class Application {
             _this.time.deltaTime += deltaTime
 
             if (_this.time.minFrameTime !== undefined && _this.time.deltaTime < _this.frames.minFrameTime) {
-                window.requestAnimationFrame(function (t) {
-                    _this.render(t, _this)
+                window.requestAnimationFrame(timestamp => {
+                    _this.render(timestamp, _this)
                 })
                 return
             }
@@ -115,8 +116,8 @@ export class Application {
         // reset delta time
         _this.time.deltaTime = 0
 
-        window.requestAnimationFrame(function (t) {
-            _this.render(t, _this)
+        window.requestAnimationFrame(timestamp =>{
+            _this.render(timestamp, _this)
         })
     }
 

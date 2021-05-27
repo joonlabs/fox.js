@@ -8,7 +8,7 @@ import {ComponentHolder} from "../component/index.js";
  *
  * @class GameObject
  */
-export class GameObject{
+export class GameObject {
     /**
      * Construct method of the object
      * @param {number} x X-position of the game object

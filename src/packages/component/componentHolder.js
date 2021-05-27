@@ -1,3 +1,5 @@
+import {Utils} from "../utils/index.js";
+
 export class ComponentHolder{
     components;
 
@@ -13,14 +15,17 @@ export class ComponentHolder{
      * @return {void}
      */
     addComponent({object, name, component} = {}) {
-        // default the name if not set to componentX
-        name = name || "component" + Object.keys(this.components).length.toString()
+        // default the name if not set to the class name of the components
+        name = name || component.constructor.name
+
+        if(this.components.has(name)){
+            Utils.warn("fox: ComponentHolder: the component you are trying to add already axists on this component")
+            return
+        }
 
         this.components.set(name, component)
 
-        if (typeof component.onInit === "function") {
-            component.onInit({object: object})
-        }
+        component.onInit({object: object})
     }
 
     /**
@@ -30,9 +35,7 @@ export class ComponentHolder{
      * @return {void}
      */
     removeComponent({object, name} = {}) {
-        if (typeof this.components.get(name).onDestroy === "function") {
-            this.components.get(name).onDestroy({object: object})
-        }
+        this.components.get(name).onDestroy({object: object})
         this.components.delete(name)
     }
 
@@ -52,9 +55,7 @@ export class ComponentHolder{
      */
     onCalc({object, timestep}){
         this.components.forEach((component) => {
-            if (typeof component.onCalc === "function") {
-                component.onCalc({object, timestep})
-            }
+            component.onCalc({object, timestep})
         })
     }
 
@@ -66,9 +67,7 @@ export class ComponentHolder{
      */
     onBeforeRender({object, offset, framebuffer}){
         this.components.forEach((component) => {
-            if (typeof component.onBeforeRender === "function") {
-                component.onBeforeRender({object, offset, framebuffer})
-            }
+            component.onBeforeRender({object, offset, framebuffer})
         })
     }
 
@@ -80,9 +79,7 @@ export class ComponentHolder{
      */
     onAfterRender({object, offset, framebuffer}){
         this.components.forEach((component) => {
-            if (typeof component.onAfterRender === "function") {
-                component.onAfterRender({object, offset, framebuffer})
-            }
+            component.onAfterRender({object, offset, framebuffer})
         })
     }
 }
