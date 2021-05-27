@@ -9,7 +9,7 @@ export class Component {
 
     /**
      * Is called when the component is intatiated.
-     * @param {object} object
+     * @param {GameObject|Camera} object GameObject or Camera that uses the component
      * @return {void}
      */
     onInit({object} = {}) {
@@ -18,7 +18,7 @@ export class Component {
     /**
      * Is called every time when the game object is calculated.
      * @param {number} timestep
-     * @param {object} object
+     * @param {GameObject|Camera} object GameObject or Camera that uses the component
      * @return {void}
      */
     onCalc({timestep, object} = {}) {
@@ -26,23 +26,27 @@ export class Component {
 
     /**
      * Is called every time before the game object is rendered.
-     * @param {object} object
+     * @param {GameObject|Camera} object GameObject or Camera that uses the component
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      * @return {void}
      */
-    onBeforeRender({object} = {}) {
+    onBeforeRender({object, offset, framebuffer} = {}) {
     }
 
     /**
      * Is called every time after the game object is rendered.
-     * @param {object} object
+     * @param {GameObject|Camera} object GameObject or Camera that uses the component
+     * @param {Vec2D} offset Vector for offsetting the layer's objects
+     * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      * @return {void}
      */
-    onAfterRender({object} = {}) {
+    onAfterRender({object, offset, framebuffer} = {}) {
     }
 
     /**
      * Is called when the component is destroyed.
-     * @param {object} object
+     * @param {GameObject|Camera} object GameObject or Camera that uses the component
      * @return {void}
      */
     onDestroy({object} = {}) {

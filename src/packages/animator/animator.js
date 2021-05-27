@@ -1,4 +1,4 @@
-import {Component} from "../components/index.js";
+import {Component} from "../component/index.js";
 
 /**
  * An Animator is a GameObject-Component for Sprites that holds different animations and changes them accordingly.

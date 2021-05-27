@@ -42,7 +42,7 @@ export class Circle extends GameObject {
     }
 
     /**
-     * Is called every time the game updates, after the calc. Calls it's components render methods.
+     * Is called every time the game updates, after the calc. Calls it's component render methods.
      * @param {Vec2D} offset Vector for offsetting the layer's objects
      * @param {AbstractFramebuffer} framebuffer Framebuffer to be rendered to
      */

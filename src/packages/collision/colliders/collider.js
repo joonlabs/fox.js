@@ -1,4 +1,4 @@
-import {Component} from '../../components/index.js'
+import {Component} from '../../component/index.js'
 import {Vectors} from '../../vectors/index.js'
 
 /**
@@ -53,10 +53,10 @@ export class Collider extends Component {
      * @param {object} object
      * @return {void}
      */
-    onInit({object} = {}, _this = this) {
+    onInit({object}) {
         //override the default position with the position of the parentObject
-        _this.position.x = object.position.x + _this.offset.x
-        _this.position.y = object.position.y + _this.offset.y
+        this.position.x = object.position.x + this.offset.x
+        this.position.y = object.position.y + this.offset.y
     }
 
     /**

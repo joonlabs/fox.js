@@ -8,42 +8,44 @@ scene.onInit({
     callback: function(){
         let camera = new fox.Camera({
             viewport: {
-                width: 360/2,
-                height: 260/2
+                width: (360/2) * 3,
+                height: (260/2) * 3
             },
         })
         let camera2 = new fox.Camera({
-            x: 360/2,
+            x: (360/2) * 3,
             y: 0,
             viewport: {
-                width: 360/2,
-                height: 260/2
+                y: (260/2) * 3,
+                width: (360/2) * 3,
+                height: (260/2) * 3
             },
         })
         let camera3 = new fox.Camera({
-            x: 0,
-            y: 260/2,
+            x: 0 * 3,
+            y: (260/2)  * 3,
             viewport: {
-                width: 360/2,
-                height: 260/2
+                y: (260/2) * 3,
+                width: (360/2) * 3,
+                height: (260/2) * 3
             },
         })
         let camera4 = new fox.Camera({
-            x: 360/2,
-            y: 260/2,
+            x: (360/2) * 3,
+            y: (260/2) * 3,
             viewport: {
-                width: 360/2,
-                height: 260/2
+                width: 360/2 * 3,
+                height: 260/2 * 3
             },
         })
 
         let layer = new fox.Layers.Canvas({
-            width: 360,
-            height: 260,
+            width: 360 * 3,
+            height: 260 * 3,
         })
         let lighting = new fox.Layers.Lighting({
-            width: 360,
-            height: 360,
+            width: 360 * 3,
+            height: 360 * 3,
             globalLight: 0.5
         })
 
@@ -58,8 +60,8 @@ scene.onInit({
         let background = new fox.GameObjects.Sprite({
             x: 0,
             y: 0,
-            width: 360,
-            height: 260,
+            width: 360 * 3,
+            height: 260 * 3,
             layer: layer,
             texture: fox.AssetManager.getTexture({name: "background"})
         })
@@ -67,8 +69,8 @@ scene.onInit({
 
         // create players
         let playerOne = new Player({
-            x: 25,
-            y: 170-16,
+            x: 25 * 3,
+            y: (170-16) * 3,
             texture: "Blue",
             layer: layer,
             lightingLayer: lighting,
@@ -81,8 +83,8 @@ scene.onInit({
         })
 
         let playerTwo = new Player({
-            x: 55,
-            y: 170-16,
+            x: 55 * 3,
+            y: (170-16) * 3,
             texture: "Pink",
             layer: layer,
             lightingLayer: lighting,
@@ -94,23 +96,25 @@ scene.onInit({
             }
         })
 
-        camera.followObject({object: playerOne.player})
-        camera4.followObject({object: playerOne.player})
-        camera2.followObject({object: playerTwo.player})
-        camera3.followObject({object: playerTwo.player})
+        camera.addComponent({
+            component: new fox.Components.Basic.FollowGameObject({gameObject: playerOne.player, offset: new fox.Vectors.Vec2D({x: -270, y: -200})})
+        })
+        camera4.addComponent({
+            component: new fox.Components.Basic.FollowGameObject({gameObject: playerTwo.player, offset: new fox.Vectors.Vec2D({x: -270, y: -200})})
+        })
 
         // create platforms
         let platforms = [
-            {type: Platform.types.WOODEN_BIG, coordinates: [0, 220]},
-            {type: Platform.types.WOODEN_BIG, coordinates: [80, 220]},
-            {type: Platform.types.WOODEN_BIG, coordinates: [160, 220]},
-            {type: Platform.types.WOODEN_BIG, coordinates: [240, 220]},
-            {type: Platform.types.WOODEN_BIG, coordinates: [320, 220]},
-            {type: Platform.types.WOODEN_BIG, coordinates: [400+0, 220]},
-            {type: Platform.types.WOODEN_BIG, coordinates: [400+80, 220]},
-            {type: Platform.types.WOODEN_BIG, coordinates: [400+160, 220]},
-            {type: Platform.types.WOODEN_BIG, coordinates: [400+240, 220]},
-            {type: Platform.types.WOODEN_BIG, coordinates: [400+320, 220]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [0 * 3, 220 * 3]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [80 * 3, 220 * 3]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [160 * 3, 220 * 3]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [240 * 3, 220 * 3]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [320 * 3, 220 * 3]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [(400+0) * 3, 220 * 3]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [(400+80) * 3, 220 * 3]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [(400+160) * 3, 220 * 3]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [(400+240) * 3, 220 * 3]},
+            {type: Platform.types.WOODEN_BIG, coordinates: [(400+320) * 3, 220 * 3]},
         ]
         let counter = 0
         for (let platform of platforms) {

@@ -89,7 +89,7 @@ export class Scene {
     /**
      * Adds a layer to the scene
      * @method addLayer
-     * @param {object} layer Layer to be added
+     * @param {Layer} layer Layer to be added
      * @returns {Scene}
      */
     addLayer({layer} = {}) {
@@ -111,6 +111,9 @@ export class Scene {
     calc({timestep} = {}) {
         for (let layer of this.layers) {
             layer.calc({timestep})
+        }
+        for (let camera of this.cameras.all) {
+            camera.calc({timestep})
         }
         return this
     }
