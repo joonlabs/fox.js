@@ -15,11 +15,11 @@ export class GameObject {
      * @param {number} y Y-position of the game object
      * @param {number} width Width of the game object
      * @param {number} height Height of the game object
-     * @param {number} rotation Rotation of the game object
-     * @param {object} rotationPosition Rotation position vector of the Colligame objectder relative to it self
+     * @param {number} [rotation] Rotation of the game object
+     * @param {object} [rotationPosition] Rotation position vector of the Colligame objectder relative to it self
      * @param {string} tag Tag of the object for grouping multiple objects logically together
-     * @param {number} z Depth information for sorting in layer
-     * @param {object} debug Debug options (hitbox)
+     * @param {number} [z] Depth information for sorting in layer
+     * @param {object} [debug] Debug options (hitbox)
      * @returns CircleCollider
      */
     constructor({x, y, width, height, rotation, rotationPosition, tag, z, debug} = {}) {
