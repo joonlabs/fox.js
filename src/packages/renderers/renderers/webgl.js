@@ -47,11 +47,14 @@ export class WebGL extends Renderer {
         this.canvas.setAttribute("style", "image-rendering: optimizeSpeed; image-rendering: -moz-crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: -o-crisp-edges; image-rendering: pixelated;")
 
         this.textureProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils.vertexShaderTexture, fragmentShaderSrc: WebGLUtils.fragmentShaderTexture})
-        this.rectangleProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils.vertexShaderSolid, fragmentShaderSrc: WebGLUtils.fragmentShaderSolid})
+        this.rectangleProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils.vertexShaderSolid, fragmentShaderSrc: WebGLUtils.fragmentShaderRectangle})
+        this.circleProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils.vertexShaderSolid, fragmentShaderSrc: WebGLUtils.fragmentShaderCircle})
         this.multiplyBlendingProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils.vertexShaderBlending, fragmentShaderSrc: WebGLUtils.fragmentShaderMultiplyBlend})
+
         this.programs = [
             this.textureProgram,
             this.rectangleProgram,
+            this.circleProgram,
             this.multiplyBlendingProgram
         ]
 
@@ -109,9 +112,21 @@ export class WebGL extends Renderer {
             }
         })
 
+        this.circleVAO = new VertexArray({
+            renderer: this,
+            setup() {
+                let positionLocation = _this.gl.getAttribLocation(_this.rectangleProgram.programRef, "a_position");
+
+                _this.gl.bindBuffer(_this.gl.ARRAY_BUFFER, _this.quadBuffer);
+                _this.gl.enableVertexAttribArray(positionLocation);
+                _this.gl.vertexAttribPointer(positionLocation, 2, _this.gl.FLOAT, false, 0, 0);
+            }
+        })
+
         this.VAOs = [
             this.textureVAO,
             this.rectangleVAO,
+            this.circleVAO,
             this.multiplyBlendingVAO
         ]
 

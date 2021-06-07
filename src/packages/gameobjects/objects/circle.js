@@ -12,33 +12,30 @@ export class Circle extends GameObject {
      * Construct method of the object
      * @param {number} x X-position of the circle
      * @param {number} y Y-position of the circle
-     * @param {number} width Width of the circle
-     * @param {number} height Height of the circle
-     * @param {number} rotation Rotation of the circle
-     * @param {object} rotationPosition Rotation position vector of the circle relative to it self
-     * @param {number} angleStart Starting angle of the circle's fill
-     * @param {number} angleEnd Ending angle of the circle's fill
-     * @param {string} tag Tag of the object fro grouping multiple objects logically together
-     * @param {Color} color Color of the circle's fill
-     * @param {number} z Depth information for sorting in layer
+     * @param {number} diameter Radius of the circle
+     * @param {number} [rotation] Rotation of the circle
+     * @param {object} [rotationPosition] Rotation position vector of the circle relative to it self
+     * @param {string} [tag] Tag of the object fro grouping multiple objects logically together
+     * @param {Color} [color] Color of the circle's fill
+     * @param {number} [z] Depth information for sorting in layer
+     * @param {boolean} [borderWidth] How large the border of the circle should be. If not set, fill the whole circle
      * @returns Circle
      */
-    constructor({x, y, width, height, rotation, rotationPosition, angleStart, angleEnd, tag, z, color} = {}) {
+    constructor({x, y, diameter, rotation, rotationPosition, tag, z, color, borderWidth} = {}) {
         super({
             x: x,
             y: y,
-            width: width,
-            height: height,
+            width: diameter,
+            height: diameter,
             rotation: rotation,
             rotationPosition: rotationPosition,
             z: z,
             tag: tag
         })
 
-        this.angleStart = angleStart || 0
-        this.angleEnd = angleEnd || Math.PI * 2
-
         this.color = color || new Color()
+        this.diameter = diameter
+        this.borderWidth = borderWidth
     }
 
     /**
@@ -50,20 +47,23 @@ export class Circle extends GameObject {
         this.onBeforeRender({offset: offset, framebuffer: framebuffer})
 
         let x_ = this.position.x + this.dimensions.width / 2,
-            y_ = this.position.y + this.dimensions.height / 2,
-            radius = this.dimensions.width / 2
+            y_ = this.position.y + this.dimensions.height / 2
 
-        framebuffer.renderCircle({
+
+        let renderParams = {
             x: x_,
             y: y_,
-            radius: radius,
+            radius: this.diameter / 2,
             rotation: this.rotation,
             rotationPosition: this.rotationPosition,
-            angleStart: this.angleStart,
-            angleEnd: this.angleEnd,
             color: this.color,
-            ctx: this.layer.ctx
-        })
+            borderWidth: this.borderWidth
+        }
+        if (this.borderWidth === undefined) {
+            framebuffer.fillCircle(renderParams)
+        } else {
+            framebuffer.strokeCircle(renderParams)
+        }
 
         this.onAfterRender({offset: offset, framebuffer: framebuffer})
     }

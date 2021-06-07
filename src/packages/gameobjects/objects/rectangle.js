@@ -1,5 +1,4 @@
 import {GameObject} from '../gameobject.js'
-import {Vectors} from '../../vectors/index.js'
 import {Color} from '../../color/index.js'
 
 /**
@@ -20,9 +19,10 @@ export class Rectangle extends GameObject {
      * @param {string} tag Tag of the object fro grouping multiple objects logically together
      * @param {Color} color Color of the circle's fill
      * @param {number} z Depth information for sorting in layer
+     * @param {boolean} [borderWidth] How large the border of the rectangle should be. If not set, fill the whole rectangle
      * @returns Rectangle
      */
-    constructor({x, y, width, height, rotation, rotationPosition, tag, color, z} = {}) {
+    constructor({x, y, width, height, rotation, rotationPosition, tag, color, z, borderWidth} = {}) {
         super({
             x: x,
             y: y,
@@ -35,6 +35,7 @@ export class Rectangle extends GameObject {
         })
 
         this.color = color || new Color()
+        this.borderWidth = borderWidth
     }
 
     /**
@@ -45,7 +46,7 @@ export class Rectangle extends GameObject {
     render({offset, framebuffer} = {}) {
         this.onBeforeRender({offset: offset, framebuffer: framebuffer})
 
-        framebuffer.renderRectangle({
+        let renderParams = {
             x: this.position.x + offset.x,
             y: this.position.y + offset.y,
             width: this.dimensions.width,
@@ -53,7 +54,14 @@ export class Rectangle extends GameObject {
             color: this.color,
             rotation: this.rotation,
             rotationPosition: this.rotationPosition,
-        })
+            borderWidth: this.borderWidth
+        }
+
+        if (this.borderWidth === undefined) {
+            framebuffer.fillRectangle(renderParams)
+        } else {
+            framebuffer.strokeRectangle(renderParams)
+        }
 
         this.onAfterRender({offset: offset, framebuffer: framebuffer})
     }
