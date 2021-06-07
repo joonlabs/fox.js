@@ -78,7 +78,6 @@ export class WebGLUtils {
             uniform vec2 u_borderWidth;
 
             void main() {
-                //vec2 border = 1.0 - step(u_borderWidth, v_position) * (1.0 - step(1.0 - u_borderWidth, v_position));
                 vec2 border = step(1.0 - u_borderWidth * 2.0, abs(v_position));
 
                 gl_FragColor = u_color * max(border.y, border.x);
@@ -97,8 +96,6 @@ export class WebGLUtils {
             uniform float u_smoothing;
 
             void main() {
-                //vec2 center = (v_position - vec2(0.5)) * 2.0; // The coordinate system now goes from -1 to 1 instead of 0 to 1
-
                 float radius = dot(v_position, v_position);
 
                 gl_FragColor = u_color * smoothstep(1.0, 1.0 - u_smoothing, radius) * smoothstep(1.0 - u_borderWidth - u_smoothing, 1.0 - u_borderWidth, radius);
