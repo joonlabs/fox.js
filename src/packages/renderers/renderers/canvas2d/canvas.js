@@ -28,6 +28,21 @@ export class Canvas extends AbstractFramebuffer {
         this.ctx.globalCompositeOperation = compOperation
     }
 
+    _pushRotation({x, y, rotation, rotationPosition}) {
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.save()
+            this.ctx.translate(x + rotationPosition.x, y + rotationPosition.y)
+            this.ctx.rotate(rotation)
+            this.ctx.translate(- x - rotationPosition.x, -y - rotationPosition.y)
+        }
+    }
+
+    _popRotation({rotation}) {
+        if (rotation % (Math.PI * 2) !== 0) {
+            this.ctx.restore()
+        }
+    }
+
     renderTexture({texture, x, y, width, height, rotation, rotationPosition}) {
         rotation = rotation === undefined ? 0 : rotation
         rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
@@ -39,13 +54,7 @@ export class Canvas extends AbstractFramebuffer {
             textureData = texture.getTexture()
         }
 
-        if (rotation % (Math.PI * 2) !== 0) {
-            this.ctx.save()
-            this.ctx.translate(x + rotationPosition.x, y + rotationPosition.y)
-            x = -rotationPosition.x
-            y = -rotationPosition.y
-            this.ctx.rotate(rotation)
-        }
+        this._pushRotation({x, y, rotation, rotationPosition})
 
         if (width && height) {
             if(textureData!==undefined) {
@@ -57,28 +66,66 @@ export class Canvas extends AbstractFramebuffer {
             }
         }
 
-        if (rotation % (Math.PI * 2) !== 0) {
-            this.ctx.restore()
-        }
+        this._popRotation({rotation})
     }
 
-    renderRectangle({x, y, width, height, rotation, rotationPosition, color}) {
+    fillRectangle({x, y, width, height, rotation, rotationPosition, color}) {
         rotation = rotation === undefined ? 0 : rotation
         rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
 
-        if (rotation % (Math.PI * 2) !== 0) {
-            this.ctx.save()
-            this.ctx.translate(x + rotationPosition.x, y + rotationPosition.y)
-            x = -rotationPosition.x
-            y = -rotationPosition.y
-            this.ctx.rotate(rotation)
-        }
+        this._pushRotation({x, y, rotation, rotationPosition})
 
         this.ctx.fillStyle = color.toString()
         this.ctx.fillRect(x, y, width, height)
 
-        if (rotation % (Math.PI * 2) !== 0) {
-            this.ctx.restore()
-        }
+        this._popRotation({rotation})
+    }
+
+
+    fillCircle({x, y, radius, rotation, rotationPosition, color}) {
+        rotation = rotation === undefined ? 0 : rotation
+        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
+
+        this._pushRotation({x, y, rotation, rotationPosition})
+
+        this.ctx.fillStyle = color.toString()
+        this.ctx.beginPath()
+        this.ctx.moveTo(x, y)
+        this.ctx.arc(x, y, radius, 0, Math.PI * 2)
+        this.ctx.closePath()
+        this.ctx.fill()
+
+        this._popRotation({rotation})
+    }
+
+    strokeRectangle({x, y, width, height, rotation, rotationPosition, color, borderWidth}) {
+        rotation = rotation === undefined ? 0 : rotation
+        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
+
+        this._pushRotation({x, y, rotation, rotationPosition})
+
+        this.ctx.beginPath()
+        this.ctx.strokeStyle = color.toString()
+        this.ctx.lineWidth = borderWidth
+        this.ctx.rect(x + borderWidth / 2, y + borderWidth / 2, width - borderWidth, height - borderWidth)
+        this.ctx.stroke()
+
+        this._popRotation({rotation})
+    }
+
+    strokeCircle({x, y, radius, rotation, rotationPosition, color, borderWidth}) {
+        rotation = rotation === undefined ? 0 : rotation
+        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
+
+        this._pushRotation({x, y, rotation, rotationPosition})
+
+        this.ctx.beginPath()
+        this.ctx.strokeStyle = color.toString()
+        this.ctx.lineWidth = borderWidth
+        this.ctx.arc(x, y, radius - borderWidth / 2, 0, Math.PI * 2)
+        this.ctx.closePath()
+        this.ctx.stroke()
+
+        this._popRotation({rotation})
     }
 }

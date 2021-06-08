@@ -3,6 +3,7 @@ import {Texture} from "./texture.js"
 import * as M4 from "../m4.js"
 import {AbstractFramebuffer} from "../framebuffer.js"
 import {WebGLUtils} from "./index.js"
+import {Vec2D} from "../../../vectors/vectors/index.js"
 
 export class Framebuffer extends AbstractFramebuffer {
 
@@ -111,7 +112,20 @@ export class Framebuffer extends AbstractFramebuffer {
         this.vao.unbind()
     }
 
-    renderRectangle({x, y, width, height, rotation, rotationPosition, color}) {
+    /**
+     * Renders a rectangle
+     * @method _renderRectangle
+     * @param {number} x X position of the rectangle
+     * @param {number} y Y position of the rectangle
+     * @param {number} width Width of the rectangle
+     * @param {number} height Height of the rectangle
+     * @param {number} rotation Rotation of the rectangle
+     * @param {object} rotationPosition rotationPosition of the rectangle
+     * @param {Color} color Color of the rectangle
+     * @param {Vec2D} borderWidth Width of the border in percent, grows inwards
+     * @return {void}
+     */
+    _renderRectangle({x, y, width, height, rotation, rotationPosition, color, borderWidth}) {
         rotation = rotation === undefined ? 0 : rotation
         rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
 
@@ -136,10 +150,91 @@ export class Framebuffer extends AbstractFramebuffer {
         // set matrix and render
         program.setUniformMatrix({uniform: "u_matrix", matrix})
 
+        program.setFloatingUniform({uniform: "u_borderWidth", value: borderWidth.x, v1: borderWidth.y})
+
         program.setFloatingUniform({uniform: "u_color", value: new Float32Array(color.asNormalizedRGBAList())})
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
         vao.unbind()
+    }
+
+    _renderCircle({x, y, radius, rotation, rotationPosition, color, borderWidth}) {
+        rotation = rotation === undefined ? 0 : rotation
+        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
+
+        const gl = this.renderer.gl
+        this.bind()
+        this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})
+        this.renderer.setBlendFuncSeparate(this.blendFunc)
+        this.renderer.setBlendEquationSeperate(this.blendEquation)
+
+        const program = this.renderer.circleProgram
+        const vao = this.renderer.circleVAO
+
+        program.use()
+        vao.bind()
+        gl.activeTexture(gl.TEXTURE0)
+
+        let matrix = M4.multiply(
+            WebGLUtils.createFramebufferMatrix({width: this.width, height: this.height, flipY: this.framebufferRef === null}),
+            WebGLUtils.createObjectMatrix({x: x - radius, y: y - radius, width: radius * 2, height: radius * 2, rotation: {angle: rotation, ...rotationPosition}})
+        )
+
+        // set matrix and render
+        program.setUniformMatrix({uniform: "u_matrix", matrix})
+
+        program.setFloatingUniform({uniform: "u_smoothing", value: 2 / radius})
+        program.setFloatingUniform({uniform: "u_borderWidth", value: borderWidth})
+
+        program.setFloatingUniform({uniform: "u_color", value: new Float32Array(color.asNormalizedRGBAList())})
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+
+        vao.unbind()
+    }
+
+    fillRectangle({x, y, width, height, rotation, rotationPosition, color}) {
+        this._renderRectangle({
+            x, y,
+            width, height,
+            rotation, rotationPosition,
+            color,
+            borderWidth: new Vec2D({x: 1, y: 1})
+        })
+    }
+
+
+    fillCircle({x, y, radius, rotation, rotationPosition, color}) {
+        this._renderCircle({
+            x, y,
+            radius,
+            rotation, rotationPosition,
+            color,
+            borderWidth: 1
+        })
+    }
+
+    strokeRectangle({x, y, width, height, rotation, rotationPosition, color, borderWidth}) {
+        this._renderRectangle({
+            x, y,
+            width, height,
+            rotation, rotationPosition,
+            color,
+            borderWidth: new Vec2D({
+                x: borderWidth / width,
+                y: borderWidth / height,
+            })
+        })
+    }
+
+    strokeCircle({x, y, radius, rotation, rotationPosition, color, borderWidth}) {
+        this._renderCircle({
+            x, y,
+            radius,
+            rotation, rotationPosition,
+            color,
+            borderWidth: borderWidth / radius * 2
+        })
     }
 }

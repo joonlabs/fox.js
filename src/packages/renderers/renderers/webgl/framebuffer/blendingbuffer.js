@@ -33,7 +33,7 @@ export class BlendingBuffer extends Framebuffer {
         throw "fox: webgl: renderTexture shouldn't be used directly when using a blending buffer. Use blendTexture instead"
     }
 
-    renderRectangle({x, y, width, height, rotation, rotationPosition, color}) {
+    fillRectangle({x, y, width, height, rotation, rotationPosition, color}) {
         throw "fox: webgl: renderRectangle is unimplemented for a blending buffer"
     }
 }

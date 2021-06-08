@@ -24,7 +24,7 @@ export class BlendingCanvas extends Canvas {
         throw "fox: canvas2d: renderTexture shouldn't be used directly when using a blending canvas. Use blendTexture instead"
     }
 
-    renderRectangle({x, y, width, height, rotation, rotationPosition, color}) {
+    fillRectangle({x, y, width, height, rotation, rotationPosition, color}) {
         throw "fox: canvas2d: renderRectangle is unimplemented for a blending canvas"
     }
 }

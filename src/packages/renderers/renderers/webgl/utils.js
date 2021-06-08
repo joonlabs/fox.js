@@ -3,7 +3,7 @@ import * as M4 from "../m4.js"
 export class WebGLUtils {
     static get vertexShaderTexture() {
         return `
-            attribute vec4 a_position;
+            attribute vec2 a_position;
             attribute vec2 a_texcoord;
             
             uniform mat4 u_matrix;
@@ -12,28 +12,31 @@ export class WebGLUtils {
             varying vec2 v_texcoord;
             
             void main() {
-               gl_Position = u_matrix * a_position;
-               v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
+                gl_Position = u_matrix * vec4(a_position, 0, 1);
+                v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
             }
         `
     }
 
     static get vertexShaderSolid() {
         return `
-            attribute vec4 a_position;
+            attribute vec2 a_position;
             
             uniform mat4 u_matrix;
             uniform mat4 u_textureMatrix;
             
+            varying vec2 v_position;
+            
             void main() {
-               gl_Position = u_matrix * a_position;
+                v_position = (a_position - vec2(0.5)) * 2.0; // The coordinate system now goes from -1 to 1 instead of 0 to 1
+                gl_Position = u_matrix * vec4(a_position, 0, 1);
             }
         `
     }
 
     static get vertexShaderBlending() {
         return `
-            attribute vec4 a_position;
+            attribute vec2 a_position;
             attribute vec2 a_texcoord;
             
             uniform mat4 u_matrix;
@@ -44,9 +47,9 @@ export class WebGLUtils {
             varying vec2 v_basecoord;
             
             void main() {
-               gl_Position = u_matrix * a_position;
-               v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
-               v_basecoord = (u_baseMatrix * vec4(a_texcoord, 0, 1)).xy;
+                gl_Position = u_matrix * vec4(a_position, 0, 1);
+                v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
+                v_basecoord = (u_baseMatrix * vec4(a_texcoord, 0, 1)).xy;
             }
         `
     }
@@ -65,14 +68,37 @@ export class WebGLUtils {
         `
     }
 
-    static get fragmentShaderSolid() {
+    static get fragmentShaderRectangle() {
         return `
             precision mediump float;
 
+            varying vec2 v_position;
+
             uniform vec4 u_color;
+            uniform vec2 u_borderWidth;
 
             void main() {
-                gl_FragColor = u_color;
+                vec2 border = step(1.0 - u_borderWidth * 2.0, abs(v_position));
+
+                gl_FragColor = u_color * max(border.y, border.x);
+            }
+        `
+    }
+
+    static get fragmentShaderCircle() {
+        return `
+            precision mediump float;
+
+            varying vec2 v_position;
+
+            uniform vec4 u_color;
+            uniform float u_borderWidth;
+            uniform float u_smoothing;
+
+            void main() {
+                float radius = dot(v_position, v_position);
+
+                gl_FragColor = u_color * smoothstep(1.0, 1.0 - u_smoothing, radius) * smoothstep(1.0 - u_borderWidth - u_smoothing, 1.0 - u_borderWidth, radius);
             }
         `
     }

@@ -26,7 +26,7 @@ export class Camera {
      * @param {number} x X-position of the camera
      * @param {number} y Y-position of the camera
      * @param {object} viewport Viewport of the camera (x, y, width, height)
-     * @param {number} zoom Zoom level of the camera
+     * @param {number} [zoom] Zoom level of the camera
      * @returns Camera
      */
     constructor({x,y,viewport,zoom}={viewport:{}}){

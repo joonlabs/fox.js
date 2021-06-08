@@ -1,0 +1,16 @@
+body{
+    position: relative;
+    background: #030426;
+}
+
+body > canvas{
+    position: absolute;
+    width: calc(320px * 3);
+    max-width: 95%;
+    top: 50vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #000;
+    border-radius: 5px;
+    box-sizing: border-box;
+}

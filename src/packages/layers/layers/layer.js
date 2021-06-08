@@ -84,7 +84,7 @@ export class Layer {
 
     /**
      * Adds an object to the layer.
-     * @param {string} name Name of the object
+     * @param {string} [name] Name of the object
      * @param {object} object Object to be added
      */
     addObject({name, object}) {

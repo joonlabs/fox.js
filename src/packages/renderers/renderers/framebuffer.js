@@ -37,7 +37,7 @@ export class AbstractFramebuffer {
     }
 
     /**
-     * Renders a texture to the layer
+     * Renders a filled rectangle
      * @method renderRectangle
      * @param {number} x X position of the rectangle
      * @param {number} y Y position of the rectangle
@@ -48,7 +48,55 @@ export class AbstractFramebuffer {
      * @param {Color} color Color of the rectangle
      * @return {void}
      */
-    renderRectangle({x, y, width, height, rotation, rotationPosition, color}) {
+    fillRectangle({x, y, width, height, rotation, rotationPosition, color}) {
+        // to be implemented by child class
+    }
+
+    /**
+     * Renders a filled circle
+     * @method fillCircle
+     * @param {number} x X position of the circle
+     * @param {number} y Y position of the circle
+     * @param {number} radius Radius of the circle
+     * @param {number} rotation Rotation of the circle
+     * @param {object} rotationPosition rotationPosition of the circle
+     * @param {Color} color Color of the circle
+     * @return {void}
+     */
+    fillCircle({x, y, radius, rotation, rotationPosition, color}) {
+        // to be implemented by child class
+    }
+
+    /**
+     * Renders the border of a rectangle
+     * @method strokeRectangle
+     * @param {number} x X position of the rectangle
+     * @param {number} y Y position of the rectangle
+     * @param {number} width Width of the rectangle
+     * @param {number} height Height of the rectangle
+     * @param {number} rotation Rotation of the rectangle
+     * @param {object} rotationPosition rotationPosition of the rectangle
+     * @param {Color} color Color of the rectangle
+     * @param {number} borderWidth Width of the border, grows inwards
+     * @return {void}
+     */
+    strokeRectangle({x, y, width, height, rotation, rotationPosition, color, borderWidth}) {
+        // to be implemented by child class
+    }
+
+    /**
+     * Renders the border of a circle
+     * @method strokeCircle
+     * @param {number} x X position of the circle
+     * @param {number} y Y position of the circle
+     * @param {number} radius Radius of the circle
+     * @param {number} rotation Rotation of the circle
+     * @param {object} rotationPosition rotationPosition of the circle
+     * @param {Color} color Color of the circle
+     * @param {number} borderWidth Width of the border, grows inwards
+     * @return {void}
+     */
+    strokeCircle({x, y, radius, rotation, rotationPosition, color, borderWidth}) {
         // to be implemented by child class
     }
 }
