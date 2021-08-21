@@ -2,6 +2,7 @@ import {Renderer} from './renderer.js'
 import {Texture} from "../../assets/assets/index.js"
 import {WebGLUtils, WebGLTexture, Framebuffers, Program, VertexArray} from "./webgl/index.js"
 import {FramebufferType} from "./index.js"
+import {Utils} from "../../utils/utils.js"
 
 /**
  * The WebGL is the basic renderer using the html5 webgl api
@@ -37,6 +38,8 @@ export class WebGL extends Renderer {
         this.boundViewport = null
         this.boundBlendFunc = null
         this.boundBlendEquation = null
+        this.uploadedCameraMatrices = new Map()
+        this.boundCameraMatrix = null
 
         this.canvas = document.createElement("canvas")
         this.canvas.width = width
@@ -236,5 +239,27 @@ export class WebGL extends Renderer {
             this.gl.blendEquationSeparate(modeRGB, modeAlpha)
             this.boundBlendEquation = {modeRGB, modeAlpha}
         }
+    }
+
+    uploadCameraTransform() {
+        if (!this.uploadedCameraMatrices.has(this.boundProgram)) {
+            this.boundProgram.setUniformMatrix({uniform: "u_cameraMatrix", matrix: this.boundCameraMatrix})
+            this.uploadedCameraMatrices.set(this.boundProgram, true)
+        }
+    }
+
+    setCameraTransform({position, scale, rotation}) {
+        this.boundCameraMatrix = WebGLUtils.createObjectMatrix({
+            x: position.x,
+            y: position.y,
+            width: scale.width,
+            height: scale.height,
+            rotation: {
+                angle: rotation,
+                x: 0,
+                y: 0,
+            }
+        })
+        this.uploadedCameraMatrices.clear()
     }
 }

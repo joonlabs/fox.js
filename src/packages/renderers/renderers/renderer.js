@@ -50,4 +50,14 @@ export class Renderer {
     getMainFramebuffer() {
 
     }
+
+    /**
+     * Sets a camera transform that is applied to every render call
+     * @param {Vec2D} position
+     * @param {Vec2D} scale
+     * @param {number} rotation
+     */
+    setCameraTransform({position, scale, rotation}) {
+        // to be implemented by child class
+    }
 }

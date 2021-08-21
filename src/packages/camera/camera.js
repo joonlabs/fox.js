@@ -12,7 +12,6 @@ export class Camera {
     viewportPosition;
     viewportDimensions;
     settings;
-    renderOffset;
     componentHolder;
 
     set position(value){
@@ -86,19 +85,24 @@ export class Camera {
      * @returns {void}
      */
     render({app, layers}={}){
-        this.componentHolder.onBeforeRender({object: this, offset: this.renderOffset, framebuffer: this.cameraBuffer})
+        this.componentHolder.onBeforeRender({object: this, offset: this.viewportPosition, framebuffer: this.cameraBuffer})
 
         this.cameraBuffer.clear()
+        this.renderer.setCameraTransform({
+            position: this.viewportPosition,
+            scale: new Vec2D({x: 1, y: 1}),
+            rotation: 0
+        })
         //object manager based rendering of sprites
         for(let layer of layers){
             layer.render({
-                offset : this.viewportPosition,
+                offset : new Vec2D(),
                 camera : this,
                 framebuffer: this.cameraBuffer
             })
         }
 
-        this.componentHolder.onBeforeRender({object: this, offset: this.renderOffset, framebuffer: this.cameraBuffer})
+        this.componentHolder.onBeforeRender({object: this, offset: this.viewportPosition, framebuffer: this.cameraBuffer})
     }
 
     /**

@@ -4,6 +4,8 @@ import * as M4 from "../m4.js"
 import {AbstractFramebuffer} from "../framebuffer.js"
 import {WebGLUtils} from "./index.js"
 import {Vec2D} from "../../../vectors/vectors/index.js"
+import {Vectors} from "../../../vectors/index.js"
+import {Utils} from "../../../utils/index.js"
 
 export class Framebuffer extends AbstractFramebuffer {
 
@@ -31,6 +33,8 @@ export class Framebuffer extends AbstractFramebuffer {
         this.vao = renderer.textureVAO
         this.blendFunc = {srcRGB: gl.SRC_ALPHA, dstRGB: gl.ONE_MINUS_SRC_ALPHA, srcAlpha: gl.ONE, dstAlpha: gl.ONE_MINUS_SRC_ALPHA}
         this.blendEquation = {modeRGB: gl.FUNC_ADD, modeAlpha: gl.FUNC_ADD}
+        this.uploadedMatrices = new Map()
+        this.framebufferMatrix = WebGLUtils.createFramebufferMatrix({width: this.width, height: this.height, flipY: framebufferRef !== undefined})
 
         if (framebufferRef !== undefined) {
             this.framebufferRef = framebufferRef
@@ -44,6 +48,7 @@ export class Framebuffer extends AbstractFramebuffer {
     bind() {
         if (this.renderer.boundFramebuffer !== this) {
             this.renderer.gl.bindFramebuffer(this.renderer.gl.FRAMEBUFFER, this.framebufferRef)
+            this.uploadedMatrices.clear()
             this.renderer.boundFramebuffer = this
         }
     }
@@ -64,6 +69,14 @@ export class Framebuffer extends AbstractFramebuffer {
         this.bind()
         this.renderer.setClearColor(clearColor)
         gl.clear(gl.COLOR_BUFFER_BIT)
+    }
+
+    _uploadMatrices() {
+        this.renderer.uploadCameraTransform()
+        if (!this.uploadedMatrices.has(this.renderer.boundProgram)) {
+            this.renderer.boundProgram.setUniformMatrix({uniform: "u_framebufferMatrix", matrix: this.framebufferMatrix})
+            this.uploadedMatrices.set(this.renderer.boundProgram, true)
+        }
     }
 
     /**
@@ -92,16 +105,14 @@ export class Framebuffer extends AbstractFramebuffer {
         this.renderer.setBlendEquationSeperate(this.blendEquation)
 
         this.program.use()
+        this._uploadMatrices()
         this.vao.bind()
         glTexture.bind({textureUnit: gl.TEXTURE0})
 
-        let matrix = M4.multiply(
-            WebGLUtils.createFramebufferMatrix({width: this.width, height: this.height, flipY: this.framebufferRef === null}),
-            WebGLUtils.createObjectMatrix({x, y, width, height, rotation: {angle: rotation, ...rotationPosition}})
-        )
+        let matrix = WebGLUtils.createObjectMatrix({x, y, width, height, rotation: {angle: rotation, ...rotationPosition}})
 
         // set matrix and render
-        this.program.setUniformMatrix({uniform: "u_matrix", matrix})
+        this.program.setUniformMatrix({uniform: "u_objectMatrix", matrix})
 
         this.program.setUniformMatrix({uniform: "u_textureMatrix", matrix: M4.identity()})
 
@@ -139,16 +150,14 @@ export class Framebuffer extends AbstractFramebuffer {
         const vao = this.renderer.rectangleVAO
 
         program.use()
+        this._uploadMatrices()
         vao.bind()
         gl.activeTexture(gl.TEXTURE0)
 
-        let matrix = M4.multiply(
-            WebGLUtils.createFramebufferMatrix({width: this.width, height: this.height, flipY: this.framebufferRef === null}),
-            WebGLUtils.createObjectMatrix({x, y, width, height, rotation: {angle: rotation, ...rotationPosition}})
-        )
+        let matrix = WebGLUtils.createObjectMatrix({x, y, width, height, rotation: {angle: rotation, ...rotationPosition}})
 
         // set matrix and render
-        program.setUniformMatrix({uniform: "u_matrix", matrix})
+        program.setUniformMatrix({uniform: "u_objectMatrix", matrix})
 
         program.setFloatingUniform({uniform: "u_borderWidth", value: borderWidth.x, v1: borderWidth.y})
 
@@ -173,16 +182,15 @@ export class Framebuffer extends AbstractFramebuffer {
         const vao = this.renderer.circleVAO
 
         program.use()
+        this._uploadMatrices()
         vao.bind()
         gl.activeTexture(gl.TEXTURE0)
 
-        let matrix = M4.multiply(
-            WebGLUtils.createFramebufferMatrix({width: this.width, height: this.height, flipY: this.framebufferRef === null}),
-            WebGLUtils.createObjectMatrix({x: x - radius, y: y - radius, width: radius * 2, height: radius * 2, rotation: {angle: rotation, ...rotationPosition}})
-        )
+        let matrix = WebGLUtils.createObjectMatrix({x: x - radius, y: y - radius, width: radius * 2, height: radius * 2, rotation: {angle: rotation, ...rotationPosition}})
+
 
         // set matrix and render
-        program.setUniformMatrix({uniform: "u_matrix", matrix})
+        program.setUniformMatrix({uniform: "u_objectMatrix", matrix})
 
         program.setFloatingUniform({uniform: "u_smoothing", value: 2 / radius})
         program.setFloatingUniform({uniform: "u_borderWidth", value: borderWidth})
