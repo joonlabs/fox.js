@@ -40,6 +40,7 @@ export class WebGL extends Renderer {
         this.boundBlendEquation = null
         this.uploadedCameraMatrices = new Map()
         this.boundCameraMatrix = null
+        this.boundCameraTransform = null
 
         this.canvas = document.createElement("canvas")
         this.canvas.width = width
@@ -249,7 +250,8 @@ export class WebGL extends Renderer {
     }
 
     setCameraTransform({position, scale, rotation}) {
-        this.boundCameraMatrix = WebGLUtils.createObjectMatrix({
+        this.boundCameraTransform = {position, scale, rotation}
+        this.boundCameraMatrix = WebGLUtils.createCameraMatrix({
             x: position.x,
             y: position.y,
             width: scale.width,
@@ -261,5 +263,9 @@ export class WebGL extends Renderer {
             }
         })
         this.uploadedCameraMatrices.clear()
+    }
+
+    getCameraTransform() {
+        return this.boundCameraTransform
     }
 }

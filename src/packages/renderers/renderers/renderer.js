@@ -52,12 +52,25 @@ export class Renderer {
     }
 
     /**
+     * @typedef {Object} CameraTransform
+     * @property {Vec2D} position The camera position
+     * @property {Vec2D} scale The stretching/zoom that should be applied
+     * @property {number} rotation The rotation of the camera
+     */
+
+    /**
      * Sets a camera transform that is applied to every render call
-     * @param {Vec2D} position
-     * @param {Vec2D} scale
-     * @param {number} rotation
+     * @param {CameraTransform} transform
      */
     setCameraTransform({position, scale, rotation}) {
+        // to be implemented by child class
+    }
+
+    /**
+     * Returns the current camera transform
+     * @return CameraTransform
+     */
+    getCameraTransform() {
         // to be implemented by child class
     }
 }

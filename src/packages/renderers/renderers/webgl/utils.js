@@ -206,6 +206,24 @@ export class WebGLUtils {
      * @param rotation.y The y rotation center
      * @returns {Matrix4}
      */
+    static createCameraMatrix({x, y, width, height, rotation}) {
+        let matrix = M4.identity()
+        M4.translate(matrix, x, y, 0, matrix)
+        return matrix
+    }
+
+    /**
+     * Creates an object matrix
+     * @param x The x position of the object
+     * @param y The y position of the object
+     * @param width The width of the object
+     * @param height The height of the object
+     * @param rotation The object rotation
+     * @param rotation.angle The rotation angle in radians
+     * @param rotation.x The x rotation center
+     * @param rotation.y The y rotation center
+     * @returns {Matrix4}
+     */
     static createObjectMatrix({x, y, width, height, rotation}) {
         let matrix = M4.identity()
         M4.translate(matrix, x, y, 0, matrix)

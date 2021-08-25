@@ -125,10 +125,7 @@ export class Scene {
      */
     render({app} = {}) {
         for (let camera of this.cameras.all) {
-            // render to all offscreen canvases
             camera.render({app: app, layers: this.layers})
-            // render to the screen canvas
-            camera.renderToScreen({app: app, layers: this.layers})
         }
         return this
     }
