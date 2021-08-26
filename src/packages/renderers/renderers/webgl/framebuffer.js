@@ -91,12 +91,8 @@ export class Framebuffer extends AbstractFramebuffer {
      * @param {object} [rotationPosition] rotationPosition of the texture
      * @return {void}
      */
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition}) {
+    renderTexture({texture, x, y, width = texture.width, height = texture.height, rotation = 0, rotationPosition = new Vec2D()}) {
         const glTexture = this.renderer.getOrUploadTexture({texture})
-        width = width === undefined ? texture.width : width
-        height = height === undefined ? texture.height : height
-        rotation = rotation === undefined ? 0 : rotation
-        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
 
         const gl = this.renderer.gl
         this.bind()
@@ -136,10 +132,7 @@ export class Framebuffer extends AbstractFramebuffer {
      * @param {Vec2D} borderWidth Width of the border in percent, grows inwards
      * @return {void}
      */
-    _renderRectangle({x, y, width, height, rotation, rotationPosition, color, borderWidth}) {
-        rotation = rotation === undefined ? 0 : rotation
-        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
-
+    _renderRectangle({x, y, width, height, rotation = 0, rotationPosition = new Vec2D(), color, borderWidth}) {
         const gl = this.renderer.gl
         this.bind()
         this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})
@@ -168,10 +161,7 @@ export class Framebuffer extends AbstractFramebuffer {
         vao.unbind()
     }
 
-    _renderCircle({x, y, radius, rotation, rotationPosition, color, borderWidth}) {
-        rotation = rotation === undefined ? 0 : rotation
-        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
-
+    _renderCircle({x, y, radius, rotation = 0, rotationPosition = {x:0, y:0}, color, borderWidth}) {
         const gl = this.renderer.gl
         this.bind()
         this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})

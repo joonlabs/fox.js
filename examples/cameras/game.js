@@ -69,11 +69,12 @@ function init(){
         x: (1280/2),
         y: (720/2),
         viewport: {
-            x: (1280/2),
-            y: (720/2),
-            width: 1280/2,
-            height: 720/2
+            x: 0,
+            y: 0,
+            width: 1280,
+            height: 720
         },
+        zoom: 0.5,
     })
 
     // creates a canvas layer for rendering the objects
@@ -127,12 +128,32 @@ function init(){
         }
     }
 
+    class CameraZoom extends fox.Component {
+
+        constructor() {
+            super()
+            this.zoomFactor = 0
+        }
+
+        onCalc({timestep, object} = {}) {
+
+            if (fox.Input.isKeyDown({key: "PageUp"})) this.zoomFactor -= 0.01 * timestep
+            if (fox.Input.isKeyDown({key: "PageDown"})) this.zoomFactor += 0.01 * timestep
+
+            object.settings.zoom = Math.exp(this.zoomFactor)
+        }
+    }
+
     // add the component to the player
     camera1.addComponent({
         name: "movement",
         component: new CameraMovement()
     })
 
+    camera4.addComponent({
+        name: "zoom",
+        component: new CameraZoom()
+    })
 
     // add a scene to the app
     app.addScene({name: "myFirstLevel", scene: scene})

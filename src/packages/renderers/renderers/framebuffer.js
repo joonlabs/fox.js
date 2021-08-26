@@ -32,7 +32,15 @@ export class AbstractFramebuffer {
      * @param {object} [rotationPosition] rotationPosition of the texture
      * @return {void}
      */
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition}) {
+    renderTexture({
+                      texture,
+                      x,
+                      y,
+                      width = texture.width,
+                      height = texture.height,
+                      rotation = 0,
+                      rotationPosition = {x: 0, y: 0},
+                  }) {
         // to be implemented by child class
     }
 

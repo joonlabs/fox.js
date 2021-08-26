@@ -16,13 +16,15 @@ scene.onInit({
             x: (360/2) * 3,
             y: 0,
             viewport: {
-                y: (260/2) * 3,
+                x: -(360/4),
+                y: -(260/4),
                 width: (360/2) * 3,
                 height: (260/2) * 3
             },
+            zoom: 1/3
         })
         let camera3 = new fox.Camera({
-            x: 0 * 3,
+            x: 0,
             y: (260/2)  * 3,
             viewport: {
                 y: (260/2) * 3,

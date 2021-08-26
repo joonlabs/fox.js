@@ -251,7 +251,7 @@ export class WebGL extends Renderer {
 
     setCameraTransform({position, scale, rotation}) {
         this.boundCameraTransform = {position, scale, rotation}
-        this.boundCameraMatrix = WebGLUtils.createCameraMatrix({
+        this.boundCameraMatrix = WebGLUtils.createObjectMatrix({
             x: position.x,
             y: position.y,
             width: scale.width,

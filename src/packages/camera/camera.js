@@ -77,7 +77,7 @@ export class Camera {
         this.cameraBuffer.clear()
         this.renderer.setCameraTransform({
             position: this.viewportPosition,
-            scale: new Vec2D({x: 1, y: 1}),
+            scale: new Vec2D({x: this.settings.zoom, y: this.settings.zoom}),
             rotation: 0
         })
         //object manager based rendering of sprites
@@ -98,8 +98,8 @@ export class Camera {
             texture: this.cameraBuffer,
             x: this.coordinates.x,
             y: this.coordinates.y,
-            width: this.viewportDimensions.width * this.settings.zoom,
-            height: this.viewportDimensions.height * this.settings.zoom,
+            width: this.viewportDimensions.width,
+            height: this.viewportDimensions.height,
         })
 
         this.componentHolder.onAfterRender({object: this, offset: this.viewportPosition, framebuffer: this.cameraBuffer})
