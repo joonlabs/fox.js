@@ -13,6 +13,7 @@ export class Canvas2D extends Renderer {
         super.init()
 
         this.canvas = new Canvas({renderer: this, width, height})
+        this.cameraTransform = null
     }
 
     getCanvas() {
@@ -40,5 +41,16 @@ export class Canvas2D extends Renderer {
 
     getMainFramebuffer() {
         return this.canvas
+    }
+
+    /**
+     * @param {CameraTransform} transform
+     */
+    setCameraTransform(transform) {
+        this.cameraTransform = transform
+    }
+
+    getCameraTransform() {
+        return this.cameraTransform
     }
 }

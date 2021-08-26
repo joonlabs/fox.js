@@ -132,7 +132,7 @@ function init(){
 
         constructor() {
             super()
-            this.zoomFactor = 0
+            this.zoomFactor = 1
         }
 
         onCalc({timestep, object} = {}) {
@@ -140,7 +140,7 @@ function init(){
             if (fox.Input.isKeyDown({key: "PageUp"})) this.zoomFactor -= 0.01 * timestep
             if (fox.Input.isKeyDown({key: "PageDown"})) this.zoomFactor += 0.01 * timestep
 
-            object.settings.zoom = Math.exp(this.zoomFactor)
+            object.settings.zoom = Math.pow(2, -this.zoomFactor)
         }
     }
 
@@ -156,7 +156,7 @@ function init(){
     })
 
     // add a scene to the app
-    app.addScene({name: "myFirstLevel", scene: scene})
+    app.addScene({name: "cameras", scene: scene})
     // load the scene to display it
-    app.loadScene({name: "myFirstLevel"})
+    app.loadScene({name: "cameras"})
 }

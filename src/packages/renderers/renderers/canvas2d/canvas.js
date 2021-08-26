@@ -43,10 +43,19 @@ export class Canvas extends AbstractFramebuffer {
         }
     }
 
-    renderTexture({texture, x, y, width, height, rotation, rotationPosition}) {
-        rotation = rotation === undefined ? 0 : rotation
-        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
+    _pushCameraTransform({position, scale, rotation}) {
+        this.ctx.save()
+        this.ctx.rotate(rotation)
+        this.ctx.translate(position.x, position.y)
+        this.ctx.scale(scale.x, scale.y)
+    }
 
+    _popCameraTransform() {
+        this.ctx.restore()
+    }
+
+    renderTexture({texture, x, y, width, height, rotation = 0, rotationPosition = {x:0, y:0}}) {
+        this._pushCameraTransform(this.renderer.cameraTransform)
         let textureData
         if (texture instanceof Canvas) {
             textureData = texture.canvas
@@ -67,11 +76,11 @@ export class Canvas extends AbstractFramebuffer {
         }
 
         this._popRotation({rotation})
+        this._popCameraTransform()
     }
 
-    fillRectangle({x, y, width, height, rotation, rotationPosition, color}) {
-        rotation = rotation === undefined ? 0 : rotation
-        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
+    fillRectangle({x, y, width, height, rotation = 0, rotationPosition = {x:0, y:0}, color}) {
+        this._pushCameraTransform(this.renderer.cameraTransform)
 
         this._pushRotation({x, y, rotation, rotationPosition})
 
@@ -79,12 +88,12 @@ export class Canvas extends AbstractFramebuffer {
         this.ctx.fillRect(x, y, width, height)
 
         this._popRotation({rotation})
+        this._popCameraTransform()
     }
 
 
-    fillCircle({x, y, radius, rotation, rotationPosition, color}) {
-        rotation = rotation === undefined ? 0 : rotation
-        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
+    fillCircle({x, y, radius, rotation = 0, rotationPosition = {x:0, y:0}, color}) {
+        this._pushCameraTransform(this.renderer.cameraTransform)
 
         this._pushRotation({x, y, rotation, rotationPosition})
 
@@ -96,11 +105,11 @@ export class Canvas extends AbstractFramebuffer {
         this.ctx.fill()
 
         this._popRotation({rotation})
+        this._popCameraTransform()
     }
 
-    strokeRectangle({x, y, width, height, rotation, rotationPosition, color, borderWidth}) {
-        rotation = rotation === undefined ? 0 : rotation
-        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
+    strokeRectangle({x, y, width, height, rotation = 0, rotationPosition = {x:0, y:0}, color, borderWidth}) {
+        this._pushCameraTransform(this.renderer.cameraTransform)
 
         this._pushRotation({x, y, rotation, rotationPosition})
 
@@ -111,11 +120,11 @@ export class Canvas extends AbstractFramebuffer {
         this.ctx.stroke()
 
         this._popRotation({rotation})
+        this._popCameraTransform()
     }
 
-    strokeCircle({x, y, radius, rotation, rotationPosition, color, borderWidth}) {
-        rotation = rotation === undefined ? 0 : rotation
-        rotationPosition = rotationPosition === undefined ? {x:0, y:0} : rotationPosition
+    strokeCircle({x, y, radius, rotation = 0, rotationPosition = {x:0, y:0}, color, borderWidth}) {
+        this._pushCameraTransform(this.renderer.cameraTransform)
 
         this._pushRotation({x, y, rotation, rotationPosition})
 
@@ -127,5 +136,6 @@ export class Canvas extends AbstractFramebuffer {
         this.ctx.stroke()
 
         this._popRotation({rotation})
+        this._popCameraTransform()
     }
 }
