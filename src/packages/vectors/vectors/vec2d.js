@@ -10,6 +10,14 @@ export class Vec2D extends Vector {
     x;
     y;
 
+    static ZERO = Object.freeze(new Vec2D())
+    static ONE = Object.freeze(new Vec2D({x: 1, y: 1}))
+
+    static UP = Object.freeze(new Vec2D({y: 1}))
+    static DOWN = Object.freeze(new Vec2D({y: -1}))
+    static LEFT = Object.freeze(new Vec2D({x: 1}))
+    static RIGHT = Object.freeze(new Vec2D({x: -1}))
+
     get width() {
         return this.x
     }
@@ -73,7 +81,7 @@ export class Vec2D extends Vector {
      */
     add({vector} = {}) {
         if (vector.constructor.name !== "Vec2D") {
-            Utils.warn("fox: vector: you're trying to add at least one Vec2D that is not a vector. this operation failed.")
+            Utils.warn("fox: vector: you're trying to add at least one object that is not a Vec2D. this operation failed.")
             return
         }
         return new Vec2D({x: vector.x + this.x, y: vector.y + this.y})
@@ -87,42 +95,42 @@ export class Vec2D extends Vector {
      */
     sub({vector} = {}) {
         if (vector.constructor.name !== "Vec2D") {
-            Utils.warn("fox: vector: you're trying to subtract at least one Vec2D that is not a vector. this operation failed.")
+            Utils.warn("fox: vector: you're trying to subtract at least one object that is not a Vec2D. this operation failed.")
             return
         }
         return new Vec2D({x: this.x - vector.x, y: this.y - vector.y})
     }
 
     /**
-     * Perfomes the hadamard product of two vectors
+     * Performs the hadamard product of two vectors
      * @method hadamard
      * @param {Vec2D} vector Vector to be hadamard multiplied with
      * @returns {Vec2D}
      */
     hadamard({vector} = {}) {
         if (vector.constructor.name !== "Vec2D") {
-            Utils.warn("fox: vector: you're trying to subtract at least one Vec2D that is not a vector. this operation failed.")
+            Utils.warn("fox: vector: you're trying calculate the hadamard product of at least one object that is not a Vec2D. this operation failed.")
             return
         }
         return new Vec2D({x: vector.x * this.x, y: vector.y * this.y})
     }
 
     /**
-     * Perfomes the dot product of two vectors
+     * Performs the dot product of two vectors
      * @method dot
      * @param {Vec2D} vector Vector to be "dotted" with
-     * @returns {Vec2D}
+     * @returns {number}
      */
     dotProduct({vector}) {
         if (vector.constructor.name !== "Vec2D") {
-            Utils.warn("fox: vector: you're trying to subtract at least one Vec2D that is not a vector. this operation failed.")
+            Utils.warn("fox: vector: you're trying to calculate the dot product of at least one object that is not a Vec2D. this operation failed.")
             return
         }
         return (vector.x * this.x + vector.y * this.y)
     }
 
     /**
-     * Adds a Scalar to a vector
+     * Adds a scalar to a vector
      * @method addScalar
      * @param {number} scalar Scalar to be added
      * @returns {Vec2D}
@@ -132,7 +140,7 @@ export class Vec2D extends Vector {
     }
 
     /**
-     * Adds a Scalar to a vector
+     * Subtracts a scalar from a vector
      * @method subScalar
      * @param {number} scalar Scalar to be subtracted
      * @returns {Vec2D}
@@ -142,7 +150,7 @@ export class Vec2D extends Vector {
     }
 
     /**
-     * Multiplies a Scalar with a vector
+     * Multiplies a scalar with a vector
      * @method multScalar
      * @param {number} scalar Scalar to be multiplied with
      * @returns {Vec2D}
