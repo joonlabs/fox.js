@@ -4,7 +4,7 @@ import {Stats} from '../../packages/stats/index.js'
 import {Utils} from "../utils/index.js"
 
 /**
- * Represents the main game engine class. An application instance is responsible for creatig and holding the game, loop, etc.
+ * Represents the main game engine class. An application instance is responsible for creating and holding the game, loop, etc.
  * @class Application
  */
 export class Application {
@@ -13,8 +13,6 @@ export class Application {
      * @returns Application
      */
     constructor({width, height, renderer, logFPS, minFrameTime} = {}) {
-        let _this = this
-
         this.scenes = {
             all: [],
             active: undefined,
@@ -57,10 +55,10 @@ export class Application {
         })
         this.view = this.project.renderer.getCanvas()
 
+        this.renderCallback = this.render.bind(this)
+
         //start rendering
-        window.requestAnimationFrame(timestamp => {
-            _this.render(timestamp, _this)
-        })
+        window.requestAnimationFrame(this.renderCallback)
     }
 
 
@@ -75,50 +73,46 @@ export class Application {
      */
 
     /**
-     * Is called up to 60 times per second and calls the current scene's render
+     * Renders the current scene and is usually called according to the monitor's refresh rate (e.g. 60, 120 or 144 times per second)
      * @returns {void}
      */
-    render(timestamp, _this = this) {
+    render(timestamp) {
         //calc fps rate
-        if (_this.time.startTime === undefined) {
-            _this.time.startTime = timestamp
-            _this.frames.lastTimestamp = timestamp
+        if (this.time.startTime === undefined) {
+            this.time.startTime = timestamp
+            this.frames.lastTimestamp = timestamp
         } else {
-            let deltaTime = timestamp - _this.frames.lastTimestamp
-            _this.frames.lastTimestamp = timestamp
-            _this.time.deltaTime += deltaTime
+            let deltaTime = timestamp - this.frames.lastTimestamp
+            this.frames.lastTimestamp = timestamp
+            this.time.deltaTime += deltaTime
 
-            if (_this.time.minFrameTime !== undefined && _this.time.deltaTime < _this.frames.minFrameTime) {
-                window.requestAnimationFrame(timestamp => {
-                    _this.render(timestamp, _this)
-                })
+            if (this.time.minFrameTime !== undefined && this.time.deltaTime < this.frames.minFrameTime) {
+                window.requestAnimationFrame(this.renderCallback)
                 return
             }
 
-            _this.time.timestep = _this.time.deltaTime / (1000 / 60)
+            this.time.timestep = this.time.deltaTime / (1000 / 60)
         }
 
         // TODO: check every timestep needed?
         Input.updateGamePads()
 
-        if (_this.scenes.active !== undefined) {
-            if (_this.project.logFPS) this.stats.begin()
+        if (this.scenes.active !== undefined) {
+            if (this.project.logFPS) this.stats.begin()
 
             // calc the next frame
-            _this.scenes.active.calc({timestep: _this.time.timestep})
+            this.scenes.active.calc({timestep: this.time.timestep})
 
             // render the camera-views to the offscreen canvases
-            _this.scenes.active.render({app: _this})
+            this.scenes.active.render({app: this})
 
-            if (_this.project.logFPS) this.stats.end()
+            if (this.project.logFPS) this.stats.end()
         }
 
         // reset delta time
-        _this.time.deltaTime = 0
+        this.time.deltaTime = 0
 
-        window.requestAnimationFrame(timestamp =>{
-            _this.render(timestamp, _this)
-        })
+        window.requestAnimationFrame(this.renderCallback)
     }
 
     /**
