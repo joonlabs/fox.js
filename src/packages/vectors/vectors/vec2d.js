@@ -10,14 +10,6 @@ export class Vec2D extends Vector {
     x;
     y;
 
-    static ZERO = Object.freeze(new Vec2D())
-    static ONE = Object.freeze(new Vec2D({x: 1, y: 1}))
-
-    static UP = Object.freeze(new Vec2D({y: 1}))
-    static DOWN = Object.freeze(new Vec2D({y: -1}))
-    static LEFT = Object.freeze(new Vec2D({x: 1}))
-    static RIGHT = Object.freeze(new Vec2D({x: -1}))
-
     get width() {
         return this.x
     }
@@ -159,3 +151,25 @@ export class Vec2D extends Vector {
         return new Vec2D({x: scalar * this.x, y: scalar * this.y})
     }
 }
+
+Object.defineProperties(Vec2D, {
+    ZERO: {
+        value: Object.freeze(new Vec2D())
+    },
+    ONE: {
+        value: Object.freeze(new Vec2D({x: 1, y: 1}))
+    },
+
+    RIGHT: {
+        value: Object.freeze(new Vec2D({x: 1}))
+    },
+    LEFT: {
+        value: Object.freeze(new Vec2D({x: -1}))
+    },
+    UP: {
+        value: Object.freeze(new Vec2D({y: 1}))
+    },
+    DOWN: {
+        value: Object.freeze(new Vec2D({y: -1}))
+    },
+})
