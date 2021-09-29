@@ -75,7 +75,7 @@ export class Camera {
         this.componentHolder.onBeforeRender({object: this, offset: this.viewportPosition, framebuffer: this.cameraBuffer})
 
         this.cameraBuffer.clear()
-        this.renderer.setCameraTransform({
+        this.renderer.pushCameraTransform({
             position: this.viewportPosition,
             scale: new Vec2D({x: this.settings.zoom, y: this.settings.zoom}),
             rotation: 0
@@ -89,11 +89,7 @@ export class Camera {
             })
         }
 
-        this.renderer.setCameraTransform({
-            position: new Vec2D(),
-            scale: new Vec2D({x: 1, y: 1}),
-            rotation: 0
-        })
+        this.renderer.popCameraTransform()
         this.renderer.getMainFramebuffer().renderTexture({
             texture: this.cameraBuffer,
             x: this.coordinates.x,

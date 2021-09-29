@@ -50,9 +50,7 @@ export class Lighting extends Layer {
         this.blendBuffer.clear()
         super.render({offset, framebuffer: this.lightingBuffer})
 
-        const oldCameraTransform = this.renderer.getCameraTransform()
-
-        this.renderer.setCameraTransform({
+        this.renderer.pushCameraTransform({
             position: new Vec2D(),
             rotation: 0,
             scale: new Vec2D({width: 1, height: 1})
@@ -68,6 +66,6 @@ export class Lighting extends Layer {
             y: 0,
         })
 
-        this.renderer.setCameraTransform(oldCameraTransform)
+        this.renderer.popCameraTransform()
     }
 }

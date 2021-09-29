@@ -20,8 +20,6 @@ export class WebGL extends Renderer {
     }
 
     init({width, height}) {
-        super.init()
-
         // init internal webgl-texture store
         this.textureStore = new Map()
 
@@ -39,8 +37,7 @@ export class WebGL extends Renderer {
         this.boundBlendFunc = null
         this.boundBlendEquation = null
         this.uploadedCameraMatrices = new Map()
-        this.boundCameraMatrix = null
-        this.boundCameraTransform = null
+        this.boundCameraMatrix = []
 
         this.canvas = document.createElement("canvas")
         this.canvas.width = width
@@ -144,6 +141,8 @@ export class WebGL extends Renderer {
 
         this.gl.enable(this.gl.BLEND);
         this.setBlendFuncSeparate({srcRGB: this.gl.SRC_ALPHA, dstRGB: this.gl.ONE_MINUS_SRC_ALPHA, srcAlpha: this.gl.ONE, dstAlpha: this.gl.ONE_MINUS_SRC_ALPHA});
+
+        super.init()
     }
 
     destroy() {
@@ -243,15 +242,16 @@ export class WebGL extends Renderer {
     }
 
     uploadCameraTransform() {
-        if (!this.uploadedCameraMatrices.has(this.boundProgram)) {
-            this.boundProgram.setUniformMatrix({uniform: "u_cameraMatrix", matrix: this.boundCameraMatrix})
-            this.uploadedCameraMatrices.set(this.boundProgram, true)
+        const currentCameraMatrix = this.boundCameraMatrix[this.boundCameraMatrix.length-1]
+
+        if (this.uploadedCameraMatrices.get(this.boundProgram) !== currentCameraMatrix) {
+            this.boundProgram.setUniformMatrix({uniform: "u_cameraMatrix", matrix: currentCameraMatrix})
+            this.uploadedCameraMatrices.set(this.boundProgram, currentCameraMatrix)
         }
     }
 
-    setCameraTransform({position, scale, rotation}) {
-        this.boundCameraTransform = {position, scale, rotation}
-        this.boundCameraMatrix = WebGLUtils.createObjectMatrix({
+    pushCameraTransform({position, scale, rotation}) {
+        this.boundCameraMatrix.push(WebGLUtils.createObjectMatrix({
             x: position.x,
             y: position.y,
             width: scale.width,
@@ -261,11 +261,10 @@ export class WebGL extends Renderer {
                 x: 0,
                 y: 0,
             }
-        })
-        this.uploadedCameraMatrices.clear()
+        }))
     }
 
-    getCameraTransform() {
-        return this.boundCameraTransform
+    popCameraTransform() {
+        this.boundCameraMatrix.pop()
     }
 }

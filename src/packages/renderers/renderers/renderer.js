@@ -1,3 +1,5 @@
+import {Vec2D} from "../../vectors/vectors/index.js"
+
 /**
  * The Renderer class provides the blueprint for all renderers (e.g. the basic canvas2d renderer)
  *
@@ -23,6 +25,11 @@ export class Renderer {
     }
 
     init() {
+        this.pushCameraTransform({
+            position: new Vec2D(),
+            rotation: 0,
+            scale: new Vec2D({width: 1, height: 1})
+        })
         this.initialized = true
     }
 
@@ -59,18 +66,17 @@ export class Renderer {
      */
 
     /**
-     * Sets a camera transform that is applied to every render call
+     * Pushes a camera transform that is applied to every render call
      * @param {CameraTransform} transform
      */
-    setCameraTransform({position, scale, rotation}) {
+    pushCameraTransform({position, scale, rotation}) {
         // to be implemented by child class
     }
 
     /**
-     * Returns the current camera transform
-     * @return CameraTransform
+     * Pops the current camera transform
      */
-    getCameraTransform() {
+    popCameraTransform() {
         // to be implemented by child class
     }
 }

@@ -55,7 +55,7 @@ export class Canvas extends AbstractFramebuffer {
     }
 
     renderTexture({texture, x, y, width, height, rotation = 0, rotationPosition = {x:0, y:0}}) {
-        this._pushCameraTransform(this.renderer.cameraTransform)
+        this._pushCameraTransform(this.renderer.currentCameraTransform)
         let textureData
         if (texture instanceof Canvas) {
             textureData = texture.canvas
@@ -80,7 +80,7 @@ export class Canvas extends AbstractFramebuffer {
     }
 
     fillRectangle({x, y, width, height, rotation = 0, rotationPosition = {x:0, y:0}, color}) {
-        this._pushCameraTransform(this.renderer.cameraTransform)
+        this._pushCameraTransform(this.renderer.currentCameraTransform)
 
         this._pushRotation({x, y, rotation, rotationPosition})
 
@@ -93,7 +93,7 @@ export class Canvas extends AbstractFramebuffer {
 
 
     fillCircle({x, y, radius, rotation = 0, rotationPosition = {x:0, y:0}, color}) {
-        this._pushCameraTransform(this.renderer.cameraTransform)
+        this._pushCameraTransform(this.renderer.currentCameraTransform)
 
         this._pushRotation({x, y, rotation, rotationPosition})
 
@@ -109,7 +109,7 @@ export class Canvas extends AbstractFramebuffer {
     }
 
     strokeRectangle({x, y, width, height, rotation = 0, rotationPosition = {x:0, y:0}, color, borderWidth}) {
-        this._pushCameraTransform(this.renderer.cameraTransform)
+        this._pushCameraTransform(this.renderer.currentCameraTransform)
 
         this._pushRotation({x, y, rotation, rotationPosition})
 
@@ -124,7 +124,7 @@ export class Canvas extends AbstractFramebuffer {
     }
 
     strokeCircle({x, y, radius, rotation = 0, rotationPosition = {x:0, y:0}, color, borderWidth}) {
-        this._pushCameraTransform(this.renderer.cameraTransform)
+        this._pushCameraTransform(this.renderer.currentCameraTransform)
 
         this._pushRotation({x, y, rotation, rotationPosition})
 
