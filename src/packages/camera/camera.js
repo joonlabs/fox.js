@@ -29,7 +29,7 @@ export class Camera {
      * @returns Camera
      */
     constructor({x,y,viewport,zoom}={viewport:{}}){
-        this.coordinates = new Vectors.Vec2D({x:x, y:y})
+        this.coordinates = new Vectors.Vec2D({x, y})
 
         this.viewportPosition = new Vec2D({
             x: -viewport.x || 0,

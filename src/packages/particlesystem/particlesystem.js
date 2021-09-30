@@ -34,7 +34,7 @@ export class ParticleSystem extends GameObject {
             x: 0,
             y: 0,
         }
-        this.dimensions = new Vectors.Vec2D
+        this.dimensions = new Vectors.Vec2D()
 
         this.settings = {
             maxParticles: settings ? (settings.maxParticles || 500) : 500,

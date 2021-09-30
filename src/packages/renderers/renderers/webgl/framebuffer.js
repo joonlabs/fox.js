@@ -198,7 +198,7 @@ export class Framebuffer extends AbstractFramebuffer {
             width, height,
             rotation, rotationPosition,
             color,
-            borderWidth: new Vec2D({x: 1, y: 1})
+            borderWidth: Vec2D.ONE
         })
     }
 
