@@ -2,6 +2,7 @@ import {Renderer} from './renderer.js'
 import {Texture} from "../../assets/assets/index.js"
 import {WebGLUtils, WebGLTexture, Framebuffers, Program, VertexArray} from "./webgl/index.js"
 import {FramebufferType} from "./index.js"
+import {Utils} from "../../utils/utils.js"
 
 /**
  * The WebGL is the basic renderer using the html5 webgl api
@@ -19,8 +20,6 @@ export class WebGL extends Renderer {
     }
 
     init({width, height}) {
-        super.init()
-
         // init internal webgl-texture store
         this.textureStore = new Map()
 
@@ -37,6 +36,8 @@ export class WebGL extends Renderer {
         this.boundViewport = null
         this.boundBlendFunc = null
         this.boundBlendEquation = null
+        this.uploadedCameraMatrices = new Map()
+        this.boundCameraMatrixStack = []
 
         this.canvas = document.createElement("canvas")
         this.canvas.width = width
@@ -140,6 +141,8 @@ export class WebGL extends Renderer {
 
         this.gl.enable(this.gl.BLEND);
         this.setBlendFuncSeparate({srcRGB: this.gl.SRC_ALPHA, dstRGB: this.gl.ONE_MINUS_SRC_ALPHA, srcAlpha: this.gl.ONE, dstAlpha: this.gl.ONE_MINUS_SRC_ALPHA});
+
+        super.init()
     }
 
     destroy() {
@@ -236,5 +239,32 @@ export class WebGL extends Renderer {
             this.gl.blendEquationSeparate(modeRGB, modeAlpha)
             this.boundBlendEquation = {modeRGB, modeAlpha}
         }
+    }
+
+    uploadCameraTransform() {
+        const currentCameraMatrix = this.boundCameraMatrixStack[this.boundCameraMatrixStack.length-1]
+
+        if (this.uploadedCameraMatrices.get(this.boundProgram) !== currentCameraMatrix) {
+            this.boundProgram.setUniformMatrix({uniform: "u_cameraMatrix", matrix: currentCameraMatrix})
+            this.uploadedCameraMatrices.set(this.boundProgram, currentCameraMatrix)
+        }
+    }
+
+    pushCameraTransform({position, scale, rotation}) {
+        this.boundCameraMatrixStack.push(WebGLUtils.createObjectMatrix({
+            x: position.x,
+            y: position.y,
+            width: scale.width,
+            height: scale.height,
+            rotation: {
+                angle: rotation,
+                x: 0,
+                y: 0,
+            }
+        }))
+    }
+
+    popCameraTransform() {
+        this.boundCameraMatrixStack.pop()
     }
 }

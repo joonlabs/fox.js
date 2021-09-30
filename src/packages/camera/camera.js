@@ -12,7 +12,6 @@ export class Camera {
     viewportPosition;
     viewportDimensions;
     settings;
-    renderOffset;
     componentHolder;
 
     set position(value){
@@ -56,20 +55,6 @@ export class Camera {
         this.renderer = renderer
         this.cameraBuffer = renderer.createFramebuffer({width: this.viewportDimensions.width, height: this.viewportDimensions.height})
     }
-    
-    /**
-     * Renders all layers to the onscreen canvas
-     * @returns {void}
-     */
-    renderToScreen({app, layers}={}){
-        app.project.renderer.getMainFramebuffer().renderTexture({
-            texture: this.cameraBuffer,
-            x: this.coordinates.x,
-            y: this.coordinates.y,
-            width: this.viewportDimensions.width * this.settings.zoom,
-            height: this.viewportDimensions.height * this.settings.zoom,
-        })
-    }
 
     /**
      * Is called every time the game updates.
@@ -82,23 +67,38 @@ export class Camera {
     }
 
     /**
-     * Renders all objects tho the layer(s)
+     * Renders all objects to the layer(s)
+     * @param {Layer[]} layers
      * @returns {void}
      */
-    render({app, layers}={}){
-        this.componentHolder.onBeforeRender({object: this, offset: this.renderOffset, framebuffer: this.cameraBuffer})
+    render({layers}){
+        this.componentHolder.onBeforeRender({object: this, offset: this.viewportPosition, framebuffer: this.cameraBuffer})
 
         this.cameraBuffer.clear()
+        this.renderer.pushCameraTransform({
+            position: this.viewportPosition,
+            scale: new Vec2D({x: this.settings.zoom, y: this.settings.zoom}),
+            rotation: 0
+        })
         //object manager based rendering of sprites
         for(let layer of layers){
             layer.render({
-                offset : this.viewportPosition,
+                offset : new Vec2D(),
                 camera : this,
                 framebuffer: this.cameraBuffer
             })
         }
 
-        this.componentHolder.onBeforeRender({object: this, offset: this.renderOffset, framebuffer: this.cameraBuffer})
+        this.renderer.popCameraTransform()
+        this.renderer.getMainFramebuffer().renderTexture({
+            texture: this.cameraBuffer,
+            x: this.coordinates.x,
+            y: this.coordinates.y,
+            width: this.viewportDimensions.width,
+            height: this.viewportDimensions.height,
+        })
+
+        this.componentHolder.onAfterRender({object: this, offset: this.viewportPosition, framebuffer: this.cameraBuffer})
     }
 
     /**

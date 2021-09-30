@@ -79,10 +79,10 @@ function init(){
     class PlayerMovement extends fox.Component {
         onCalc({timestep, object} = {}) {
             // move player according to arrow keys
-            if (fox.Input.isKeyDown({key: "ArrowLeft"})) object.position.x -= 5
-            if (fox.Input.isKeyDown({key: "ArrowRight"})) object.position.x += 5
-            if (fox.Input.isKeyDown({key: "ArrowUp"})) object.position.y -= 5
-            if (fox.Input.isKeyDown({key: "ArrowDown"})) object.position.y += 5
+            if (fox.Input.isKeyDown({key: "ArrowLeft"})) object.position.x -= 5 * timestep
+            if (fox.Input.isKeyDown({key: "ArrowRight"})) object.position.x += 5 * timestep
+            if (fox.Input.isKeyDown({key: "ArrowUp"})) object.position.y -= 5 * timestep
+            if (fox.Input.isKeyDown({key: "ArrowDown"})) object.position.y += 5 * timestep
         }
     }
 

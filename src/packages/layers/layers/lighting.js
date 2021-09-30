@@ -1,6 +1,7 @@
 import {Layer} from './layer.js'
 import {Color} from "../../color/color.js";
 import {FramebufferType} from "../../renderers/index.js"
+import {Vec2D} from "../../vectors/vectors/index.js"
 
 /**
  * The LayerLighting represents the lighting layer, that only renders light objects
@@ -31,6 +32,7 @@ export class Lighting extends Layer {
      * Is called by the scene, when the scene is initialized
      */
     init({renderer}) {
+        this.renderer = renderer
         this.lightingBuffer = renderer.createFramebuffer({
             width: this.dimensions.width,
             height: this.dimensions.height,
@@ -48,6 +50,11 @@ export class Lighting extends Layer {
         this.blendBuffer.clear()
         super.render({offset, framebuffer: this.lightingBuffer})
 
+        this.renderer.pushCameraTransform({
+            position: new Vec2D(),
+            rotation: 0,
+            scale: new Vec2D({width: 1, height: 1})
+        })
         this.blendBuffer.blendTexture({
             base: framebuffer,
             texture: this.lightingBuffer,
@@ -58,5 +65,7 @@ export class Lighting extends Layer {
             x: 0,
             y: 0,
         })
+
+        this.renderer.popCameraTransform()
     }
 }

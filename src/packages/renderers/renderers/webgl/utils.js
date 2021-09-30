@@ -6,13 +6,16 @@ export class WebGLUtils {
             attribute vec2 a_position;
             attribute vec2 a_texcoord;
             
-            uniform mat4 u_matrix;
+            uniform mat4 u_framebufferMatrix;
+            uniform mat4 u_cameraMatrix;
+            uniform mat4 u_objectMatrix;
+            
             uniform mat4 u_textureMatrix;
             
             varying vec2 v_texcoord;
             
             void main() {
-                gl_Position = u_matrix * vec4(a_position, 0, 1);
+                gl_Position = u_framebufferMatrix * u_cameraMatrix * u_objectMatrix * vec4(a_position, 0, 1);
                 v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
             }
         `
@@ -22,14 +25,17 @@ export class WebGLUtils {
         return `
             attribute vec2 a_position;
             
-            uniform mat4 u_matrix;
+            uniform mat4 u_framebufferMatrix;
+            uniform mat4 u_cameraMatrix;
+            uniform mat4 u_objectMatrix;
+            
             uniform mat4 u_textureMatrix;
             
             varying vec2 v_position;
             
             void main() {
                 v_position = (a_position - vec2(0.5)) * 2.0; // The coordinate system now goes from -1 to 1 instead of 0 to 1
-                gl_Position = u_matrix * vec4(a_position, 0, 1);
+                gl_Position = u_framebufferMatrix * u_cameraMatrix * u_objectMatrix * vec4(a_position, 0, 1);
             }
         `
     }
@@ -39,7 +45,10 @@ export class WebGLUtils {
             attribute vec2 a_position;
             attribute vec2 a_texcoord;
             
-            uniform mat4 u_matrix;
+            uniform mat4 u_framebufferMatrix;
+            uniform mat4 u_cameraMatrix;
+            uniform mat4 u_objectMatrix;
+            
             uniform mat4 u_textureMatrix;
             uniform mat4 u_baseMatrix;
             
@@ -47,7 +56,7 @@ export class WebGLUtils {
             varying vec2 v_basecoord;
             
             void main() {
-                gl_Position = u_matrix * vec4(a_position, 0, 1);
+                gl_Position = u_framebufferMatrix * u_cameraMatrix * u_objectMatrix * vec4(a_position, 0, 1);
                 v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
                 v_basecoord = (u_baseMatrix * vec4(a_texcoord, 0, 1)).xy;
             }

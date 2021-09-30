@@ -18,7 +18,7 @@ export class PlayerMovement extends fox.Component {
         this.scene = scene
         this.layer = layer
         this.dustPosition = new fox.Vectors.Vec2D()
-        this.dustFramesRemainig = 0
+        this.dustFramesRemaining = 0
         this.releasedJumpKey = true
 
         // key mappings
@@ -159,16 +159,15 @@ export class PlayerMovement extends fox.Component {
 
                 this.dustPosition = object.position.clone()
                 this.dust.play()
-                this.dustFramesRemainig = 20
+                this.dustFramesRemaining = 20
             }
         }
 
-        if (this.dustFramesRemainig > 0) {
-            this.dustFramesRemainig--
+        if (this.dustFramesRemaining > 0) {
+            this.dustFramesRemaining -= timestep
         }
-        if (this.dustFramesRemainig === 0) {
+        if (this.dustFramesRemaining < 0 && !this.dust.isStopped()) {
             this.dust.stop()
-            this.dustFramesRemainig = -1
         }
 
         // jump
@@ -180,7 +179,7 @@ export class PlayerMovement extends fox.Component {
             this.releasedJumpKey = false
             this.dustPosition = object.position.clone()
             this.dust.play()
-            this.dustFramesRemainig = 20
+            this.dustFramesRemaining = 20
             this.jump({timestep: timestep})
         }
         if (!fox.Input.isKeyDown({key: this.keyUp})) {

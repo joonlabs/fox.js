@@ -10,9 +10,10 @@ import {Canvas, BlendingCanvas, LightingCanvas} from "./canvas2d/index.js"
  */
 export class Canvas2D extends Renderer {
     init({width, height}) {
-        super.init()
-
         this.canvas = new Canvas({renderer: this, width, height})
+        this.cameraTransformStack = []
+
+        super.init()
     }
 
     getCanvas() {
@@ -40,5 +41,20 @@ export class Canvas2D extends Renderer {
 
     getMainFramebuffer() {
         return this.canvas
+    }
+
+    /**
+     * @param {CameraTransform} transform
+     */
+    pushCameraTransform(transform) {
+        this.cameraTransformStack.push(transform)
+    }
+
+    popCameraTransform() {
+        this.cameraTransformStack.pop()
+    }
+
+    get currentCameraTransform() {
+        return this.cameraTransformStack[this.cameraTransformStack.length-1]
     }
 }
