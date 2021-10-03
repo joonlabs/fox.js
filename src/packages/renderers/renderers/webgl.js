@@ -200,44 +200,53 @@ export class WebGL extends Renderer {
         }
     }
 
-    setViewport({x, y, width, height}) {
-        if (   this.boundViewport?.x      !== x
-            || this.boundViewport?.y      !== y
-            || this.boundViewport?.width  !== width
-            || this.boundViewport?.height !== height
-        ) {
-            this.gl.viewport(x, y, width, height)
-            this.boundViewport = {x, y, width, height}
+    /**
+     * @param viewport The viewport
+     * @param viewport.x The viewport's x position
+     * @param viewport.y The viewport's y position
+     * @param viewport.width The viewport width
+     * @param viewport.height The viewport height
+     */
+    setViewport(viewport) {
+        if (!Utils.shallowEquals(this.boundViewport, viewport)) {
+            this.gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height)
+            this.boundViewport = viewport
         }
     }
 
+    /**
+     * @param {Color} color
+     */
     setClearColor(color) {
-        if (   this.boundClearColor?.r !== color.r
-            || this.boundClearColor?.g !== color.g
-            || this.boundClearColor?.b !== color.b
-            || this.boundClearColor?.a !== color.a
-        ) {
+        if (!Utils.shallowEquals(this.boundClearColor, color)) {
             this.gl.clearColor(...color.asNormalizedRGBAList())
             this.boundClearColor = color
         }
     }
 
-    setBlendFuncSeparate({srcRGB, dstRGB, srcAlpha, dstAlpha}) {
-        if (this.boundBlendFunc?.srcRGB !== srcRGB
-            ||this.boundBlendFunc?.dstRGB !== dstRGB
-            ||this.boundBlendFunc?.srcAlpha !== srcAlpha
-            ||this.boundBlendFunc?.dstAlpha !== dstAlpha
-        ) {
-            this.gl.blendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha)
-            this.boundBlendFunc = {srcRGB, dstRGB, srcAlpha, dstAlpha}
+    /**
+     * @param blendFunc The blending functions
+     * @param blendFunc.srcRGB The RGB source blending
+     * @param blendFunc.dstRGB The RGB destination blending
+     * @param blendFunc.srcAlpha The alpha source blending
+     * @param blendFunc.dstAlpha The alpha destination blending
+     */
+    setBlendFuncSeparate(blendFunc) {
+        if (!Utils.shallowEquals(this.boundBlendFunc, blendFunc)) {
+            this.gl.blendFuncSeparate(blendFunc.srcRGB, blendFunc.dstRGB, blendFunc.srcAlpha, blendFunc.dstAlpha)
+            this.boundBlendFunc = blendFunc
         }
     }
 
-    setBlendEquationSeperate({modeRGB, modeAlpha}) {
-        if (this.boundBlendEquation?.modeRGB !== modeRGB
-            || this.boundBlendEquation?.modeAlpha !== modeAlpha) {
-            this.gl.blendEquationSeparate(modeRGB, modeAlpha)
-            this.boundBlendEquation = {modeRGB, modeAlpha}
+    /**
+     * @param blendEquation The blending equations
+     * @param blendEquation.modeRGB The RGB blending equation
+     * @param blendEquation.modeAlpha The alpha blending equation
+     */
+    setBlendEquationSeparate(blendEquation) {
+        if (!Utils.shallowEquals(this.boundBlendEquation, blendEquation)) {
+            this.gl.blendEquationSeparate(blendEquation.modeRGB, blendEquation.modeAlpha)
+            this.boundBlendEquation = blendEquation
         }
     }
 
