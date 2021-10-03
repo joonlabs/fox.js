@@ -1,3 +1,5 @@
+import {WebGLCache} from "../webgl.js"
+
 export class Texture {
 
     /**
@@ -37,16 +39,8 @@ export class Texture {
         }
     }
 
-    bind({textureUnit} = {textureUnit: this.renderer.gl.TEXTURE0}) {
-        if (this.renderer.boundTexture.texture[textureUnit] !== this) {
-            if (this.renderer.boundTexture.unit !== textureUnit) {
-                this.renderer.gl.activeTexture(textureUnit)
-                this.renderer.boundTexture.unit = textureUnit
-            }
-
-            this.renderer.gl.bindTexture(this.renderer.gl.TEXTURE_2D, this.textureRef)
-            this.renderer.boundTexture.texture[textureUnit] = this
-        }
+    bind({textureUnit = this.renderer.gl.TEXTURE0} = {}) {
+        this.renderer.cache(WebGLCache.TEXTURE[textureUnit]).validate(this.textureRef)
     }
 
     destroy() {

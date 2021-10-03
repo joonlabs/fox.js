@@ -1,3 +1,5 @@
+import {WebGLCache} from "../webgl.js"
+
 export class VertexArray {
 
     /**
@@ -20,21 +22,11 @@ export class VertexArray {
     }
 
     bind() {
-        if (this.renderer.boundVAO !== this) {
-            if (this.vaoRef !== null) {
-                this.renderer.glVao.bindVertexArrayOES(this.vaoRef)
-            } else {
-                this.setup()
-            }
-            this.renderer.boundVAO = this
-        }
+        this.renderer.cache(WebGLCache.VAO).validate(this.vaoRef)
     }
 
     unbind() {
-        if (this.vaoRef !== null) {
-            this.renderer.glVao.bindVertexArrayOES(null)
-        }
-        this.renderer.boundVAO = null
+        this.renderer.cache(WebGLCache.VAO).validate(null)
     }
 
     destroy() {

@@ -2,7 +2,7 @@ import {Renderer} from './renderer.js'
 import {Texture} from "../../assets/assets/index.js"
 import {WebGLUtils, WebGLTexture, Framebuffers, Program, VertexArray} from "./webgl/index.js"
 import {FramebufferType} from "./index.js"
-import {Utils} from "../../utils/utils.js"
+import {Utils, Cache} from "../../utils/index.js"
 
 /**
  * The WebGL is the basic renderer using the html5 webgl api
@@ -25,17 +25,6 @@ export class WebGL extends Renderer {
 
         this.compiledShaders = new Map()
 
-        this.boundFramebuffer = null
-        this.boundVAO = null
-        this.boundProgram = null
-        this.boundTexture = {
-            texture: {},
-            unit: null
-        }
-        this.boundClearColor = null
-        this.boundViewport = null
-        this.boundBlendFunc = null
-        this.boundBlendEquation = null
         this.uploadedCameraMatrices = new Map()
         this.boundCameraMatrixStack = []
 
@@ -46,6 +35,48 @@ export class WebGL extends Renderer {
         this.gl.imageSmoothingEnabled = false
         this.glVao = this.gl.getExtension("OES_vertex_array_object")
         this.canvas.setAttribute("style", "image-rendering: optimizeSpeed; image-rendering: -moz-crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: -o-crisp-edges; image-rendering: pixelated;")
+
+        this.bindings = new Map([
+            [
+                WebGLCache.VIEWPORT,
+                new Cache(viewport => this.gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height), Utils.shallowEquals)
+            ],
+            [
+                WebGLCache.CLEAR_COLOR,
+                new Cache(color => this.gl.clearColor(...color.asNormalizedRGBAList()), Utils.shallowEquals)
+            ],
+            [
+                WebGLCache.BLEND_EQUATION,
+                new Cache(blendEquation => this.gl.blendEquationSeparate(blendEquation.modeRGB, blendEquation.modeAlpha), Utils.shallowEquals)
+            ],
+            [
+                WebGLCache.BLEND_FUNC,
+                new Cache(blendFunc => this.gl.blendFuncSeparate(blendFunc.srcRGB, blendFunc.dstRGB, blendFunc.srcAlpha, blendFunc.dstAlpha), Utils.shallowEquals)
+            ],
+            [
+                WebGLCache.FRAMEBUFFER,
+                new Cache(framebuffer => this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, framebuffer))
+            ],
+            [
+                WebGLCache.VAO,
+                new Cache(vao => this.glVao.bindVertexArrayOES(vao))
+            ],
+            [
+                WebGLCache.PROGRAM,
+                new Cache(program => this.gl.useProgram(program.programRef))
+            ],
+            [
+                WebGLCache.TEXTURE_UNIT,
+                new Cache(unit => this.gl.activeTexture(unit))
+            ],
+            ...Object.keys(WebGLCache.TEXTURE).map(textureUnit => [
+                WebGLCache.TEXTURE[textureUnit],
+                new Cache(texture => {
+                    this.cache(WebGLCache.TEXTURE_UNIT).validate(textureUnit)
+                    this.gl.bindTexture(this.gl.TEXTURE_2D, texture)
+                })
+            ])
+        ])
 
         this.textureProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils.vertexShaderTexture, fragmentShaderSrc: WebGLUtils.fragmentShaderTexture})
         this.rectangleProgram = new Program({renderer: this, vertexShaderSrc: WebGLUtils.vertexShaderSolid, fragmentShaderSrc: WebGLUtils.fragmentShaderRectangle})
@@ -140,7 +171,7 @@ export class WebGL extends Renderer {
         })
 
         this.gl.enable(this.gl.BLEND);
-        this.setBlendFuncSeparate({srcRGB: this.gl.SRC_ALPHA, dstRGB: this.gl.ONE_MINUS_SRC_ALPHA, srcAlpha: this.gl.ONE, dstAlpha: this.gl.ONE_MINUS_SRC_ALPHA});
+        this.cache(WebGLCache.BLEND_FUNC).validate({srcRGB: this.gl.SRC_ALPHA, dstRGB: this.gl.ONE_MINUS_SRC_ALPHA, srcAlpha: this.gl.ONE, dstAlpha: this.gl.ONE_MINUS_SRC_ALPHA})
 
         super.init()
     }
@@ -201,61 +232,21 @@ export class WebGL extends Renderer {
     }
 
     /**
-     * @param viewport The viewport
-     * @param viewport.x The viewport's x position
-     * @param viewport.y The viewport's y position
-     * @param viewport.width The viewport width
-     * @param viewport.height The viewport height
+     * Returns the requested cache object
+     * @param {WebGLCache} name
+     * @returns {Cache}
      */
-    setViewport(viewport) {
-        if (!Utils.shallowEquals(this.boundViewport, viewport)) {
-            this.gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height)
-            this.boundViewport = viewport
-        }
-    }
-
-    /**
-     * @param {Color} color
-     */
-    setClearColor(color) {
-        if (!Utils.shallowEquals(this.boundClearColor, color)) {
-            this.gl.clearColor(...color.asNormalizedRGBAList())
-            this.boundClearColor = color
-        }
-    }
-
-    /**
-     * @param blendFunc The blending functions
-     * @param blendFunc.srcRGB The RGB source blending
-     * @param blendFunc.dstRGB The RGB destination blending
-     * @param blendFunc.srcAlpha The alpha source blending
-     * @param blendFunc.dstAlpha The alpha destination blending
-     */
-    setBlendFuncSeparate(blendFunc) {
-        if (!Utils.shallowEquals(this.boundBlendFunc, blendFunc)) {
-            this.gl.blendFuncSeparate(blendFunc.srcRGB, blendFunc.dstRGB, blendFunc.srcAlpha, blendFunc.dstAlpha)
-            this.boundBlendFunc = blendFunc
-        }
-    }
-
-    /**
-     * @param blendEquation The blending equations
-     * @param blendEquation.modeRGB The RGB blending equation
-     * @param blendEquation.modeAlpha The alpha blending equation
-     */
-    setBlendEquationSeparate(blendEquation) {
-        if (!Utils.shallowEquals(this.boundBlendEquation, blendEquation)) {
-            this.gl.blendEquationSeparate(blendEquation.modeRGB, blendEquation.modeAlpha)
-            this.boundBlendEquation = blendEquation
-        }
+    cache(name) {
+        return this.bindings.get(name)
     }
 
     uploadCameraTransform() {
         const currentCameraMatrix = this.boundCameraMatrixStack[this.boundCameraMatrixStack.length-1]
+        const boundProgram = this.cache(WebGLCache.PROGRAM).validate()
 
-        if (this.uploadedCameraMatrices.get(this.boundProgram) !== currentCameraMatrix) {
-            this.boundProgram.setUniformMatrix({uniform: "u_cameraMatrix", matrix: currentCameraMatrix})
-            this.uploadedCameraMatrices.set(this.boundProgram, currentCameraMatrix)
+        if (this.uploadedCameraMatrices.get(boundProgram) !== currentCameraMatrix) {
+            boundProgram.setUniformMatrix({uniform: "u_cameraMatrix", matrix: currentCameraMatrix})
+            this.uploadedCameraMatrices.set(boundProgram, currentCameraMatrix)
         }
     }
 
@@ -276,4 +267,22 @@ export class WebGL extends Renderer {
     popCameraTransform() {
         this.boundCameraMatrixStack.pop()
     }
+}
+
+const WebGLTextureUnits = 32
+
+/**
+ * A list of caches that a WebGL renderer has
+ * @enum {string | object}
+ */
+export const WebGLCache = {
+    VIEWPORT: "viewport",
+    BLEND_EQUATION: "blendEquation",
+    BLEND_FUNC: "blendFunc",
+    CLEAR_COLOR: "clearColor",
+    FRAMEBUFFER: "framebuffer",
+    VAO: "vao",
+    PROGRAM: "program",
+    TEXTURE_UNIT: "textureUnit",
+    TEXTURE: Object.fromEntries(Array.from({length: WebGLTextureUnits}, (_, num) => [WebGLRenderingContext.TEXTURE0 + num, `texture${num}`]))
 }
