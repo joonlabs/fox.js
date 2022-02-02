@@ -1,5 +1,6 @@
 import {WebGLUtils} from "./utils.js"
 import {Utils as WarningUtils} from "../../../utils/index.js"
+import {WebGLCache} from "../webgl.js"
 
 export class Program {
 
@@ -25,10 +26,7 @@ export class Program {
     }
 
     use() {
-        if (this.renderer.boundProgram !== this) {
-            this.renderer.gl.useProgram(this.programRef)
-            this.renderer.boundProgram = this
-        }
+        this.renderer.cache(WebGLCache.PROGRAM).validate(this)
     }
 
     setIntegerUniform({uniform, value, v1, v2, v3}) {

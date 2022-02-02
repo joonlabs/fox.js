@@ -6,6 +6,7 @@ import {WebGLUtils} from "./index.js"
 import {Vec2D} from "../../../vectors/vectors/index.js"
 import {Vectors} from "../../../vectors/index.js"
 import {Utils} from "../../../utils/index.js"
+import {WebGLCache} from "../webgl.js"
 
 export class Framebuffer extends AbstractFramebuffer {
 
@@ -46,11 +47,8 @@ export class Framebuffer extends AbstractFramebuffer {
     }
 
     bind() {
-        if (this.renderer.boundFramebuffer !== this) {
-            this.renderer.gl.bindFramebuffer(this.renderer.gl.FRAMEBUFFER, this.framebufferRef)
-            this.uploadedMatrices.clear()
-            this.renderer.boundFramebuffer = this
-        }
+        this.renderer.cache(WebGLCache.FRAMEBUFFER).validate(this.framebufferRef)
+        this.uploadedMatrices.clear()
     }
 
     destroy() {
@@ -67,15 +65,17 @@ export class Framebuffer extends AbstractFramebuffer {
         clearColor = clearColor || new Color()
 
         this.bind()
-        this.renderer.setClearColor(clearColor)
+        this.renderer.cache(WebGLCache.CLEAR_COLOR).validate(clearColor)
         gl.clear(gl.COLOR_BUFFER_BIT)
     }
 
     _uploadMatrices() {
         this.renderer.uploadCameraTransform()
-        if (!this.uploadedMatrices.has(this.renderer.boundProgram)) {
-            this.renderer.boundProgram.setUniformMatrix({uniform: "u_framebufferMatrix", matrix: this.framebufferMatrix})
-            this.uploadedMatrices.set(this.renderer.boundProgram, true)
+        const boundProgram = this.renderer.cache(WebGLCache.PROGRAM).validate()
+
+        if (this.uploadedMatrices.get(boundProgram) !== this.framebufferMatrix) {
+            boundProgram.setUniformMatrix({uniform: "u_framebufferMatrix", matrix: this.framebufferMatrix})
+            this.uploadedMatrices.set(boundProgram, this.framebufferMatrix)
         }
     }
 
@@ -96,9 +96,9 @@ export class Framebuffer extends AbstractFramebuffer {
 
         const gl = this.renderer.gl
         this.bind()
-        this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})
-        this.renderer.setBlendFuncSeparate(this.blendFunc)
-        this.renderer.setBlendEquationSeperate(this.blendEquation)
+        this.renderer.cache(WebGLCache.VIEWPORT).validate({x: 0, y: 0, width: this.width, height: this.height})
+        this.renderer.cache(WebGLCache.BLEND_FUNC).validate(this.blendFunc)
+        this.renderer.cache(WebGLCache.BLEND_EQUATION).validate(this.blendEquation)
 
         this.program.use()
         this._uploadMatrices()
@@ -135,9 +135,9 @@ export class Framebuffer extends AbstractFramebuffer {
     _renderRectangle({x, y, width, height, rotation = 0, rotationPosition = new Vec2D(), color, borderWidth}) {
         const gl = this.renderer.gl
         this.bind()
-        this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})
-        this.renderer.setBlendFuncSeparate(this.blendFunc)
-        this.renderer.setBlendEquationSeperate(this.blendEquation)
+        this.renderer.cache(WebGLCache.VIEWPORT).validate({x: 0, y: 0, width: this.width, height: this.height})
+        this.renderer.cache(WebGLCache.BLEND_FUNC).validate(this.blendFunc)
+        this.renderer.cache(WebGLCache.BLEND_EQUATION).validate(this.blendEquation)
 
         const program = this.renderer.rectangleProgram
         const vao = this.renderer.rectangleVAO
@@ -164,9 +164,9 @@ export class Framebuffer extends AbstractFramebuffer {
     _renderCircle({x, y, radius, rotation = 0, rotationPosition = {x:0, y:0}, color, borderWidth}) {
         const gl = this.renderer.gl
         this.bind()
-        this.renderer.setViewport({x: 0, y: 0, width: this.width, height: this.height})
-        this.renderer.setBlendFuncSeparate(this.blendFunc)
-        this.renderer.setBlendEquationSeperate(this.blendEquation)
+        this.renderer.cache(WebGLCache.VIEWPORT).validate({x: 0, y: 0, width: this.width, height: this.height})
+        this.renderer.cache(WebGLCache.BLEND_FUNC).validate(this.blendFunc)
+        this.renderer.cache(WebGLCache.BLEND_EQUATION).validate(this.blendEquation)
 
         const program = this.renderer.circleProgram
         const vao = this.renderer.circleVAO
